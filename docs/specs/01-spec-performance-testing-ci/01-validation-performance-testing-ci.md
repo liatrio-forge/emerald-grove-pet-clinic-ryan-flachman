@@ -113,7 +113,7 @@
 
 ### Threshold Configuration Verified
 
-```
+```bash
 check-thresholds.sh:15-18
   AVG_THRESHOLD_MS=500
   P95_THRESHOLD_MS=1000
@@ -123,7 +123,7 @@ check-thresholds.sh:15-18
 
 ### JMX Configuration Verified
 
-```
+```xml
 petclinic_test_plan.jmx
   ThreadGroup.num_threads = 50       (was 500)
   LoopController.continue_forever = true

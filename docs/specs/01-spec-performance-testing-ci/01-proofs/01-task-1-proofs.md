@@ -14,7 +14,7 @@ Task 1.0 adds a `performance` Maven profile to `pom.xml` that:
 
 Command run against a locally running Spring Boot app (H2 profile, port 8080).
 
-```
+```text
 [INFO] --- jmeter:3.8.0:results (jmeter-check-results) @ spring-petclinic ---
 [INFO] Result (.csv) files scanned: 1
 [INFO] Successful requests:         75020
@@ -51,7 +51,7 @@ Parsing: target/jmeter/results/20260330-petclinic_test_plan.csv
 Throughput threshold temporarily raised to 99999 req/s (an impossible value) and script run
 directly against the real JTL results:
 
-```
+```text
 $ src/test/jmeter/check-thresholds.sh target/jmeter/results
 
 Parsing: target/jmeter/results/20260330-petclinic_test_plan.csv
