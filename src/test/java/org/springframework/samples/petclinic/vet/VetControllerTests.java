@@ -31,6 +31,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -87,6 +88,37 @@ class VetControllerTests {
 			.andExpect(model().attributeExists("listVets"))
 			.andExpect(view().name("vets/vetList"));
 
+	}
+
+	@Test
+	void testShowVetListFilteredBySpecialty() throws Exception {
+		mockMvc.perform(get("/vets.html?page=1&specialty=radiology"))
+			.andExpect(status().isOk())
+			.andExpect(model().attribute("selectedSpecialty", is("radiology")))
+			.andExpect(model().attributeExists("allSpecialties"))
+			.andExpect(model().attribute("listVets", hasSize(1)))
+			.andExpect(model().attribute("listVets", hasItem(hasProperty("lastName", is("Leary")))))
+			.andExpect(view().name("vets/vetList"));
+	}
+
+	@Test
+	void testShowVetListFilteredByNone() throws Exception {
+		mockMvc.perform(get("/vets.html?page=1&specialty=none"))
+			.andExpect(status().isOk())
+			.andExpect(model().attribute("selectedSpecialty", is("none")))
+			.andExpect(model().attributeExists("allSpecialties"))
+			.andExpect(model().attribute("listVets", hasSize(1)))
+			.andExpect(model().attribute("listVets", hasItem(hasProperty("lastName", is("Carter")))))
+			.andExpect(view().name("vets/vetList"));
+	}
+
+	@Test
+	void testShowVetListNoFilterExposesAllSpecialtiesInModel() throws Exception {
+		mockMvc.perform(get("/vets.html?page=1"))
+			.andExpect(status().isOk())
+			.andExpect(model().attributeExists("allSpecialties"))
+			.andExpect(model().attributeDoesNotExist("selectedSpecialty"))
+			.andExpect(view().name("vets/vetList"));
 	}
 
 	@Test
