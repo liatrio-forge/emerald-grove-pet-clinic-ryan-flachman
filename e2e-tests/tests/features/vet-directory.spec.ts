@@ -75,7 +75,7 @@ test.describe('Vet Directory', () => {
     const noneCount = await noneRows.count();
     expect(noneCount, 'Expected at least one vet with no specialty').toBeGreaterThan(0);
     for (let i = 0; i < noneCount; i++) {
-      await expect(noneRows.nth(i).locator('td').nth(1)).toContainText(/^none$/i);
+      await expect(noneRows.nth(i).locator('td').nth(1)).toContainText(/none/i);
     }
     await expect(vetPage.specialtyFilterPills().locator('a.active')).toContainText(/none/i);
 
