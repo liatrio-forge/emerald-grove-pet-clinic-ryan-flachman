@@ -47,9 +47,7 @@ class VetController {
 		String normalized = (specialty != null && !specialty.isBlank()) ? specialty.trim() : null;
 		Page<Vet> paginated = findPaginated(page, normalized);
 		model.addAttribute("allSpecialties", vetRepository.findAllSpecialties());
-		if (normalized != null) {
-			model.addAttribute("selectedSpecialty", normalized);
-		}
+		model.addAttribute("selectedSpecialty", normalized);
 		return addPaginationModel(page, paginated, normalized, model);
 	}
 
