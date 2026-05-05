@@ -69,39 +69,39 @@ cd e2e-tests && npm test -- --grep "Owner Management"
 
 | AC ID | Criterion | Proof artifact | Evidence type | Status |
 |-------|-----------|----------------|---------------|--------|
-| AC-1.a | `GET /owners/find` HTML contains `<input id="city">` and `<input id="telephone">` | `05-proofs/05-task-04-proofs.md` | file edit | PENDING |
-| AC-1.b | `GET /owners` (no params) returns HTTP 200, view `owners/ownersList` | `05-proofs/05-task-03-proofs.md` | Maven test pass | PENDING |
-| AC-2.a | `?city=Madison` → `listOwners` contains only Madison owners | `05-proofs/05-task-03-proofs.md` | Maven test pass | PENDING |
-| AC-2.b | `?telephone=6085551` → `listOwners` contains only matching owners | `05-proofs/05-task-03-proofs.md` | Maven test pass | PENDING |
-| AC-2.c | `?lastName=Davis&city=Sun` → Betty Davis only, not Harold Davis | `05-proofs/05-task-03-proofs.md` | Maven test pass | PENDING |
-| AC-2.d | `?lastName=Franklin` (single result) → redirect to `/owners/{id}` | `05-proofs/05-task-03-proofs.md` | Maven test pass | PENDING |
-| AC-3.a | `?telephone=608-555` → HTTP 200, field error `"invalid"` on `telephone`, view `findOwners` | `05-proofs/05-task-03-proofs.md` | Maven test pass | PENDING |
-| AC-3.b | `?telephone=608` (digits only) → no field error on `telephone` | `05-proofs/05-task-03-proofs.md` | Maven test pass | PENDING |
-| AC-4.a | No results → global error `"notFound"`, no field error on `lastName`, view `findOwners` | `05-proofs/05-task-03-proofs.md` | Maven test pass | PENDING |
-| AC-5.a | `owner-management.spec.ts` contains `"can find owner by telephone"` | `05-proofs/05-task-02-proofs.md` | file creation | PENDING |
-| AC-5.b | `owner-management.spec.ts` contains `"can find owner by city"` | `05-proofs/05-task-02-proofs.md` | file creation | PENDING |
-| AC-5.c | `npm test -- --grep "Owner Management"` exits 0 | `05-proofs/05-task-05-proofs.md` | command output | PENDING |
-| AC-5.d | Playwright screenshot of filtered results captured | `05-proofs/05-task-05-proofs.md` | Playwright screenshot | PENDING |
-| AC-6.a | `./mvnw test` exits 0 | `05-proofs/05-task-05-proofs.md` | Maven test pass | PENDING |
-| AC-6.b | JaCoCo ≥90% line coverage on `OwnerController` and `OwnerRepository` | `05-proofs/05-task-05-proofs.md` | JaCoCo coverage report | PENDING |
+| AC-1.a | `GET /owners/find` HTML contains `<input id="city">` and `<input id="telephone">` | `05-proofs/05-task-04-proofs.md` | file edit | PASS |
+| AC-1.b | `GET /owners` (no params) returns HTTP 200, view `owners/ownersList` | `05-proofs/05-task-03-proofs.md` | Maven test pass | PASS |
+| AC-2.a | `?city=Madison` → `listOwners` contains only Madison owners | `05-proofs/05-task-03-proofs.md` | Maven test pass | PASS |
+| AC-2.b | `?telephone=6085551` → `listOwners` contains only matching owners | `05-proofs/05-task-03-proofs.md` | Maven test pass | PASS |
+| AC-2.c | `?lastName=Davis&city=Sun` → Betty Davis only, not Harold Davis | `05-proofs/05-task-03-proofs.md` | Maven test pass | PASS |
+| AC-2.d | `?lastName=Franklin` (single result) → redirect to `/owners/{id}` | `05-proofs/05-task-03-proofs.md` | Maven test pass | PASS |
+| AC-3.a | `?telephone=608-555` → HTTP 200, field error `"invalid"` on `telephone`, view `findOwners` | `05-proofs/05-task-03-proofs.md` | Maven test pass | PASS |
+| AC-3.b | `?telephone=608` (digits only) → no field error on `telephone` | `05-proofs/05-task-03-proofs.md` | Maven test pass | PASS |
+| AC-4.a | No results → global error `"notFound"`, no field error on `lastName`, view `findOwners` | `05-proofs/05-task-03-proofs.md` | Maven test pass | PASS |
+| AC-5.a | `owner-management.spec.ts` contains `"can find owner by telephone"` | `05-proofs/05-task-02-proofs.md` | file creation | PASS |
+| AC-5.b | `owner-management.spec.ts` contains `"can find owner by city"` | `05-proofs/05-task-02-proofs.md` | file creation | PASS |
+| AC-5.c | `npm test -- --grep "Owner Management"` exits 0 | `05-proofs/05-task-05-proofs.md` | command output | PASS |
+| AC-5.d | Playwright screenshot of filtered results captured | `05-proofs/05-task-05-proofs.md` | Playwright screenshot | PASS |
+| AC-6.a | `./mvnw test` exits 0 | `05-proofs/05-task-05-proofs.md` | Maven test pass | PASS |
+| AC-6.b | JaCoCo ≥90% line coverage on `OwnerController` and `OwnerRepository` | `05-proofs/05-task-05-proofs.md` | JaCoCo coverage report | PASS |
 
 ## Definition of done
 
-- [ ] AC-1.a: `GET /owners/find` HTML contains `<input id="city">` and `<input id="telephone">`
-- [ ] AC-1.b: `GET /owners` (no params) returns HTTP 200, view `owners/ownersList`
-- [ ] AC-2.a: `?city=Madison` → `listOwners` contains only Madison owners
-- [ ] AC-2.b: `?telephone=6085551` → `listOwners` contains only matching owners
-- [ ] AC-2.c: `?lastName=Davis&city=Sun` → Betty Davis only, not Harold Davis
-- [ ] AC-2.d: `?lastName=Franklin` (single result) → redirect to `/owners/{id}`
-- [ ] AC-3.a: `?telephone=608-555` → HTTP 200, field error `"invalid"` on `telephone`, view `findOwners`
-- [ ] AC-3.b: `?telephone=608` (digits only) → no field error on `telephone`
-- [ ] AC-4.a: No results → global error `"notFound"`, no field error on `lastName`, view `findOwners`
-- [ ] AC-5.a: `owner-management.spec.ts` contains `"can find owner by telephone"`
-- [ ] AC-5.b: `owner-management.spec.ts` contains `"can find owner by city"`
-- [ ] AC-5.c: `cd e2e-tests && npm test -- --grep "Owner Management"` exits 0
-- [ ] AC-5.d: Playwright screenshot of filtered results captured as proof artifact
-- [ ] AC-6.a: `./mvnw test` exits 0
-- [ ] AC-6.b: JaCoCo ≥90% line coverage on `OwnerController` and `OwnerRepository`
-- [ ] All proof artifacts contain real outputs, not placeholders.
-- [ ] Coverage matrix has all rows in `PASS`.
-- [ ] `./mvnw test` exits 0 with ≥90% line coverage on new code.
+- [x] AC-1.a: `GET /owners/find` HTML contains `<input id="city">` and `<input id="telephone">`
+- [x] AC-1.b: `GET /owners` (no params) returns HTTP 200, view `owners/ownersList`
+- [x] AC-2.a: `?city=Madison` → `listOwners` contains only Madison owners
+- [x] AC-2.b: `?telephone=6085551` → `listOwners` contains only matching owners
+- [x] AC-2.c: `?lastName=Davis&city=Sun` → Betty Davis only, not Harold Davis
+- [x] AC-2.d: `?lastName=Franklin` (single result) → redirect to `/owners/{id}`
+- [x] AC-3.a: `?telephone=608-555` → HTTP 200, field error `"invalid"` on `telephone`, view `findOwners`
+- [x] AC-3.b: `?telephone=608` (digits only) → no field error on `telephone`
+- [x] AC-4.a: No results → global error `"notFound"`, no field error on `lastName`, view `findOwners`
+- [x] AC-5.a: `owner-management.spec.ts` contains `"can find owner by telephone"`
+- [x] AC-5.b: `owner-management.spec.ts` contains `"can find owner by city"`
+- [x] AC-5.c: `cd e2e-tests && npm test -- --grep "Owner Management"` exits 0
+- [x] AC-5.d: Playwright screenshot of filtered results captured as proof artifact
+- [x] AC-6.a: `./mvnw test` exits 0
+- [x] AC-6.b: JaCoCo ≥90% line coverage on `OwnerController` and `OwnerRepository`
+- [x] All proof artifacts contain real outputs, not placeholders.
+- [x] Coverage matrix has all rows in `PASS`.
+- [x] `./mvnw test` exits 0 with ≥90% line coverage on new code.
