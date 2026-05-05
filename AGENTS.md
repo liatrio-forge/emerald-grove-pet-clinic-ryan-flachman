@@ -90,4 +90,50 @@ Before committing code:
 - [ ] Proper error handling
 - [ ] Documentation updated
 
+## Commit Convention
+
+All commits **must** use [Conventional Commits](https://www.conventionalcommits.org/). Format:
+
+```text
+<type>(<optional scope>): <short description>
+
+<optional body>
+```
+
+### Allowed types
+
+| Type | When to use |
+|------|-------------|
+| `feat` | A new feature or capability |
+| `fix` | A bug fix |
+| `docs` | Documentation-only changes |
+| `test` | Adding or updating tests with no production code change |
+| `refactor` | Code change that neither fixes a bug nor adds a feature |
+| `chore` | Build process, dependency, or tooling changes |
+| `ci` | CI/CD configuration changes |
+| `perf` | Performance improvements |
+| `revert` | Reverts a previous commit |
+
+### Rules
+
+- Use the imperative mood in the description: "add feature" not "added feature"
+- Do not capitalize the first letter of the description
+- Do not end the description with a period
+- Keep the first line at or under 72 characters
+- Reference related issues or specs in the body when applicable
+
+### Examples
+
+```text
+feat(owner): add email field to owner registration form
+
+fix(pet): correct null pointer when pet has no visit history
+
+docs: add conventional commit guidelines to AGENTS.md
+
+test(vet): add unit tests for specialty assignment logic
+
+ci: add performance test threshold enforcement workflow
+```
+
 This guide ensures consistent, high-quality TDD practices for AI contributors to the Emerald Grove Veterinary Clinic application.
