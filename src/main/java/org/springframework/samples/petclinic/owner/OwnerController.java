@@ -119,7 +119,11 @@ class OwnerController {
 	}
 
 	private static String nullIfBlank(String value) {
-		return (value == null || value.isBlank()) ? null : value;
+		if (value == null) {
+			return null;
+		}
+		String trimmed = value.trim();
+		return trimmed.isEmpty() ? null : trimmed;
 	}
 
 	private String addPaginationModel(int page, Model model, Page<Owner> paginated) {
