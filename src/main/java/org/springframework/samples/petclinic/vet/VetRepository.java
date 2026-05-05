@@ -19,10 +19,12 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Repository class for <code>Vet</code> domain objects All method names are compliant
@@ -54,5 +56,18 @@ public interface VetRepository extends Repository<Vet, Integer> {
 	@Transactional(readOnly = true)
 	@Cacheable("vets")
 	Page<Vet> findAll(Pageable pageable) throws DataAccessException;
+
+	@Transactional(readOnly = true)
+	@Query(value = "SELECT DISTINCT v FROM Vet v JOIN v.specialties s WHERE s.name = :name",
+			countQuery = "SELECT COUNT(DISTINCT v) FROM Vet v JOIN v.specialties s WHERE s.name = :name")
+	Page<Vet> findBySpecialtyName(String name, Pageable pageable);
+
+	@Transactional(readOnly = true)
+	@Query("SELECT v FROM Vet v WHERE v.specialties IS EMPTY")
+	Page<Vet> findWithNoSpecialties(Pageable pageable);
+
+	@Transactional(readOnly = true)
+	@Query("SELECT DISTINCT s FROM Vet v JOIN v.specialties s ORDER BY s.name")
+	List<Specialty> findAllSpecialties();
 
 }
