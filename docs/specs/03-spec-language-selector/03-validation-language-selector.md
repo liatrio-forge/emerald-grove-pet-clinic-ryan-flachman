@@ -51,7 +51,7 @@ cd e2e-tests && npm test -- --grep "language selector"
 | AC-2.b | After selecting "Deutsch", "Home" nav link text changes to "Startseite" | `03-proofs/03-task-02-proofs.md` | Playwright test pass | PENDING |
 | AC-2.c | After selecting "English", "Home" nav link text changes back to "Home" | `03-proofs/03-task-02-proofs.md` | Playwright test pass | PENDING |
 | AC-3.a | After switching to Spanish on `/`, navigating to `/owners/find` shows "Buscar propietarios" | `03-proofs/03-task-02-proofs.md` | Playwright test pass | PENDING |
-| AC-4.a | `e2e-tests/tests/features/language-switching.spec.ts` exists | `03-proofs/03-task-01-proofs.md` | file creation | PENDING |
+| AC-4.a | `e2e-tests/tests/features/language-switching.spec.ts` exists | `03-proofs/03-task-01-proofs.md` | file creation | PASS |
 | AC-4.b | `npm test -- --grep "language selector"` exits 0 | `03-proofs/03-task-03-proofs.md` | command output | PENDING |
 | AC-5.a | `./mvnw test` exits 0 including `I18nPropertiesSyncTest` | `03-proofs/03-task-03-proofs.md` | Maven test pass | PENDING |
 
