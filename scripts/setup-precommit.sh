@@ -14,8 +14,10 @@ if ! command -v pre-commit &> /dev/null; then
         brew install pre-commit
     elif command -v pip3 &> /dev/null; then
         pip3 install --user pre-commit
+        export PATH="$HOME/.local/bin:$PATH"
     elif command -v pip &> /dev/null; then
         pip install --user pre-commit
+        export PATH="$HOME/.local/bin:$PATH"
     else
         echo "❌ No suitable package manager found. Please install pre-commit manually (https://pre-commit.com/#install)."
         exit 1
