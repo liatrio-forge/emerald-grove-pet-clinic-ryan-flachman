@@ -58,45 +58,45 @@ cd e2e-tests && npm test -- --grep "Vet Directory"
 
 | AC ID | Criterion | Proof artifact | Evidence type | Status |
 |-------|-----------|----------------|---------------|--------|
-| AC-1.a | `GET /vets.html` HTML contains `[data-testid="specialty-filter"]` | `04-proofs/04-task-04-proofs.md` | command output | PENDING |
-| AC-1.b | "All" pill uses `th:text="#{vets.filter.all}"` | `04-proofs/04-task-04-proofs.md` | file edit | PENDING |
-| AC-1.c | "None" pill uses `th:text="#{vets.filter.none}"` | `04-proofs/04-task-04-proofs.md` | file edit | PENDING |
-| AC-1.d | `I18nPropertiesSyncTest` passes after template change | `04-proofs/04-task-05-proofs.md` | Maven test pass | PENDING |
-| AC-2.a | `?specialty=radiology` → `selectedSpecialty="radiology"`, `listVets` contains only radiology vets | `04-proofs/04-task-03-proofs.md` | Maven test pass | PENDING |
-| AC-2.b | `?specialty=none` → `selectedSpecialty="none"`, `listVets` contains only no-specialty vets | `04-proofs/04-task-03-proofs.md` | Maven test pass | PENDING |
-| AC-2.c | No `specialty` param → all vets returned (existing behaviour) | `04-proofs/04-task-03-proofs.md` | Maven test pass | PENDING |
-| AC-3.a | Radiology pill has CSS class `active` when `?specialty=radiology` | `04-proofs/04-task-05-proofs.md` | Playwright test pass | PENDING |
-| AC-3.b | "None" pill has CSS class `active` when `?specialty=none` | `04-proofs/04-task-05-proofs.md` | Playwright test pass | PENDING |
-| AC-3.c | "All" pill has CSS class `active` when no specialty param | `04-proofs/04-task-05-proofs.md` | Playwright test pass | PENDING |
-| AC-4.a | Pagination links include `specialty=radiology` when filter is active | `04-proofs/04-task-05-proofs.md` | Playwright test pass | PENDING |
-| AC-4.b | Direct navigation to `?specialty=radiology` returns same filtered results | `04-proofs/04-task-05-proofs.md` | Playwright test pass | PENDING |
-| AC-5.a | `e2e-tests/tests/features/vet-directory.spec.ts` contains `"can filter vets by specialty"` test | `04-proofs/04-task-02-proofs.md` | file creation | PENDING |
-| AC-5.b | `npm test -- --grep "Vet Directory"` exits 0 | `04-proofs/04-task-05-proofs.md` | command output | PENDING |
-| AC-5.c | Playwright screenshot captured showing filtered vet list | `04-proofs/04-task-05-proofs.md` | Playwright screenshot | PENDING |
-| AC-6.a | `./mvnw test` exits 0 (all tests including I18nPropertiesSyncTest) | `04-proofs/04-task-05-proofs.md` | Maven test pass | PENDING |
-| AC-6.b | `vets.filter.all` and `vets.filter.none` present in all 8 required property files | `04-proofs/04-task-04-proofs.md` | file edit | PENDING |
-| AC-6.c | JaCoCo shows ≥90% line coverage on VetController and VetRepository | `04-proofs/04-task-05-proofs.md` | JaCoCo coverage report | PENDING |
+| AC-1.a | `GET /vets.html` HTML contains `[data-testid="specialty-filter"]` | `04-proofs/04-task-04-proofs.md` | command output | PASS |
+| AC-1.b | "All" pill uses `th:text="#{vets.filter.all}"` | `04-proofs/04-task-04-proofs.md` | file edit | PASS |
+| AC-1.c | "None" pill uses `th:text="#{vets.filter.none}"` | `04-proofs/04-task-04-proofs.md` | file edit | PASS |
+| AC-1.d | `I18nPropertiesSyncTest` passes after template change | `04-proofs/04-task-05-proofs.md` | Maven test pass | PASS |
+| AC-2.a | `?specialty=radiology` → `selectedSpecialty="radiology"`, `listVets` contains only radiology vets | `04-proofs/04-task-03-proofs.md` | Maven test pass | PASS |
+| AC-2.b | `?specialty=none` → `selectedSpecialty="none"`, `listVets` contains only no-specialty vets | `04-proofs/04-task-03-proofs.md` | Maven test pass | PASS |
+| AC-2.c | No `specialty` param → all vets returned (existing behaviour) | `04-proofs/04-task-03-proofs.md` | Maven test pass | PASS |
+| AC-3.a | Radiology pill has CSS class `active` when `?specialty=radiology` | `04-proofs/04-task-05-proofs.md` | Playwright test pass | PASS |
+| AC-3.b | "None" pill has CSS class `active` when `?specialty=none` | `04-proofs/04-task-05-proofs.md` | Playwright test pass | PASS |
+| AC-3.c | "All" pill has CSS class `active` when no specialty param | `04-proofs/04-task-05-proofs.md` | Playwright test pass | PASS |
+| AC-4.a | Pagination links include `specialty=radiology` when filter is active | `04-proofs/04-task-05-proofs.md` | Playwright test pass | PASS |
+| AC-4.b | Direct navigation to `?specialty=radiology` returns same filtered results | `04-proofs/04-task-05-proofs.md` | Playwright test pass | PASS |
+| AC-5.a | `e2e-tests/tests/features/vet-directory.spec.ts` contains `"can filter vets by specialty"` test | `04-proofs/04-task-02-proofs.md` | file creation | PASS |
+| AC-5.b | `npm test -- --grep "Vet Directory"` exits 0 | `04-proofs/04-task-05-proofs.md` | command output | PASS |
+| AC-5.c | Playwright screenshot captured showing filtered vet list | `04-proofs/04-task-05-proofs.md` | Playwright screenshot | PASS |
+| AC-6.a | `./mvnw test` exits 0 (all tests including I18nPropertiesSyncTest) | `04-proofs/04-task-05-proofs.md` | Maven test pass | PASS |
+| AC-6.b | `vets.filter.all` and `vets.filter.none` present in all 8 required property files | `04-proofs/04-task-04-proofs.md` | file edit | PASS |
+| AC-6.c | JaCoCo shows ≥90% line coverage on VetController and VetRepository | `04-proofs/04-task-05-proofs.md` | JaCoCo coverage report | PASS |
 
 ## Definition of done
 
-- [ ] AC-1.a: `GET /vets.html` HTML contains `[data-testid="specialty-filter"]`
-- [ ] AC-1.b: "All" pill uses `th:text="#{vets.filter.all}"` — no hard-coded literal
-- [ ] AC-1.c: "None" pill uses `th:text="#{vets.filter.none}"` — no hard-coded literal
-- [ ] AC-1.d: `./mvnw test -Dtest=I18nPropertiesSyncTest` exits 0
-- [ ] AC-2.a: `?specialty=radiology` → correct `selectedSpecialty` + filtered `listVets` in unit test
-- [ ] AC-2.b: `?specialty=none` → correct `selectedSpecialty` + no-specialty `listVets` in unit test
-- [ ] AC-2.c: No `specialty` param → all vets returned (existing test still passes)
-- [ ] AC-3.a: Radiology pill has CSS class `active` when `?specialty=radiology` (E2E)
-- [ ] AC-3.b: "None" pill has CSS class `active` when `?specialty=none` (E2E)
-- [ ] AC-3.c: "All" pill has CSS class `active` when no specialty param (E2E)
-- [ ] AC-4.a: Pagination links carry `specialty` param when filter is active (E2E)
-- [ ] AC-4.b: Direct navigation to `?specialty=radiology` shows same filtered results (E2E)
-- [ ] AC-5.a: `e2e-tests/tests/features/vet-directory.spec.ts` contains the filter test
-- [ ] AC-5.b: `cd e2e-tests && npm test -- --grep "Vet Directory"` exits 0
-- [ ] AC-5.c: Playwright screenshot captured showing filtered vet list
-- [ ] AC-6.a: `./mvnw test` exits 0
-- [ ] AC-6.b: `vets.filter.all` and `vets.filter.none` in all 8 required property files
-- [ ] AC-6.c: JaCoCo ≥90% line coverage on VetController and VetRepository
-- [ ] All proof artifacts contain real outputs, not placeholders.
-- [ ] Coverage matrix has all rows in `PASS`.
-- [ ] `./mvnw test` exits 0 with ≥90% line coverage on new code.
+- [x] AC-1.a: `GET /vets.html` HTML contains `[data-testid="specialty-filter"]`
+- [x] AC-1.b: "All" pill uses `th:text="#{vets.filter.all}"` — no hard-coded literal
+- [x] AC-1.c: "None" pill uses `th:text="#{vets.filter.none}"` — no hard-coded literal
+- [x] AC-1.d: `./mvnw test -Dtest=I18nPropertiesSyncTest` exits 0
+- [x] AC-2.a: `?specialty=radiology` → correct `selectedSpecialty` + filtered `listVets` in unit test
+- [x] AC-2.b: `?specialty=none` → correct `selectedSpecialty` + no-specialty `listVets` in unit test
+- [x] AC-2.c: No `specialty` param → all vets returned (existing test still passes)
+- [x] AC-3.a: Radiology pill has CSS class `active` when `?specialty=radiology` (E2E)
+- [x] AC-3.b: "None" pill has CSS class `active` when `?specialty=none` (E2E)
+- [x] AC-3.c: "All" pill has CSS class `active` when no specialty param (E2E)
+- [x] AC-4.a: Pagination links carry `specialty` param when filter is active (E2E)
+- [x] AC-4.b: Direct navigation to `?specialty=radiology` shows same filtered results (E2E)
+- [x] AC-5.a: `e2e-tests/tests/features/vet-directory.spec.ts` contains the filter test
+- [x] AC-5.b: `cd e2e-tests && npm test -- --grep "Vet Directory"` exits 0
+- [x] AC-5.c: Playwright screenshot captured showing filtered vet list
+- [x] AC-6.a: `./mvnw test` exits 0
+- [x] AC-6.b: `vets.filter.all` and `vets.filter.none` in all 8 required property files
+- [x] AC-6.c: JaCoCo ≥90% line coverage on VetController and VetRepository
+- [x] All proof artifacts contain real outputs, not placeholders.
+- [x] Coverage matrix has all rows in `PASS`.
+- [x] `./mvnw test` exits 0 with ≥90% line coverage on new code.
