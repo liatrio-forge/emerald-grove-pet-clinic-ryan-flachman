@@ -10,3 +10,4 @@ All SDD spec bundles for the Emerald Grove Veterinary Clinic project.
 | 03 | [language-selector](03-spec-language-selector/) | delivered | Bootstrap language dropdown in global navbar |
 | 04 | [vet-specialty-filter](04-spec-vet-specialty-filter/) | delivered | Specialty filter pills on the vet directory page |
 | 05 | [owner-search-filters](05-spec-owner-search-filters/) | delivered | Find Owners multi-field search by telephone and city |
+| 06 | [prevent-duplicate-owner](06-spec-prevent-duplicate-owner/) | accepted | Block duplicate owner creation via firstName + lastName + telephone check |
