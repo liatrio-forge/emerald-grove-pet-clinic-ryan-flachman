@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "dbhub-petclinic": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@bytebase/dbhub@0.21.2",
+        "--transport",
+        "stdio",
+        "--dsn",
+        "postgres://petclinic:petclinic@localhost:5432/petclinic?sslmode=disable"
+      ],
+      "env": {}
+    }
+  }
+}

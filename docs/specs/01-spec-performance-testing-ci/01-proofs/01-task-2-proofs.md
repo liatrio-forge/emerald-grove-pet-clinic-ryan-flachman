@@ -17,7 +17,7 @@ Task 2.0 adds `.github/workflows/performance-tests.yml` that:
 
 GitHub Actions run: https://github.com/liatrio-labs/emerald-grove-pet-clinic/actions/runs/23765780620
 
-```
+```text
 ✓ jmeter in 4m3s (ID 69244741912)
   ✓ Set up job
   ✓ Checkout
@@ -41,7 +41,7 @@ GitHub Actions run: https://github.com/liatrio-labs/emerald-grove-pet-clinic/act
 The following output was captured directly from the "Run performance tests" step log
 (run 23765780620), demonstrating results are visible without downloading an artifact:
 
-```
+```text
          JMeter Performance Threshold Summary
 ------------------------------------------------------------
   Total samples : 15727
@@ -77,7 +77,7 @@ First CI run (23765114432) used the original test plan (500 threads, loop-based)
 The CI runner was saturated, producing avg 3333ms and p95 5619ms — both above the
 500ms/1000ms thresholds. The `check-thresholds.sh` script correctly failed the build:
 
-```
+```text
          JMeter Performance Threshold Summary
 ------------------------------------------------------------
   Total samples : 75008

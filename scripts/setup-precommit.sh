@@ -10,11 +10,18 @@ echo "🚀 Setting up pre-commit hooks for Emerald Grove Veterinary Clinic..."
 # Check if pre-commit is installed
 if ! command -v pre-commit &> /dev/null; then
     echo "📦 Installing pre-commit..."
-    if ! command -v pip &> /dev/null; then
-        echo "❌ pip is not installed. Please install pip first."
+    if command -v brew &> /dev/null; then
+        brew install pre-commit
+    elif command -v pip3 &> /dev/null; then
+        pip3 install --user pre-commit
+        export PATH="$HOME/.local/bin:$PATH"
+    elif command -v pip &> /dev/null; then
+        pip install --user pre-commit
+        export PATH="$HOME/.local/bin:$PATH"
+    else
+        echo "❌ No suitable package manager found. Please install pre-commit manually (https://pre-commit.com/#install)."
         exit 1
     fi
-    pip install --user pre-commit
 else
     echo "✅ pre-commit is already installed"
 fi

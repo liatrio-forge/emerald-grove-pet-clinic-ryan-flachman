@@ -44,7 +44,7 @@
 | 1.5 | Hook handles detached HEAD gracefully (allows commit) | PASS | Test script: "Hook exits 0 in detached HEAD state" + "Hook produces no error output in detached HEAD" |
 | 1.6 | Hook has `always_run: true` and `pass_filenames: false` | PASS | `.pre-commit-config.yaml:88-89` confirmed; test script also validates these fields |
 | 1.7 | Hook uses `language: system` | PASS | `.pre-commit-config.yaml:87` confirmed; test script validates this field |
-| 1.8 | Hook entry in existing `repo: local` section alongside maven-compile-check | PASS | `.pre-commit-config.yaml:69-90` -- both hooks under same `repo: local` block |
+| 1.8 | Hook entry in existing `repo: local` section alongside Maven-compile-check | PASS | `.pre-commit-config.yaml:69-90` -- both hooks under same `repo: local` block |
 
 ### Proof Artifacts
 
@@ -58,7 +58,7 @@
 
 ## Unit 2: Documentation Update
 
-### Functional Requirements
+### Unit 2 Functional Requirements
 
 | # | Requirement | Status | Evidence |
 |---|---|---|---|
@@ -67,7 +67,7 @@
 | 2.3 | Documentation notes `--no-verify` can bypass in exceptional cases | PASS | `docs/PRECOMMIT.md:167-173` -- documents `--no-verify` flag with code example |
 | 2.4 | Consistent with existing documentation style and formatting | PASS | Uses same heading hierarchy, code blocks, bold labels, and prose style as existing sections |
 
-### Proof Artifacts
+### Unit 2 Proof Artifacts
 
 | # | Artifact | Status | Evidence |
 |---|---|---|---|
@@ -103,11 +103,12 @@
 
 ### Test Script: `scripts/test-no-direct-commits-hook.sh`
 
-```
+```text
 Results: 11 passed, 0 failed
 ```
 
 All 11 checks passed:
+
 1. Hook entry found in .pre-commit-config.yaml
 2. Hook field 'id' = 'no-direct-commits-to-main'
 3. Hook field 'language' = 'system'
@@ -122,6 +123,6 @@ All 11 checks passed:
 
 ### Markdownlint
 
-```
+```text
 markdownlint.............................................................Passed
 ```
