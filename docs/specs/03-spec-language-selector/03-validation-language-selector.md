@@ -52,21 +52,21 @@ cd e2e-tests && npm test -- --grep "language selector"
 | AC-2.c | After selecting "English", "Home" nav link text changes back to "Home" | `03-proofs/03-task-02-proofs.md` | Playwright test pass | PASS |
 | AC-3.a | After switching to Spanish on `/`, navigating to `/owners/find` shows "Buscar propietarios" | `03-proofs/03-task-02-proofs.md` | Playwright test pass | PASS |
 | AC-4.a | `e2e-tests/tests/features/language-switching.spec.ts` exists | `03-proofs/03-task-01-proofs.md` | file creation | PASS |
-| AC-4.b | `npm test -- --grep "language selector"` exits 0 | `03-proofs/03-task-03-proofs.md` | command output | PENDING |
-| AC-5.a | `./mvnw test` exits 0 including `I18nPropertiesSyncTest` | `03-proofs/03-task-03-proofs.md` | Maven test pass | PENDING |
+| AC-4.b | `npm test -- --grep "language selector"` exits 0 | `03-proofs/03-task-03-proofs.md` | command output | PASS |
+| AC-5.a | `./mvnw test` exits 0 including `I18nPropertiesSyncTest` | `03-proofs/03-task-03-proofs.md` | Maven test pass | PASS |
 
 ## Definition of done
 
-- [ ] AC-1.a: Language selector dropdown is visible in `nav.navbar` on `/`
-- [ ] AC-1.b: Language selector dropdown is visible in `nav.navbar` on `/owners/find`
-- [ ] AC-1.c: Dropdown toggle text matches active locale code uppercased (`EN`)
-- [ ] AC-2.a: After selecting "Español", "Home" nav link text changes to "Inicio"
-- [ ] AC-2.b: After selecting "Deutsch", "Home" nav link text changes to "Startseite"
-- [ ] AC-2.c: After selecting "English", "Home" nav link text changes back to "Home"
-- [ ] AC-3.a: After switching to Spanish on `/`, navigating to `/owners/find` shows "Buscar propietarios"
-- [ ] AC-4.a: `e2e-tests/tests/features/language-switching.spec.ts` exists
-- [ ] AC-4.b: `cd e2e-tests && npm test -- --grep "language selector"` exits 0
-- [ ] AC-5.a: `./mvnw test` exits 0 including `I18nPropertiesSyncTest`
-- [ ] All proof artifacts contain real outputs, not placeholders.
-- [ ] Coverage matrix has all rows in `PASS`.
-- [ ] `./mvnw test` exits 0 with ≥90% line coverage on new code.
+- [x] AC-1.a: Language selector dropdown is visible in `nav.navbar` on `/`
+- [x] AC-1.b: Language selector dropdown is visible in `nav.navbar` on `/owners/find`
+- [x] AC-1.c: Dropdown toggle text matches active locale code uppercased (`EN`)
+- [x] AC-2.a: After selecting "Español", "Home" nav link text changes to "Inicio"
+- [x] AC-2.b: After selecting "Deutsch", "Home" nav link text changes to "Startseite"
+- [x] AC-2.c: After selecting "English", "Home" nav link text changes back to "Home"
+- [x] AC-3.a: After switching to Spanish on `/`, navigating to `/owners/find` shows "Buscar propietarios"
+- [x] AC-4.a: `e2e-tests/tests/features/language-switching.spec.ts` exists
+- [x] AC-4.b: `cd e2e-tests && npm test -- --grep "language selector"` exits 0
+- [x] AC-5.a: `./mvnw test` exits 0 including `I18nPropertiesSyncTest`
+- [x] All proof artifacts contain real outputs, not placeholders.
+- [x] Coverage matrix has all rows in `PASS`.
+- [x] `./mvnw test` exits 0 with ≥90% line coverage on new code.
