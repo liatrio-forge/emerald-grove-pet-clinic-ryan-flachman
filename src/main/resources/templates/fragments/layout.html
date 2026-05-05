@@ -65,6 +65,17 @@
             <span th:text="#{error}">Error</span>
           </li>
 
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button"
+               data-bs-toggle="dropdown" aria-expanded="false"
+               th:text="${#locale.language.toUpperCase()}">EN</a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" th:href="@{'?lang=en'}" th:text="'English'">English</a></li>
+              <li><a class="dropdown-item" th:href="@{'?lang=es'}" th:text="'Español'">Español</a></li>
+              <li><a class="dropdown-item" th:href="@{'?lang=de'}" th:text="'Deutsch'">Deutsch</a></li>
+            </ul>
+          </li>
+
         </ul>
       </div>
     </div>
