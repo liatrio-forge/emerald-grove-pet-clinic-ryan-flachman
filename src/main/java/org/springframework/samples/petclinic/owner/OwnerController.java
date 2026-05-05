@@ -94,6 +94,7 @@ class OwnerController {
 	@GetMapping("/owners")
 	public String processFindForm(@RequestParam(defaultValue = "1") int page, Owner owner, BindingResult result,
 			Model model) {
+		int safePage = Math.max(page, 1);
 		String lastName = nullIfBlank(owner.getLastName());
 		String telephone = nullIfBlank(owner.getTelephone());
 		String city = nullIfBlank(owner.getCity());
@@ -103,7 +104,7 @@ class OwnerController {
 			return "owners/findOwners";
 		}
 
-		Page<Owner> ownersResults = findPaginatedForOwners(page, lastName, telephone, city);
+		Page<Owner> ownersResults = findPaginatedForOwners(safePage, lastName, telephone, city);
 		if (ownersResults.isEmpty()) {
 			result.reject("notFound", "not found");
 			return "owners/findOwners";
@@ -114,7 +115,7 @@ class OwnerController {
 			return "redirect:/owners/" + owner.getId();
 		}
 
-		return addPaginationModel(page, model, ownersResults);
+		return addPaginationModel(safePage, model, ownersResults);
 	}
 
 	private static String nullIfBlank(String value) {
