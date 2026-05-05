@@ -44,13 +44,13 @@ cd e2e-tests && npm test -- --grep "language selector"
 
 | AC ID | Criterion | Proof artifact | Evidence type | Status |
 |-------|-----------|----------------|---------------|--------|
-| AC-1.a | Language selector dropdown is visible in `nav.navbar` on `/` | `03-proofs/03-task-02-proofs.md` | Playwright test pass | PENDING |
-| AC-1.b | Language selector dropdown is visible in `nav.navbar` on `/owners/find` | `03-proofs/03-task-02-proofs.md` | Playwright test pass | PENDING |
-| AC-1.c | Dropdown toggle text matches active locale code uppercased (`EN`) | `03-proofs/03-task-02-proofs.md` | Playwright test pass | PENDING |
-| AC-2.a | After selecting "Español", "Home" nav link text changes to "Inicio" | `03-proofs/03-task-02-proofs.md` | Playwright test pass | PENDING |
-| AC-2.b | After selecting "Deutsch", "Home" nav link text changes to "Startseite" | `03-proofs/03-task-02-proofs.md` | Playwright test pass | PENDING |
-| AC-2.c | After selecting "English", "Home" nav link text changes back to "Home" | `03-proofs/03-task-02-proofs.md` | Playwright test pass | PENDING |
-| AC-3.a | After switching to Spanish on `/`, navigating to `/owners/find` shows "Buscar propietarios" | `03-proofs/03-task-02-proofs.md` | Playwright test pass | PENDING |
+| AC-1.a | Language selector dropdown is visible in `nav.navbar` on `/` | `03-proofs/03-task-02-proofs.md` | Playwright test pass | PASS |
+| AC-1.b | Language selector dropdown is visible in `nav.navbar` on `/owners/find` | `03-proofs/03-task-02-proofs.md` | Playwright test pass | PASS |
+| AC-1.c | Dropdown toggle text matches active locale code uppercased (`EN`) | `03-proofs/03-task-02-proofs.md` | Playwright test pass | PASS |
+| AC-2.a | After selecting "Español", "Home" nav link text changes to "Inicio" | `03-proofs/03-task-02-proofs.md` | Playwright test pass | PASS |
+| AC-2.b | After selecting "Deutsch", "Home" nav link text changes to "Startseite" | `03-proofs/03-task-02-proofs.md` | Playwright test pass | PASS |
+| AC-2.c | After selecting "English", "Home" nav link text changes back to "Home" | `03-proofs/03-task-02-proofs.md` | Playwright test pass | PASS |
+| AC-3.a | After switching to Spanish on `/`, navigating to `/owners/find` shows "Buscar propietarios" | `03-proofs/03-task-02-proofs.md` | Playwright test pass | PASS |
 | AC-4.a | `e2e-tests/tests/features/language-switching.spec.ts` exists | `03-proofs/03-task-01-proofs.md` | file creation | PASS |
 | AC-4.b | `npm test -- --grep "language selector"` exits 0 | `03-proofs/03-task-03-proofs.md` | command output | PENDING |
 | AC-5.a | `./mvnw test` exits 0 including `I18nPropertiesSyncTest` | `03-proofs/03-task-03-proofs.md` | Maven test pass | PENDING |

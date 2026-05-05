@@ -5,6 +5,7 @@
 <suppressions>
 	<suppress files="node_modules[\\/].*" checks=".*"/>
 	<suppress files="node[\\/].*" checks=".*"/>
+	<suppress files="e2e-tests[\\/]test-results[\\/].*" checks=".*"/>
 	<suppress files="build[\\/].*" checks=".*"/>
 	<suppress files="target[\\/].*" checks=".*"/>
 	<suppress files=".+\.(jar|git|ico|p12|gif|jks|jpg|svg|log)" checks="NoHttp"/>
