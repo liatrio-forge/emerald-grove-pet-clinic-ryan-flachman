@@ -9,3 +9,4 @@ All SDD spec bundles for the Emerald Grove Veterinary Clinic project.
 | 02 | [no-direct-commits-to-main](02-spec-no-direct-commits-to-main/) | delivered | Pre-commit hook blocking direct commits to main |
 | 03 | [language-selector](03-spec-language-selector/) | delivered | Bootstrap language dropdown in global navbar |
 | 04 | [vet-specialty-filter](04-spec-vet-specialty-filter/) | delivered | Specialty filter pills on the vet directory page |
+| 05 | [owner-search-filters](05-spec-owner-search-filters/) | draft | Find Owners multi-field search by telephone and city |
