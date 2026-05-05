@@ -94,28 +94,36 @@ class OwnerController {
 	@GetMapping("/owners")
 	public String processFindForm(@RequestParam(defaultValue = "1") int page, Owner owner, BindingResult result,
 			Model model) {
-		// allow parameterless GET request for /owners to return all records
-		String lastName = owner.getLastName();
-		if (lastName == null) {
-			lastName = ""; // empty string signifies broadest possible search
+		int safePage = Math.max(page, 1);
+		String lastName = nullIfBlank(owner.getLastName());
+		String telephone = nullIfBlank(owner.getTelephone());
+		String city = nullIfBlank(owner.getCity());
+
+		if (telephone != null && !telephone.matches("\\d+")) {
+			result.rejectValue("telephone", "invalid", "Telephone must contain digits only");
+			return "owners/findOwners";
 		}
 
-		// find owners by last name
-		Page<Owner> ownersResults = findPaginatedForOwnersLastName(page, lastName);
+		Page<Owner> ownersResults = findPaginatedForOwners(safePage, lastName, telephone, city);
 		if (ownersResults.isEmpty()) {
-			// no owners found
-			result.rejectValue("lastName", "notFound", "not found");
+			result.reject("notFound", "not found");
 			return "owners/findOwners";
 		}
 
 		if (ownersResults.getTotalElements() == 1) {
-			// 1 owner found
 			owner = ownersResults.iterator().next();
 			return "redirect:/owners/" + owner.getId();
 		}
 
-		// multiple owners found
-		return addPaginationModel(page, model, ownersResults);
+		return addPaginationModel(safePage, model, ownersResults);
+	}
+
+	private static String nullIfBlank(String value) {
+		if (value == null) {
+			return null;
+		}
+		String trimmed = value.trim();
+		return trimmed.isEmpty() ? null : trimmed;
 	}
 
 	private String addPaginationModel(int page, Model model, Page<Owner> paginated) {
@@ -127,10 +135,10 @@ class OwnerController {
 		return "owners/ownersList";
 	}
 
-	private Page<Owner> findPaginatedForOwnersLastName(int page, String lastname) {
+	private Page<Owner> findPaginatedForOwners(int page, String lastName, String telephone, String city) {
 		int pageSize = 5;
 		Pageable pageable = PageRequest.of(page - 1, pageSize);
-		return owners.findByLastNameStartingWith(lastname, pageable);
+		return owners.findBySearchCriteria(lastName, telephone, city, pageable);
 	}
 
 	@GetMapping("/owners/{ownerId}/edit")

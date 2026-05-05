@@ -20,6 +20,8 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 /**
  * Repository class for <code>Owner</code> domain objects. All method names are compliant
@@ -43,6 +45,25 @@ public interface OwnerRepository extends JpaRepository<Owner, Integer> {
 	 * found)
 	 */
 	Page<Owner> findByLastNameStartingWith(String lastName, Pageable pageable);
+
+	/**
+	 * Retrieve {@link Owner}s from the data store by optional last name, telephone, and
+	 * city prefix criteria (AND logic). Null parameters are excluded from the filter.
+	 * @param lastName optional last-name prefix
+	 * @param telephone optional telephone prefix (digits only)
+	 * @param city optional city prefix
+	 * @return a paginated list of matching {@link Owner}s
+	 */
+	@Query(value = "SELECT DISTINCT o FROM Owner o WHERE "
+			+ "(:lastName IS NULL OR LOWER(o.lastName) LIKE LOWER(CONCAT(:lastName, '%'))) AND "
+			+ "(:telephone IS NULL OR o.telephone LIKE CONCAT(:telephone, '%')) AND "
+			+ "(:city IS NULL OR LOWER(o.city) LIKE LOWER(CONCAT(:city, '%')))",
+			countQuery = "SELECT COUNT(DISTINCT o) FROM Owner o WHERE "
+					+ "(:lastName IS NULL OR LOWER(o.lastName) LIKE LOWER(CONCAT(:lastName, '%'))) AND "
+					+ "(:telephone IS NULL OR o.telephone LIKE CONCAT(:telephone, '%')) AND "
+					+ "(:city IS NULL OR LOWER(o.city) LIKE LOWER(CONCAT(:city, '%')))")
+	Page<Owner> findBySearchCriteria(@Param("lastName") String lastName, @Param("telephone") String telephone,
+			@Param("city") String city, Pageable pageable);
 
 	/**
 	 * Retrieve an {@link Owner} from the data store by id.

@@ -74,4 +74,51 @@ test.describe('Owner Management', () => {
 
     await expect(page.getByRole('button', { name: /Add Owner/i })).toBeVisible();
   });
+
+  test('can find owner by telephone', async ({ page }, testInfo) => {
+    const ownerPage = new OwnerPage(page);
+    // Unique 7-digit prefix (starts with '9' to avoid seed data collision)
+    const phonePrefix = '9' + String(Date.now()).slice(-6);
+    const owner1 = createOwner({ telephone: phonePrefix + '001' });
+    const owner2 = createOwner({ telephone: phonePrefix + '002' });
+
+    for (const owner of [owner1, owner2]) {
+      await ownerPage.openFindOwners();
+      await ownerPage.clickAddOwner();
+      await ownerPage.fillOwnerForm(owner);
+      await ownerPage.submitOwnerForm();
+      await expect(page.getByRole('heading', { name: /Owner Information/i })).toBeVisible();
+    }
+
+    await ownerPage.openFindOwners();
+    await ownerPage.searchByFilters({ telephone: phonePrefix });
+
+    await expect(ownerPage.ownersTable()).toBeVisible();
+    await expect(ownerPage.ownersTable()).toContainText(`${owner1.firstName} ${owner1.lastName}`);
+
+    await page.screenshot({ path: testInfo.outputPath('telephone-search.png'), fullPage: true });
+  });
+
+  test('can find owner by city', async ({ page }, testInfo) => {
+    const ownerPage = new OwnerPage(page);
+    const uniqueCity = `City${Date.now()}`;
+    const owner1 = createOwner({ city: uniqueCity });
+    const owner2 = createOwner({ city: uniqueCity });
+
+    for (const owner of [owner1, owner2]) {
+      await ownerPage.openFindOwners();
+      await ownerPage.clickAddOwner();
+      await ownerPage.fillOwnerForm(owner);
+      await ownerPage.submitOwnerForm();
+      await expect(page.getByRole('heading', { name: /Owner Information/i })).toBeVisible();
+    }
+
+    await ownerPage.openFindOwners();
+    await ownerPage.searchByFilters({ city: uniqueCity });
+
+    await expect(ownerPage.ownersTable()).toBeVisible();
+    await expect(ownerPage.ownersTable()).toContainText(`${owner1.firstName} ${owner1.lastName}`);
+
+    await page.screenshot({ path: testInfo.outputPath('city-search.png'), fullPage: true });
+  });
 });
