@@ -34,15 +34,9 @@ export class OwnerPage extends BasePage {
   }
 
   async searchByFilters(filters: { lastName?: string; telephone?: string; city?: string }): Promise<void> {
-    if (filters.lastName !== undefined) {
-      await this.page.locator('input#lastName').fill(filters.lastName);
-    }
-    if (filters.telephone !== undefined) {
-      await this.page.locator('input#telephone').fill(filters.telephone);
-    }
-    if (filters.city !== undefined) {
-      await this.page.locator('input#city').fill(filters.city);
-    }
+    await this.page.locator('input#lastName').fill(filters.lastName ?? '');
+    await this.page.locator('input#telephone').fill(filters.telephone ?? '');
+    await this.page.locator('input#city').fill(filters.city ?? '');
     await this.page.getByRole('button', { name: /Find Owner/i }).click();
   }
 
