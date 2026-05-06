@@ -170,6 +170,12 @@ class PetControllerTests {
 	}
 
 	@Test
+	void testInitUpdatePetFormNotFound() throws Exception {
+		mockMvc.perform(get("/owners/{ownerId}/pets/{petId}/edit", TEST_OWNER_ID, 999))
+			.andExpect(status().isNotFound());
+	}
+
+	@Test
 	void testProcessUpdateFormSuccess() throws Exception {
 		mockMvc
 			.perform(post("/owners/{ownerId}/pets/{petId}/edit", TEST_OWNER_ID, TEST_PET_ID).param("name", "Betty")
