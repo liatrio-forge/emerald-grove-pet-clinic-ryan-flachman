@@ -15,7 +15,7 @@ public interface VisitRepository extends Repository<Visit, Integer> {
 			    p.name,
 			    o.firstName, o.lastName, o.id
 			)
-			FROM Pet p JOIN p.visits v JOIN p.owner o
+			FROM Owner o JOIN o.pets p JOIN p.visits v
 			WHERE v.date BETWEEN :start AND :end
 			ORDER BY v.date ASC
 			""")
