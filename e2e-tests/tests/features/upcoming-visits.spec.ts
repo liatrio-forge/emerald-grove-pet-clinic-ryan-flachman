@@ -13,7 +13,10 @@ test.describe('Upcoming Visits', () => {
     // Fill in a date within the next 7 days
     const futureDate = new Date();
     futureDate.setDate(futureDate.getDate() + 3);
-    const dateStr = futureDate.toISOString().split('T')[0]; // YYYY-MM-DD
+    const yyyy = futureDate.getFullYear();
+    const mm = String(futureDate.getMonth() + 1).padStart(2, '0');
+    const dd = String(futureDate.getDate()).padStart(2, '0');
+    const dateStr = `${yyyy}-${mm}-${dd}`; // local YYYY-MM-DD
     const description = 'E2E upcoming visit test ' + Date.now();
 
     await page.locator('input#date').fill(dateStr);
