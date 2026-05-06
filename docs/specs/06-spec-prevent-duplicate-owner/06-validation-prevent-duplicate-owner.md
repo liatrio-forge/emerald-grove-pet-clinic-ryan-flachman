@@ -78,22 +78,22 @@ cd e2e-tests && npm test -- --grep "Owner Management"
 | AC-5.b | Playwright test submits duplicate and asserts visible error, no redirect | `06-proofs/06-task-06-proofs.md` | Playwright screenshot | PASS |
 | AC-5.c | `npm test -- --grep "Owner Management"` exits 0 | `06-proofs/06-task-06-proofs.md` | command output | PASS |
 | AC-6.a | `./mvnw test` exits 0 | `06-proofs/06-task-06-proofs.md` | Maven test pass | PASS |
-| AC-6.b | JaCoCo ≥90% line coverage on `OwnerService` and `OwnerController` | `06-proofs/06-task-07-proofs.md` | JaCoCo coverage report | PENDING |
+| AC-6.b | JaCoCo ≥90% line coverage on `OwnerService` and `OwnerController` | `06-proofs/06-task-07-proofs.md` | JaCoCo coverage report | PASS |
 
 ## Definition of done
 
-- [ ] AC-1.a: `OwnerRepository` declares `existsByFirstNameIgnoreCaseAndLastNameIgnoreCaseAndTelephone`
-- [ ] AC-2.a: `testIsDuplicate_returnsTrueWhenMatchExists` passes
-- [ ] AC-2.b: `testIsDuplicate_returnsFalseWhenNoMatch` passes
-- [ ] AC-3.a: `testProcessCreationFormDuplicateRejected` returns HTTP 200, correct view, global error `"duplicate"`
-- [ ] AC-3.b: `owners.save()` never invoked when duplicate detected
-- [ ] AC-3.c: Existing `testProcessCreationFormSuccess` still passes with 3xx redirect
-- [ ] AC-4.a: `createOrUpdateOwnerForm.html` contains `th:if="${#fields.hasGlobalErrors()}"`
-- [ ] AC-5.a: `owner-management.spec.ts` contains `"blocks duplicate owner creation"`
-- [ ] AC-5.b: Playwright test asserts visible error and no redirect on duplicate submission
-- [ ] AC-5.c: `cd e2e-tests && npm test -- --grep "Owner Management"` exits 0
-- [ ] AC-6.a: `./mvnw test` exits 0
-- [ ] AC-6.b: JaCoCo ≥90% line coverage on `OwnerService` and `OwnerController`
-- [ ] All proof artifacts contain real outputs, not placeholders.
-- [ ] Coverage matrix has all rows in `PASS`.
-- [ ] `./mvnw test` exits 0 with ≥90% line coverage on new code.
+- [x] AC-1.a: `OwnerRepository` declares `existsByFirstNameIgnoreCaseAndLastNameIgnoreCaseAndTelephone`
+- [x] AC-2.a: `testIsDuplicate_returnsTrueWhenMatchExists` passes
+- [x] AC-2.b: `testIsDuplicate_returnsFalseWhenNoMatch` passes
+- [x] AC-3.a: `testProcessCreationFormDuplicateRejected` returns HTTP 200, correct view, global error `"duplicate"`
+- [x] AC-3.b: `owners.save()` never invoked when duplicate detected
+- [x] AC-3.c: Existing `testProcessCreationFormSuccess` still passes with 3xx redirect
+- [x] AC-4.a: `createOrUpdateOwnerForm.html` contains `th:if="${#fields.hasGlobalErrors()}"`
+- [x] AC-5.a: `owner-management.spec.ts` contains `"blocks duplicate owner creation"`
+- [x] AC-5.b: Playwright test asserts visible error and no redirect on duplicate submission
+- [x] AC-5.c: `cd e2e-tests && npm test -- --grep "Owner Management"` exits 0
+- [x] AC-6.a: `./mvnw test` exits 0
+- [x] AC-6.b: JaCoCo ≥90% line coverage on `OwnerService` and `OwnerController`
+- [x] All proof artifacts contain real outputs, not placeholders.
+- [x] Coverage matrix has all rows in `PASS`.
+- [x] `./mvnw test` exits 0 with ≥90% line coverage on new code.
