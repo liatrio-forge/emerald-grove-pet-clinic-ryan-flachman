@@ -123,7 +123,7 @@ Covers: AC-3.a, AC-3.b, AC-3.c, AC-4.a
   ```html
   <!DOCTYPE html>
   <html xmlns:th="https://www.thymeleaf.org"
-        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        xmlns:layout="https://www.ultraq.net.nz/thymeleaf/layout"
         layout:decorate="~{fragments/layout}">
   <head>
     <title>Page Not Found</title>

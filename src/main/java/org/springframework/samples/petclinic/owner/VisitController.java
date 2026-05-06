@@ -28,6 +28,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import jakarta.validation.Valid;
+
+import org.springframework.samples.petclinic.system.ResourceNotFoundException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
@@ -62,14 +64,12 @@ class VisitController {
 	@ModelAttribute("visit")
 	public Visit loadPetWithVisit(@PathVariable("ownerId") int ownerId, @PathVariable("petId") int petId,
 			Map<String, Object> model) {
-		Optional<Owner> optionalOwner = owners.findById(ownerId);
-		Owner owner = optionalOwner.orElseThrow(() -> new IllegalArgumentException(
-				"Owner not found with id: " + ownerId + ". Please ensure the ID is correct "));
+		Owner owner = owners.findById(ownerId)
+			.orElseThrow(() -> new ResourceNotFoundException("Owner not found with id: " + ownerId));
 
 		Pet pet = owner.getPet(petId);
 		if (pet == null) {
-			throw new IllegalArgumentException(
-					"Pet with id " + petId + " not found for owner with id " + ownerId + ".");
+			throw new ResourceNotFoundException("Pet not found with id: " + petId);
 		}
 		model.put("pet", pet);
 		model.put("owner", owner);

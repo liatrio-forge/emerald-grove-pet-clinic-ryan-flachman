@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.validation.Valid;
 
+import org.springframework.samples.petclinic.system.ResourceNotFoundException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
@@ -65,10 +66,8 @@ class PetController {
 
 	@ModelAttribute("owner")
 	public Owner findOwner(@PathVariable("ownerId") int ownerId) {
-		Optional<Owner> optionalOwner = this.owners.findById(ownerId);
-		Owner owner = optionalOwner.orElseThrow(() -> new IllegalArgumentException(
-				"Owner not found with id: " + ownerId + ". Please ensure the ID is correct "));
-		return owner;
+		return this.owners.findById(ownerId)
+			.orElseThrow(() -> new ResourceNotFoundException("Owner not found with id: " + ownerId));
 	}
 
 	@ModelAttribute("pet")
@@ -79,10 +78,13 @@ class PetController {
 			return new Pet();
 		}
 
-		Optional<Owner> optionalOwner = this.owners.findById(ownerId);
-		Owner owner = optionalOwner.orElseThrow(() -> new IllegalArgumentException(
-				"Owner not found with id: " + ownerId + ". Please ensure the ID is correct "));
-		return owner.getPet(petId);
+		Owner owner = this.owners.findById(ownerId)
+			.orElseThrow(() -> new ResourceNotFoundException("Owner not found with id: " + ownerId));
+		Pet pet = owner.getPet(petId);
+		if (pet == null) {
+			throw new ResourceNotFoundException("Pet not found with id: " + petId);
+		}
+		return pet;
 	}
 
 	@InitBinder("owner")

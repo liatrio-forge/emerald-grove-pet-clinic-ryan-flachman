@@ -82,6 +82,11 @@ class VisitControllerTests {
 	}
 
 	@Test
+	void testInitNewVisitFormOwnerNotFound() throws Exception {
+		mockMvc.perform(get("/owners/{ownerId}/pets/{petId}/visits/new", 999, 1)).andExpect(status().isNotFound());
+	}
+
+	@Test
 	void testProcessNewVisitFormHasErrors() throws Exception {
 		mockMvc
 			.perform(post("/owners/{ownerId}/pets/{petId}/visits/new", TEST_OWNER_ID, TEST_PET_ID).param("name",

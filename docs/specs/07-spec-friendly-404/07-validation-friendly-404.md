@@ -103,19 +103,19 @@ cd e2e-tests && npm test -- --grep "Owner Management"
 
 | AC ID | Criterion | Proof artifact | Evidence type | Status |
 |-------|-----------|----------------|---------------|--------|
-| AC-1.a | `ResourceNotFoundException.java` exists in `system/` package | `07-proofs/07-task-03-proofs.md` | file creation | PENDING |
-| AC-1.b | Class carries `@ResponseStatus(HttpStatus.NOT_FOUND)` | `07-proofs/07-task-03-proofs.md` | file creation | PENDING |
-| AC-2.a | `OwnerController` references `ResourceNotFoundException` | `07-proofs/07-task-03-proofs.md` | file edit | PENDING |
-| AC-2.b | `PetController` references `ResourceNotFoundException` | `07-proofs/07-task-03-proofs.md` | file edit | PENDING |
-| AC-2.c | `VisitController` references `ResourceNotFoundException` | `07-proofs/07-task-03-proofs.md` | file edit | PENDING |
-| AC-2.d | No `IllegalArgumentException` thrown for missing resources in `owner/` package | `07-proofs/07-task-03-proofs.md` | command output | PENDING |
+| AC-1.a | `ResourceNotFoundException.java` exists in `system/` package | `07-proofs/07-task-03-proofs.md` | file creation | PASS |
+| AC-1.b | Class carries `@ResponseStatus(HttpStatus.NOT_FOUND)` | `07-proofs/07-task-03-proofs.md` | file creation | PASS |
+| AC-2.a | `OwnerController` references `ResourceNotFoundException` | `07-proofs/07-task-03-proofs.md` | file edit | PASS |
+| AC-2.b | `PetController` references `ResourceNotFoundException` | `07-proofs/07-task-03-proofs.md` | file edit | PASS |
+| AC-2.c | `VisitController` references `ResourceNotFoundException` | `07-proofs/07-task-03-proofs.md` | file edit | PASS |
+| AC-2.d | No `IllegalArgumentException` thrown for missing resources in `owner/` package | `07-proofs/07-task-03-proofs.md` | command output | PASS |
 | AC-3.a | `error/404.html` exists | `07-proofs/07-task-04-proofs.md` | file creation | PENDING |
 | AC-3.b | `error/404.html` contains a link to `/owners` | `07-proofs/07-task-04-proofs.md` | file creation | PENDING |
 | AC-3.c | `error/404.html` contains a not-found message | `07-proofs/07-task-04-proofs.md` | file creation | PENDING |
 | AC-4.a | `error.html` does not render `${message}` / `${error}` / `${exception}` | `07-proofs/07-task-04-proofs.md` | file edit | PENDING |
-| AC-5.a | `testShowOwnerNotFound` asserts `status().isNotFound()` and passes | `07-proofs/07-task-03-proofs.md` | Maven test pass | PENDING |
-| AC-6.a | `testInitUpdatePetFormNotFound` asserts `status().isNotFound()` and passes | `07-proofs/07-task-03-proofs.md` | Maven test pass | PENDING |
-| AC-7.a | `testInitNewVisitFormOwnerNotFound` asserts `status().isNotFound()` and passes | `07-proofs/07-task-03-proofs.md` | Maven test pass | PENDING |
+| AC-5.a | `testShowOwnerNotFound` asserts `status().isNotFound()` and passes | `07-proofs/07-task-03-proofs.md` | Maven test pass | PASS |
+| AC-6.a | `testInitUpdatePetFormNotFound` asserts `status().isNotFound()` and passes | `07-proofs/07-task-03-proofs.md` | Maven test pass | PASS |
+| AC-7.a | `testInitNewVisitFormOwnerNotFound` asserts `status().isNotFound()` and passes | `07-proofs/07-task-03-proofs.md` | Maven test pass | PASS |
 | AC-8.a | Playwright test navigates to `/owners/99999` and asserts not-found message | `07-proofs/07-task-05-proofs.md` | Playwright screenshot | PENDING |
 | AC-8.b | Playwright test asserts Find Owners link is visible on 404 page | `07-proofs/07-task-05-proofs.md` | Playwright screenshot | PENDING |
 | AC-8.c | `npm test -- --grep "Owner Management"` exits 0 | `07-proofs/07-task-05-proofs.md` | command output | PENDING |
