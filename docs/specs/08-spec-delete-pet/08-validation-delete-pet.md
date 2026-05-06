@@ -109,11 +109,11 @@ cd e2e-tests && npm test -- --grep "Pet Management"
 
 | AC ID | Criterion | Proof artifact | Evidence type | Status |
 |-------|-----------|----------------|---------------|--------|
-| AC-1.a | `data-pet-name` attribute on delete trigger in `ownerDetails.html` | `08-proofs/08-task-03-proofs.md` | command output | PENDING |
-| AC-1.b | `data-visit-count` attribute on delete trigger in `ownerDetails.html` | `08-proofs/08-task-03-proofs.md` | command output | PENDING |
-| AC-2.a | Modal element with `deletePetModal` id in `ownerDetails.html` | `08-proofs/08-task-03-proofs.md` | command output | PENDING |
-| AC-2.b | Confirm button with "Delete anyway" variant in `ownerDetails.html` | `08-proofs/08-task-03-proofs.md` | command output | PENDING |
-| AC-2.c | Hidden delete form with `/delete` action in `ownerDetails.html` | `08-proofs/08-task-03-proofs.md` | command output | PENDING |
+| AC-1.a | `data-pet-name` attribute on delete trigger in `ownerDetails.html` | `08-proofs/08-task-03-proofs.md` | command output | PASS |
+| AC-1.b | `data-visit-count` attribute on delete trigger in `ownerDetails.html` | `08-proofs/08-task-03-proofs.md` | command output | PASS |
+| AC-2.a | Modal element with `deletePetModal` id in `ownerDetails.html` | `08-proofs/08-task-03-proofs.md` | command output | PASS |
+| AC-2.b | Confirm button with "Delete anyway" variant in `ownerDetails.html` | `08-proofs/08-task-03-proofs.md` | command output | PASS |
+| AC-2.c | Hidden delete form with `/delete` action in `ownerDetails.html` | `08-proofs/08-task-03-proofs.md` | command output | PASS |
 | AC-3.a | `@PostMapping` for `/pets/{petId}/delete` in `PetController.java` | `08-proofs/08-task-02-proofs.md` | file edit | PASS |
 | AC-4.a | `orphanRemoval = true` on `Owner.pets` `@OneToMany` | `08-proofs/08-task-02-proofs.md` | file edit | PASS |
 | AC-4.b | `testDeletePetSuccess` asserts `status().is3xxRedirection()` and passes | `08-proofs/08-task-02-proofs.md` | Maven test pass | PASS |

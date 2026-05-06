@@ -71,12 +71,71 @@
           <tr>
             <td><a th:href="@{__${owner.id}__/pets/__${pet.id}__/edit}" th:text="#{editPet}">Edit Pet</a></td>
             <td><a th:href="@{__${owner.id}__/pets/__${pet.id}__/visits/new}" th:text="#{addVisit}">Add Visit</a></td>
+            <td>
+              <a href="#"
+                 class="delete-pet-trigger"
+                 th:data-pet-id="${pet.id}"
+                 th:data-owner-id="${owner.id}"
+                 th:data-pet-name="${pet.name}"
+                 th:data-visit-count="${pet.visits.size()}"
+                 th:text="#{deletePet}">Delete</a>
+            </td>
           </tr>
         </table>
       </td>
     </tr>
 
   </table>
+
+  <!-- Delete Pet Modal -->
+  <div id="deletePetModal" style="display:none; position:fixed; top:0; left:0;
+       width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000;">
+    <div style="background:#fff; margin:15% auto; padding:2rem; max-width:420px;
+         border-radius:4px;">
+      <h4><span th:text="#{deletePet}">Delete</span> <span id="modalPetName"></span>?</h4>
+      <p id="modalVisitWarning" style="display:none; color:#dc3545;"></p>
+      <p th:text="#{delete.cannotUndo}">This cannot be undone.</p>
+      <form id="deleteForm" method="post" action="">
+        <button type="button"
+                onclick="document.getElementById('deletePetModal').style.display='none'">
+          Cancel
+        </button>
+        <button type="submit" id="confirmDeleteBtn" th:text="#{deletePet}">Delete</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.querySelectorAll('.delete-pet-trigger').forEach(function(trigger) {
+      trigger.addEventListener('click', function(e) {
+        e.preventDefault();
+        var petName    = this.dataset.petName;
+        var visitCount = parseInt(this.dataset.visitCount, 10);
+        var ownerId    = this.dataset.ownerId;
+        var petId      = this.dataset.petId;
+
+        document.getElementById('modalPetName').textContent = petName;
+
+        var warningEl  = document.getElementById('modalVisitWarning');
+        var confirmBtn = document.getElementById('confirmDeleteBtn');
+        if (visitCount > 0) {
+          warningEl.textContent =
+            'This will also permanently delete ' + visitCount + ' visit record(s).';
+          warningEl.style.display = 'block';
+          confirmBtn.textContent  = 'Delete anyway';
+        } else {
+          warningEl.style.display = 'none';
+          confirmBtn.textContent  = 'Delete';
+        }
+
+        document.getElementById('deleteForm').action =
+          '/owners/' + ownerId + '/pets/' + petId + '/delete';
+
+        document.getElementById('deletePetModal').style.display = 'block';
+      });
+    });
+  </script>
+
   <script>
     // Function to hide the success and error messages after 3 seconds
     function hideMessages() {
