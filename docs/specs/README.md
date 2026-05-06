@@ -13,3 +13,4 @@ All SDD spec bundles for the Emerald Grove Veterinary Clinic project.
 | 06 | [prevent-duplicate-owner](06-spec-prevent-duplicate-owner/) | accepted | Block duplicate owner creation via firstName + lastName + telephone check |
 | 07 | [friendly-404](07-spec-friendly-404/) | accepted | Friendly 404 page for missing owner, pet, and visit resources |
 | 08 | [delete-pet](08-spec-delete-pet/) | delivered | Delete a pet from owner with confirmation modal and cascade visit removal |
+| 09 | [upcoming-visits](09-spec-upcoming-visits/) | accepted | Read-only page listing all visits within the next N days |
