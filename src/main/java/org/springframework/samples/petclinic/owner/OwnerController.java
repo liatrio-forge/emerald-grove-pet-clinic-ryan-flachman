@@ -52,8 +52,11 @@ class OwnerController {
 
 	private final OwnerRepository owners;
 
-	public OwnerController(OwnerRepository owners) {
+	private final OwnerService ownerService;
+
+	public OwnerController(OwnerRepository owners, OwnerService ownerService) {
 		this.owners = owners;
+		this.ownerService = ownerService;
 	}
 
 	@InitBinder
@@ -78,6 +81,11 @@ class OwnerController {
 	public String processCreationForm(@Valid Owner owner, BindingResult result, RedirectAttributes redirectAttributes) {
 		if (result.hasErrors()) {
 			redirectAttributes.addFlashAttribute("error", "There was an error in creating the owner.");
+			return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
+		}
+
+		if (ownerService.isDuplicate(owner.getFirstName(), owner.getLastName(), owner.getTelephone())) {
+			result.reject("duplicate", "An owner with this name and telephone already exists.");
 			return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
 		}
 

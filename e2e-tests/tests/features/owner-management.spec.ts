@@ -121,4 +121,31 @@ test.describe('Owner Management', () => {
 
     await page.screenshot({ path: testInfo.outputPath('city-search.png'), fullPage: true });
   });
+
+  test('blocks duplicate owner creation', async ({ page }, testInfo) => {
+    const ownerPage = new OwnerPage(page);
+    const owner = createOwner();
+
+    await ownerPage.openFindOwners();
+    await ownerPage.clickAddOwner();
+    await ownerPage.fillOwnerForm(owner);
+    await ownerPage.submitOwnerForm();
+
+    await expect(page.getByRole('heading', { name: /Owner Information/i })).toBeVisible();
+
+    await page.goto('/owners/new');
+    await ownerPage.fillOwnerForm({
+      firstName: owner.firstName,
+      lastName: owner.lastName,
+      address: owner.address,
+      city: owner.city,
+      telephone: owner.telephone,
+    });
+    await ownerPage.submitOwnerForm();
+
+    await expect(page).not.toHaveURL(/\/owners\/\d+/);
+    await expect(page.getByText(/already in use/i)).toBeVisible();
+
+    await page.screenshot({ path: testInfo.outputPath('duplicate-owner-error.png') });
+  });
 });

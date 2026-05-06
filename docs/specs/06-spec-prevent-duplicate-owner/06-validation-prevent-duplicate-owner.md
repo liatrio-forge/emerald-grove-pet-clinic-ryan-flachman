@@ -67,17 +67,17 @@ cd e2e-tests && npm test -- --grep "Owner Management"
 
 | AC ID | Criterion | Proof artifact | Evidence type | Status |
 |-------|-----------|----------------|---------------|--------|
-| AC-1.a | `OwnerRepository` declares `existsByFirstNameIgnoreCaseAndLastNameIgnoreCaseAndTelephone` | `06-proofs/06-task-01-proofs.md` | file creation | PENDING |
-| AC-2.a | `testIsDuplicate_returnsTrueWhenMatchExists` passes | `06-proofs/06-task-04-proofs.md` | Maven test pass | PENDING |
-| AC-2.b | `testIsDuplicate_returnsFalseWhenNoMatch` passes | `06-proofs/06-task-04-proofs.md` | Maven test pass | PENDING |
-| AC-3.a | `testProcessCreationFormDuplicateRejected`: HTTP 200, view `createOrUpdateOwnerForm`, global error code `"duplicate"` | `06-proofs/06-task-05-proofs.md` | Maven test pass | PENDING |
-| AC-3.b | `testProcessCreationFormDuplicateRejected`: `owners.save()` never invoked | `06-proofs/06-task-05-proofs.md` | Maven test pass | PENDING |
-| AC-3.c | Existing `testProcessCreationFormSuccess` still returns 3xx redirect | `06-proofs/06-task-05-proofs.md` | Maven test pass | PENDING |
-| AC-4.a | `createOrUpdateOwnerForm.html` contains `th:if="${#fields.hasGlobalErrors()}"` | `06-proofs/06-task-06-proofs.md` | file edit | PENDING |
-| AC-5.a | `owner-management.spec.ts` contains `"blocks duplicate owner creation"` | `06-proofs/06-task-03-proofs.md` | file creation | PENDING |
-| AC-5.b | Playwright test submits duplicate and asserts visible error, no redirect | `06-proofs/06-task-06-proofs.md` | Playwright screenshot | PENDING |
-| AC-5.c | `npm test -- --grep "Owner Management"` exits 0 | `06-proofs/06-task-07-proofs.md` | command output | PENDING |
-| AC-6.a | `./mvnw test` exits 0 | `06-proofs/06-task-07-proofs.md` | Maven test pass | PENDING |
+| AC-1.a | `OwnerRepository` declares `existsByFirstNameIgnoreCaseAndLastNameIgnoreCaseAndTelephone` | `06-proofs/06-task-01-proofs.md` | file creation | PASS |
+| AC-2.a | `testIsDuplicate_returnsTrueWhenMatchExists` passes | `06-proofs/06-task-04-proofs.md` | Maven test pass | PASS |
+| AC-2.b | `testIsDuplicate_returnsFalseWhenNoMatch` passes | `06-proofs/06-task-04-proofs.md` | Maven test pass | PASS |
+| AC-3.a | `testProcessCreationFormDuplicateRejected`: HTTP 200, view `createOrUpdateOwnerForm`, global error code `"duplicate"` | `06-proofs/06-task-05-proofs.md` | Maven test pass | PASS |
+| AC-3.b | `testProcessCreationFormDuplicateRejected`: `owners.save()` never invoked | `06-proofs/06-task-05-proofs.md` | Maven test pass | PASS |
+| AC-3.c | Existing `testProcessCreationFormSuccess` still returns 3xx redirect | `06-proofs/06-task-05-proofs.md` | Maven test pass | PASS |
+| AC-4.a | `createOrUpdateOwnerForm.html` contains `th:if="${#fields.hasGlobalErrors()}"` | `06-proofs/06-task-06-proofs.md` | file edit | PASS |
+| AC-5.a | `owner-management.spec.ts` contains `"blocks duplicate owner creation"` | `06-proofs/06-task-03-proofs.md` | file creation | PASS |
+| AC-5.b | Playwright test submits duplicate and asserts visible error, no redirect | `06-proofs/06-task-06-proofs.md` | Playwright screenshot | PASS |
+| AC-5.c | `npm test -- --grep "Owner Management"` exits 0 | `06-proofs/06-task-06-proofs.md` | command output | PASS |
+| AC-6.a | `./mvnw test` exits 0 | `06-proofs/06-task-06-proofs.md` | Maven test pass | PASS |
 | AC-6.b | JaCoCo ≥90% line coverage on `OwnerService` and `OwnerController` | `06-proofs/06-task-07-proofs.md` | JaCoCo coverage report | PENDING |
 
 ## Definition of done
