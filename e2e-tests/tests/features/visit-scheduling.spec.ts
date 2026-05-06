@@ -2,6 +2,13 @@ import { test, expect } from '@fixtures/base-test';
 
 import { VisitPage } from '@pages/visit-page';
 
+const formatLocalDate = (d: Date) => {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 test.describe('Visit Scheduling', () => {
   test('can schedule a visit for an existing pet', async ({ page }, testInfo) => {
     const visitPage = new VisitPage(page);
@@ -27,7 +34,9 @@ test.describe('Visit Scheduling', () => {
 
     await expect(visitPage.heading()).toBeVisible();
 
-    const visitDate = '2024-02-02';
+    const futureDate = new Date();
+    futureDate.setFullYear(futureDate.getFullYear() + 1);
+    const visitDate = formatLocalDate(futureDate);
     const description = `E2E visit ${Date.now()}`;
     await visitPage.fillVisitDate(visitDate);
     await visitPage.fillDescription(description);
@@ -45,6 +54,28 @@ test.describe('Visit Scheduling', () => {
 
     const visitRow = petVisitsTable.locator('tr').filter({ hasText: visitDate }).filter({ hasText: description });
     await expect(visitRow).toHaveCount(1);
+  });
+
+  test('rejects past date with validation message', async ({ page }, testInfo) => {
+    const visitPage = new VisitPage(page);
+    await page.goto('/owners/1');
+    await expect(page.getByRole('heading', { name: /Owner Information/i })).toBeVisible();
+
+    await page.getByRole('link', { name: /^Add Visit$/i }).first().click();
+    await expect(visitPage.heading()).toBeVisible();
+
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const pastDate = formatLocalDate(yesterday);
+    await visitPage.fillVisitDate(pastDate);
+    await visitPage.fillDescription('past date test');
+
+    await visitPage.submit();
+
+    await expect(page).toHaveURL(/visits\/new/);
+    await expect(page.getByText(/must be today or in the future/i)).toBeVisible();
+
+    await page.screenshot({ path: testInfo.outputPath('past-date-validation-error.png'), fullPage: true });
   });
 
   test('validates visit description is required', async ({ page }) => {
