@@ -99,26 +99,26 @@ cd e2e-tests && npm test -- --grep "Upcoming Visits"
 | AC-8.a | E2E test creates visit and asserts row visible on `/visits/upcoming` | `09-proofs/09-task-05-proofs.md` | Playwright screenshot | PASS |
 | AC-8.b | E2E test captures screenshot of populated table | `09-proofs/09-task-05-proofs.md` | Playwright screenshot | PASS |
 | AC-8.c | `npm test -- --grep "Upcoming Visits"` exits 0 | `09-proofs/09-task-05-proofs.md` | command output | PASS |
-| AC-9.a | `./mvnw test` exits 0 | `09-proofs/09-task-06-proofs.md` | Maven test pass | PENDING |
-| AC-9.b | JaCoCo ≥90% line coverage on `UpcomingVisitsController` and `VisitRepository` | `09-proofs/09-task-06-proofs.md` | JaCoCo coverage report | PENDING |
+| AC-9.a | `./mvnw test` exits 0 | `09-proofs/09-task-06-proofs.md` | Maven test pass | PASS |
+| AC-9.b | JaCoCo ≥90% line coverage on `UpcomingVisitsController` and `VisitRepository` | `09-proofs/09-task-06-proofs.md` | JaCoCo coverage report | PASS |
 
 ## Definition of done
 
-- [ ] AC-1.a: `testShowUpcomingVisitsDefaultWindow` asserts HTTP 200 and view name `visits/upcomingVisits`
-- [ ] AC-2.a: `testShowUpcomingVisitsDefaultWindow` asserts 7-day window via ArgumentCaptor
-- [ ] AC-3.a: `testShowUpcomingVisitsCustomDays` asserts 3-day window via ArgumentCaptor
-- [ ] AC-4.a: `VisitRepository.java` exists at the expected path
-- [ ] AC-4.b: `@Query` with JPQL expression present in `VisitRepository.java`
-- [ ] AC-5.a: Owner name fields referenced in `upcomingVisits.html`
-- [ ] AC-5.b: Pet name, date, and description referenced in `upcomingVisits.html`
-- [ ] AC-5.c: Empty-state element present in `upcomingVisits.html`
-- [ ] AC-6.a: Nav link referencing `/visits/upcoming` present in `layout.html`
-- [ ] AC-7.a: `upcomingVisits` i18n key present in all 9 language files (≥9 grep matches)
-- [ ] AC-8.a: E2E test creates visit and asserts row visible on `/visits/upcoming`
-- [ ] AC-8.b: E2E test captures screenshot of populated upcoming-visits table
-- [ ] AC-8.c: `npm test -- --grep "Upcoming Visits"` exits 0
-- [ ] AC-9.a: `./mvnw test` exits 0
-- [ ] AC-9.b: JaCoCo ≥90% line coverage on new controller and repository code
-- [ ] All proof artifacts contain real outputs, not placeholders.
-- [ ] Coverage matrix has all rows in `PASS`.
-- [ ] `./mvnw test` exits 0 with ≥90% line coverage on new code.
+- [x] AC-1.a: `testShowUpcomingVisitsDefaultWindow` asserts HTTP 200 and view name `visits/upcomingVisits`
+- [x] AC-2.a: `testShowUpcomingVisitsDefaultWindow` asserts 7-day window via ArgumentCaptor
+- [x] AC-3.a: `testShowUpcomingVisitsCustomDays` asserts 3-day window via ArgumentCaptor
+- [x] AC-4.a: `VisitRepository.java` exists at the expected path
+- [x] AC-4.b: `@Query` with JPQL expression present in `VisitRepository.java`
+- [x] AC-5.a: Owner name fields referenced in `upcomingVisits.html`
+- [x] AC-5.b: Pet name, date, and description referenced in `upcomingVisits.html`
+- [x] AC-5.c: Empty-state element present in `upcomingVisits.html`
+- [x] AC-6.a: Nav link referencing `/visits/upcoming` present in `layout.html`
+- [x] AC-7.a: `upcomingVisits` i18n key present in all 9 language files (≥9 grep matches)
+- [x] AC-8.a: E2E test creates visit and asserts row visible on `/visits/upcoming`
+- [x] AC-8.b: E2E test captures screenshot of populated upcoming-visits table
+- [x] AC-8.c: `npm test -- --grep "Upcoming Visits"` exits 0
+- [x] AC-9.a: `./mvnw test` exits 0
+- [x] AC-9.b: JaCoCo ≥90% line coverage on new controller and repository code
+- [x] All proof artifacts contain real outputs, not placeholders.
+- [x] Coverage matrix has all rows in `PASS`.
+- [x] `./mvnw test` exits 0 with ≥90% line coverage on new code.
