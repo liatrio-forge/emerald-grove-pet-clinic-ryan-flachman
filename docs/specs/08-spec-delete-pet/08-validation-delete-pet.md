@@ -114,14 +114,14 @@ cd e2e-tests && npm test -- --grep "Pet Management"
 | AC-2.a | Modal element with `deletePetModal` id in `ownerDetails.html` | `08-proofs/08-task-03-proofs.md` | command output | PENDING |
 | AC-2.b | Confirm button with "Delete anyway" variant in `ownerDetails.html` | `08-proofs/08-task-03-proofs.md` | command output | PENDING |
 | AC-2.c | Hidden delete form with `/delete` action in `ownerDetails.html` | `08-proofs/08-task-03-proofs.md` | command output | PENDING |
-| AC-3.a | `@PostMapping` for `/pets/{petId}/delete` in `PetController.java` | `08-proofs/08-task-02-proofs.md` | file edit | PENDING |
-| AC-4.a | `orphanRemoval = true` on `Owner.pets` `@OneToMany` | `08-proofs/08-task-02-proofs.md` | file edit | PENDING |
-| AC-4.b | `testDeletePetSuccess` asserts `status().is3xxRedirection()` and passes | `08-proofs/08-task-02-proofs.md` | Maven test pass | PENDING |
-| AC-4.c | `testDeletePetWithVisitsCascade` asserts `status().is3xxRedirection()` and passes | `08-proofs/08-task-02-proofs.md` | Maven test pass | PENDING |
-| AC-5.a | `testDeletePetOwnerNotFound` asserts `status().isNotFound()` and passes | `08-proofs/08-task-02-proofs.md` | Maven test pass | PENDING |
-| AC-6.a | `testDeletePetNotFound` asserts `status().isNotFound()` and passes | `08-proofs/08-task-02-proofs.md` | Maven test pass | PENDING |
-| AC-7.a | `testDeletePetSuccess` asserts redirect to `/owners/*` | `08-proofs/08-task-02-proofs.md` | Maven test pass | PENDING |
-| AC-7.b | `"Pet has been deleted"` flash attribute set in `PetController.java` | `08-proofs/08-task-02-proofs.md` | file edit | PENDING |
+| AC-3.a | `@PostMapping` for `/pets/{petId}/delete` in `PetController.java` | `08-proofs/08-task-02-proofs.md` | file edit | PASS |
+| AC-4.a | `orphanRemoval = true` on `Owner.pets` `@OneToMany` | `08-proofs/08-task-02-proofs.md` | file edit | PASS |
+| AC-4.b | `testDeletePetSuccess` asserts `status().is3xxRedirection()` and passes | `08-proofs/08-task-02-proofs.md` | Maven test pass | PASS |
+| AC-4.c | `testDeletePetWithVisitsCascade` asserts `status().is3xxRedirection()` and passes | `08-proofs/08-task-02-proofs.md` | Maven test pass | PASS |
+| AC-5.a | `testDeletePetOwnerNotFound` asserts `status().isNotFound()` and passes | `08-proofs/08-task-02-proofs.md` | Maven test pass | PASS |
+| AC-6.a | `testDeletePetNotFound` asserts `status().isNotFound()` and passes | `08-proofs/08-task-02-proofs.md` | Maven test pass | PASS |
+| AC-7.a | `testDeletePetSuccess` asserts redirect to `/owners/*` | `08-proofs/08-task-02-proofs.md` | Maven test pass | PASS |
+| AC-7.b | `"Pet has been deleted"` flash attribute set in `PetController.java` | `08-proofs/08-task-02-proofs.md` | file edit | PASS |
 | AC-8.a | Playwright test creates and deletes pet (no visits), verifies removal | `08-proofs/08-task-04-proofs.md` | Playwright screenshot | PENDING |
 | AC-8.b | Screenshot of confirmation modal (no-visit variant) captured | `08-proofs/08-task-04-proofs.md` | Playwright screenshot | PENDING |
 | AC-8.c | `npm test -- --grep "Pet Management"` exits 0 | `08-proofs/08-task-04-proofs.md` | command output | PENDING |
