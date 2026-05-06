@@ -89,8 +89,8 @@ cd e2e-tests && npm test -- --grep "Upcoming Visits"
 | AC-1.a | `testShowUpcomingVisitsDefaultWindow` asserts HTTP 200 and view name `visits/upcomingVisits` | `09-proofs/09-task-03-proofs.md` | Maven test pass | PENDING |
 | AC-2.a | `testShowUpcomingVisitsDefaultWindow` asserts 7-day window via ArgumentCaptor | `09-proofs/09-task-03-proofs.md` | Maven test pass | PENDING |
 | AC-3.a | `testShowUpcomingVisitsCustomDays` asserts 3-day window via ArgumentCaptor | `09-proofs/09-task-03-proofs.md` | Maven test pass | PENDING |
-| AC-4.a | `VisitRepository.java` exists | `09-proofs/09-task-02-proofs.md` | file creation | PENDING |
-| AC-4.b | `@Query` with JPQL expression in `VisitRepository.java` | `09-proofs/09-task-02-proofs.md` | command output | PENDING |
+| AC-4.a | `VisitRepository.java` exists | `09-proofs/09-task-02-proofs.md` | file creation | PASS |
+| AC-4.b | `@Query` with JPQL expression in `VisitRepository.java` | `09-proofs/09-task-02-proofs.md` | command output | PASS |
 | AC-5.a | Owner name fields referenced in `upcomingVisits.html` | `09-proofs/09-task-03-proofs.md` | command output | PENDING |
 | AC-5.b | Pet name, date, description referenced in `upcomingVisits.html` | `09-proofs/09-task-03-proofs.md` | command output | PENDING |
 | AC-5.c | Empty-state element in `upcomingVisits.html` | `09-proofs/09-task-03-proofs.md` | command output | PENDING |
