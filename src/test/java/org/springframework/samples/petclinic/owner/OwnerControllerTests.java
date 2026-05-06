@@ -46,6 +46,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -70,6 +72,9 @@ class OwnerControllerTests {
 	@MockitoBean
 	private OwnerRepository owners;
 
+	@MockitoBean
+	private OwnerService ownerService;
+
 	private Owner george() {
 		Owner george = new Owner();
 		george.setId(TEST_OWNER_ID);
@@ -92,6 +97,8 @@ class OwnerControllerTests {
 	@BeforeEach
 	void setup() {
 		Owner george = george();
+
+		given(ownerService.isDuplicate(any(), any(), any())).willReturn(false);
 
 		// Safety net: prevents NPE if controller still routes through
 		// findByLastNameStartingWith
@@ -312,6 +319,29 @@ class OwnerControllerTests {
 			.andExpect(status().is3xxRedirection())
 			.andExpect(redirectedUrl("/owners/" + pathOwnerId + "/edit"))
 			.andExpect(flash().attributeExists("error"));
+	}
+
+	@Test
+	void testProcessCreationFormDuplicateRejected() throws Exception {
+		given(ownerService.isDuplicate(eq("Joe"), eq("Bloggs"), eq("1316761638"))).willReturn(true);
+
+		mockMvc
+			.perform(post("/owners/new").param("firstName", "Joe")
+				.param("lastName", "Bloggs")
+				.param("address", "123 Caramel Street")
+				.param("city", "London")
+				.param("telephone", "1316761638"))
+			.andExpect(status().isOk())
+			.andExpect(view().name("owners/createOrUpdateOwnerForm"))
+			.andExpect(result -> {
+				BindingResult bindingResult = (BindingResult) result.getModelAndView()
+					.getModel()
+					.get(BindingResult.MODEL_KEY_PREFIX + "owner");
+				assertThat(bindingResult.getGlobalErrors()).hasSize(1);
+				assertThat(bindingResult.getGlobalErrors().get(0).getCode()).isEqualTo("duplicate");
+			});
+
+		verify(owners, never()).save(any());
 	}
 
 }
