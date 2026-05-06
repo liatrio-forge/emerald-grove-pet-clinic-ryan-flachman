@@ -128,32 +128,32 @@ cd e2e-tests && npm test -- --grep "Pet Management"
 | AC-9.a | Playwright test creates pet, adds visit, deletes pet, verifies removal | `08-proofs/08-task-04-proofs.md` | Playwright screenshot | PASS |
 | AC-9.b | Screenshot of modal with visit-count warning captured | `08-proofs/08-task-04-proofs.md` | Playwright screenshot | PASS |
 | AC-9.c | `npm test -- --grep "Pet Management"` exits 0 (with-visit test passing) | `08-proofs/08-task-04-proofs.md` | command output | PASS |
-| AC-10.a | `./mvnw test` exits 0 | `08-proofs/08-task-05-proofs.md` | Maven test pass | PENDING |
-| AC-10.b | JaCoCo ≥90% line coverage on new handler and changed code | `08-proofs/08-task-05-proofs.md` | JaCoCo coverage report | PENDING |
+| AC-10.a | `./mvnw test` exits 0 | `08-proofs/08-task-05-proofs.md` | Maven test pass | PASS |
+| AC-10.b | JaCoCo ≥90% line coverage on new handler and changed code | `08-proofs/08-task-05-proofs.md` | JaCoCo coverage report | PASS |
 
 ## Definition of done
 
-- [ ] AC-1.a: `data-pet-name` attribute on delete trigger in `ownerDetails.html`
-- [ ] AC-1.b: `data-visit-count` attribute on delete trigger in `ownerDetails.html`
-- [ ] AC-2.a: Modal element with `deletePetModal` id in `ownerDetails.html`
-- [ ] AC-2.b: Confirm button with "Delete anyway" variant in `ownerDetails.html`
-- [ ] AC-2.c: Hidden delete form with `/delete` action in `ownerDetails.html`
-- [ ] AC-3.a: `@PostMapping` for `/pets/{petId}/delete` in `PetController.java`
-- [ ] AC-4.a: `orphanRemoval = true` on `Owner.pets` `@OneToMany`
-- [ ] AC-4.b: `testDeletePetSuccess` asserts `status().is3xxRedirection()` and passes
-- [ ] AC-4.c: `testDeletePetWithVisitsCascade` asserts `status().is3xxRedirection()` and passes
-- [ ] AC-5.a: `testDeletePetOwnerNotFound` asserts `status().isNotFound()` and passes
-- [ ] AC-6.a: `testDeletePetNotFound` asserts `status().isNotFound()` and passes
-- [ ] AC-7.a: `testDeletePetSuccess` asserts redirect to `/owners/*`
-- [ ] AC-7.b: `"Pet has been deleted"` flash attribute set in `PetController.java`
-- [ ] AC-8.a: Playwright test creates and deletes pet (no visits), verifies removal
-- [ ] AC-8.b: Screenshot of confirmation modal (no-visit variant) captured
-- [ ] AC-8.c: `npm test -- --grep "Pet Management"` exits 0
-- [ ] AC-9.a: Playwright test creates pet, adds visit, deletes pet, verifies removal
-- [ ] AC-9.b: Screenshot of modal with visit-count warning captured
-- [ ] AC-9.c: `npm test -- --grep "Pet Management"` exits 0 (with-visit test)
-- [ ] AC-10.a: `./mvnw test` exits 0
-- [ ] AC-10.b: JaCoCo ≥90% line coverage on new/changed code
-- [ ] All proof artifacts contain real outputs, not placeholders.
-- [ ] Coverage matrix has all rows in `PASS`.
-- [ ] `./mvnw test` exits 0 with ≥90% line coverage on new code.
+- [x] AC-1.a: `data-pet-name` attribute on delete trigger in `ownerDetails.html`
+- [x] AC-1.b: `data-visit-count` attribute on delete trigger in `ownerDetails.html`
+- [x] AC-2.a: Modal element with `deletePetModal` id in `ownerDetails.html`
+- [x] AC-2.b: Confirm button with "Delete anyway" variant in `ownerDetails.html`
+- [x] AC-2.c: Hidden delete form with `/delete` action in `ownerDetails.html`
+- [x] AC-3.a: `@PostMapping` for `/pets/{petId}/delete` in `PetController.java`
+- [x] AC-4.a: `orphanRemoval = true` on `Owner.pets` `@OneToMany`
+- [x] AC-4.b: `testDeletePetSuccess` asserts `status().is3xxRedirection()` and passes
+- [x] AC-4.c: `testDeletePetWithVisitsCascade` asserts `status().is3xxRedirection()` and passes
+- [x] AC-5.a: `testDeletePetOwnerNotFound` asserts `status().isNotFound()` and passes
+- [x] AC-6.a: `testDeletePetNotFound` asserts `status().isNotFound()` and passes
+- [x] AC-7.a: `testDeletePetSuccess` asserts redirect to `/owners/*`
+- [x] AC-7.b: `"Pet has been deleted"` flash attribute set in `PetController.java`
+- [x] AC-8.a: Playwright test creates and deletes pet (no visits), verifies removal
+- [x] AC-8.b: Screenshot of confirmation modal (no-visit variant) captured
+- [x] AC-8.c: `npm test -- --grep "Pet Management"` exits 0
+- [x] AC-9.a: Playwright test creates pet, adds visit, deletes pet, verifies removal
+- [x] AC-9.b: Screenshot of modal with visit-count warning captured
+- [x] AC-9.c: `npm test -- --grep "Pet Management"` exits 0 (with-visit test)
+- [x] AC-10.a: `./mvnw test` exits 0
+- [x] AC-10.b: JaCoCo ≥90% line coverage on new/changed code
+- [x] All proof artifacts contain real outputs, not placeholders.
+- [x] Coverage matrix has all rows in `PASS`.
+- [x] `./mvnw test` exits 0 with ≥90% line coverage on new code.
