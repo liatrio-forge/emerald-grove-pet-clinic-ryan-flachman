@@ -162,7 +162,7 @@ class PetController {
 	@PostMapping("/pets/{petId}/delete")
 	public String deletePet(@ModelAttribute Owner owner, @ModelAttribute Pet pet,
 			RedirectAttributes redirectAttributes) {
-		owner.getPets().remove(pet);
+		owner.getPets().removeIf(p -> p.getId().equals(pet.getId()));
 		this.owners.save(owner);
 		redirectAttributes.addFlashAttribute("message", "Pet has been deleted");
 		return "redirect:/owners/{ownerId}";

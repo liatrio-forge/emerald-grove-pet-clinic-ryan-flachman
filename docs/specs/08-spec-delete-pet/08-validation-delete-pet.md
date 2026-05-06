@@ -122,12 +122,12 @@ cd e2e-tests && npm test -- --grep "Pet Management"
 | AC-6.a | `testDeletePetNotFound` asserts `status().isNotFound()` and passes | `08-proofs/08-task-02-proofs.md` | Maven test pass | PASS |
 | AC-7.a | `testDeletePetSuccess` asserts redirect to `/owners/*` | `08-proofs/08-task-02-proofs.md` | Maven test pass | PASS |
 | AC-7.b | `"Pet has been deleted"` flash attribute set in `PetController.java` | `08-proofs/08-task-02-proofs.md` | file edit | PASS |
-| AC-8.a | Playwright test creates and deletes pet (no visits), verifies removal | `08-proofs/08-task-04-proofs.md` | Playwright screenshot | PENDING |
-| AC-8.b | Screenshot of confirmation modal (no-visit variant) captured | `08-proofs/08-task-04-proofs.md` | Playwright screenshot | PENDING |
-| AC-8.c | `npm test -- --grep "Pet Management"` exits 0 | `08-proofs/08-task-04-proofs.md` | command output | PENDING |
-| AC-9.a | Playwright test creates pet, adds visit, deletes pet, verifies removal | `08-proofs/08-task-04-proofs.md` | Playwright screenshot | PENDING |
-| AC-9.b | Screenshot of modal with visit-count warning captured | `08-proofs/08-task-04-proofs.md` | Playwright screenshot | PENDING |
-| AC-9.c | `npm test -- --grep "Pet Management"` exits 0 (with-visit test passing) | `08-proofs/08-task-04-proofs.md` | command output | PENDING |
+| AC-8.a | Playwright test creates and deletes pet (no visits), verifies removal | `08-proofs/08-task-04-proofs.md` | Playwright screenshot | PASS |
+| AC-8.b | Screenshot of confirmation modal (no-visit variant) captured | `08-proofs/08-task-04-proofs.md` | Playwright screenshot | PASS |
+| AC-8.c | `npm test -- --grep "Pet Management"` exits 0 | `08-proofs/08-task-04-proofs.md` | command output | PASS |
+| AC-9.a | Playwright test creates pet, adds visit, deletes pet, verifies removal | `08-proofs/08-task-04-proofs.md` | Playwright screenshot | PASS |
+| AC-9.b | Screenshot of modal with visit-count warning captured | `08-proofs/08-task-04-proofs.md` | Playwright screenshot | PASS |
+| AC-9.c | `npm test -- --grep "Pet Management"` exits 0 (with-visit test passing) | `08-proofs/08-task-04-proofs.md` | command output | PASS |
 | AC-10.a | `./mvnw test` exits 0 | `08-proofs/08-task-05-proofs.md` | Maven test pass | PENDING |
 | AC-10.b | JaCoCo ≥90% line coverage on new handler and changed code | `08-proofs/08-task-05-proofs.md` | JaCoCo coverage report | PENDING |
 
