@@ -2,6 +2,13 @@ import { test, expect } from '@fixtures/base-test';
 
 import { VisitPage } from '@pages/visit-page';
 
+const formatLocalDate = (d: Date) => {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 test.describe('Visit Scheduling', () => {
   test('can schedule a visit for an existing pet', async ({ page }, testInfo) => {
     const visitPage = new VisitPage(page);
@@ -29,7 +36,7 @@ test.describe('Visit Scheduling', () => {
 
     const futureDate = new Date();
     futureDate.setFullYear(futureDate.getFullYear() + 1);
-    const visitDate = futureDate.toISOString().split('T')[0];
+    const visitDate = formatLocalDate(futureDate);
     const description = `E2E visit ${Date.now()}`;
     await visitPage.fillVisitDate(visitDate);
     await visitPage.fillDescription(description);
@@ -57,8 +64,10 @@ test.describe('Visit Scheduling', () => {
     await page.getByRole('link', { name: /^Add Visit$/i }).first().click();
     await expect(visitPage.heading()).toBeVisible();
 
-    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
-    await visitPage.fillVisitDate(yesterday);
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const pastDate = formatLocalDate(yesterday);
+    await visitPage.fillVisitDate(pastDate);
     await visitPage.fillDescription('past date test');
 
     await visitPage.submit();
