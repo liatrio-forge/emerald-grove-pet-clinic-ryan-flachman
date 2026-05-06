@@ -71,12 +71,77 @@
           <tr>
             <td><a th:href="@{__${owner.id}__/pets/__${pet.id}__/edit}" th:text="#{editPet}">Edit Pet</a></td>
             <td><a th:href="@{__${owner.id}__/pets/__${pet.id}__/visits/new}" th:text="#{addVisit}">Add Visit</a></td>
+            <td>
+              <a href="#"
+                 data-bs-toggle="modal"
+                 data-bs-target="#deletePetModal"
+                 th:data-pet-id="${pet.id}"
+                 th:data-owner-id="${owner.id}"
+                 th:data-pet-name="${pet.name}"
+                 th:data-visit-count="${pet.visits.size()}"
+                 th:text="#{deletePet}">Delete</a>
+            </td>
           </tr>
         </table>
       </td>
     </tr>
 
   </table>
+
+  <!-- Delete Pet Modal -->
+  <div class="modal fade" id="deletePetModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            <span th:text="#{deletePet}">Delete</span> <span id="modalPetName"></span>?
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p id="modalVisitWarning" class="text-danger" style="display:none;"></p>
+          <p th:text="#{delete.cannotUndo}">This cannot be undone.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Cancel
+          </button>
+          <form id="deleteForm" method="post" action="">
+            <button type="submit" id="confirmDeleteBtn" class="btn btn-danger"
+                    th:text="#{deletePet}">Delete</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('deletePetModal').addEventListener('show.bs.modal', function(event) {
+      var trigger    = event.relatedTarget;
+      var petName    = trigger.dataset.petName;
+      var visitCount = parseInt(trigger.dataset.visitCount, 10);
+      var ownerId    = trigger.dataset.ownerId;
+      var petId      = trigger.dataset.petId;
+
+      document.getElementById('modalPetName').textContent = petName;
+
+      var warningEl  = document.getElementById('modalVisitWarning');
+      var confirmBtn = document.getElementById('confirmDeleteBtn');
+      if (visitCount > 0) {
+        warningEl.textContent =
+          'This will also permanently delete ' + visitCount + ' visit record(s).';
+        warningEl.style.display = 'block';
+        confirmBtn.textContent  = 'Delete anyway';
+      } else {
+        warningEl.style.display = 'none';
+        confirmBtn.textContent  = 'Delete';
+      }
+
+      document.getElementById('deleteForm').action =
+        '/owners/' + ownerId + '/pets/' + petId + '/delete';
+    });
+  </script>
+
   <script>
     // Function to hide the success and error messages after 3 seconds
     function hideMessages() {

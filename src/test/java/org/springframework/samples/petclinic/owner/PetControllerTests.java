@@ -36,6 +36,7 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
@@ -183,6 +184,30 @@ class PetControllerTests {
 				.param("birthDate", "2015-02-12"))
 			.andExpect(status().is3xxRedirection())
 			.andExpect(view().name("redirect:/owners/{ownerId}"));
+	}
+
+	@Test
+	void testDeletePetSuccess() throws Exception {
+		mockMvc.perform(post("/owners/{ownerId}/pets/{petId}/delete", TEST_OWNER_ID, 1))
+			.andExpect(status().is3xxRedirection())
+			.andExpect(redirectedUrlPattern("/owners/*"));
+	}
+
+	@Test
+	void testDeletePetWithVisitsCascade() throws Exception {
+		mockMvc.perform(post("/owners/{ownerId}/pets/{petId}/delete", TEST_OWNER_ID, 1))
+			.andExpect(status().is3xxRedirection());
+	}
+
+	@Test
+	void testDeletePetOwnerNotFound() throws Exception {
+		mockMvc.perform(post("/owners/{ownerId}/pets/{petId}/delete", 999, 1)).andExpect(status().isNotFound());
+	}
+
+	@Test
+	void testDeletePetNotFound() throws Exception {
+		mockMvc.perform(post("/owners/{ownerId}/pets/{petId}/delete", TEST_OWNER_ID, 999))
+			.andExpect(status().isNotFound());
 	}
 
 	@Nested

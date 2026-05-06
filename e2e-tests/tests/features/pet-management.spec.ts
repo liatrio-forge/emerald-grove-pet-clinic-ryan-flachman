@@ -61,4 +61,87 @@ test.describe('Pet Management', () => {
 
     await expect(page.getByText(/is required/i)).toHaveCount(2);
   });
+
+  test('can delete a pet with no visits', async ({ page }, testInfo) => {
+    const ownerPage = new OwnerPage(page);
+    const pet = createPet({ type: 'cat' });
+
+    await ownerPage.openFindOwners();
+    await ownerPage.searchByLastName('Davis');
+    await ownerPage.openOwnerDetailsByName('Betty Davis');
+
+    // Create pet
+    await page.getByRole('link', { name: /Add New Pet/i }).click();
+    await page.locator('input#name').fill(pet.name);
+    await page.locator('input#birthDate').fill(pet.birthDate);
+    await page.locator('select#type').selectOption({ label: pet.type });
+    await page.getByRole('button', { name: /Add Pet/i }).click();
+    await expect(page.getByText(pet.name, { exact: true })).toBeVisible();
+
+    // Delete pet — find the trigger in the pet's row
+    const petRow = page.locator('tr').filter({
+      has: page.locator('dd', { hasText: pet.name }),
+    });
+    await petRow.getByRole('link', { name: /Delete/i }).click();
+
+    // Modal should be visible with "Delete" button (not "Delete anyway")
+    await expect(page.locator('#deletePetModal')).toBeVisible();
+    await expect(page.locator('#confirmDeleteBtn')).toHaveText('Delete');
+    await page.screenshot({
+      path: testInfo.outputPath('delete-modal-no-visit.png'),
+    });
+
+    // Confirm deletion
+    await page.locator('#confirmDeleteBtn').click();
+
+    // Pet must no longer appear
+    await expect(page.getByRole('heading', { name: /Pets and Visits/i })).toBeVisible();
+    await expect(page.getByText(pet.name, { exact: true })).not.toBeVisible();
+  });
+
+  test('can delete a pet with visits and sees visit-count warning', async ({ page }, testInfo) => {
+    const ownerPage = new OwnerPage(page);
+    const pet = createPet({ type: 'dog' });
+
+    await ownerPage.openFindOwners();
+    await ownerPage.searchByLastName('Davis');
+    await ownerPage.openOwnerDetailsByName('Betty Davis');
+
+    // Create pet
+    await page.getByRole('link', { name: /Add New Pet/i }).click();
+    await page.locator('input#name').fill(pet.name);
+    await page.locator('input#birthDate').fill(pet.birthDate);
+    await page.locator('select#type').selectOption({ label: pet.type });
+    await page.getByRole('button', { name: /Add Pet/i }).click();
+    await expect(page.getByText(pet.name, { exact: true })).toBeVisible();
+
+    // Add a visit
+    const petRow = page.locator('tr').filter({
+      has: page.locator('dd', { hasText: pet.name }),
+    });
+    await petRow.getByRole('link', { name: /Add Visit/i }).first().click();
+    await page.locator('input#date').fill('2025-01-01');
+    await page.locator('input#description').fill('Wellness check');
+    await page.getByRole('button', { name: /Add Visit/i }).click();
+    await expect(page.getByRole('heading', { name: /Pets and Visits/i })).toBeVisible();
+
+    // Delete pet — modal should show visit-count warning
+    const petRowAfterVisit = page.locator('tr').filter({
+      has: page.locator('dd', { hasText: pet.name }),
+    });
+    await petRowAfterVisit.getByRole('link', { name: /Delete/i }).click();
+
+    await expect(page.locator('#deletePetModal')).toBeVisible();
+    await expect(page.locator('#modalVisitWarning')).toBeVisible();
+    await expect(page.locator('#confirmDeleteBtn')).toHaveText('Delete anyway');
+    await page.screenshot({
+      path: testInfo.outputPath('delete-modal-with-visit-warning.png'),
+    });
+
+    // Confirm deletion
+    await page.locator('#confirmDeleteBtn').click();
+
+    // Pet must no longer appear
+    await expect(page.getByText(pet.name, { exact: true })).not.toBeVisible();
+  });
 });
