@@ -15,6 +15,7 @@
  */
 package org.springframework.samples.petclinic.owner;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.util.UriUtils;
 
 import org.springframework.samples.petclinic.system.ResourceNotFoundException;
 
@@ -123,7 +125,7 @@ class OwnerController {
 			return "redirect:/owners/" + owner.getId();
 		}
 
-		return addPaginationModel(safePage, model, ownersResults);
+		return addPaginationModel(safePage, model, ownersResults, lastName, telephone, city);
 	}
 
 	private static String nullIfBlank(String value) {
@@ -134,12 +136,29 @@ class OwnerController {
 		return trimmed.isEmpty() ? null : trimmed;
 	}
 
-	private String addPaginationModel(int page, Model model, Page<Owner> paginated) {
+	private String addPaginationModel(int page, Model model, Page<Owner> paginated, String lastName, String telephone,
+			String city) {
 		List<Owner> listOwners = paginated.getContent();
 		model.addAttribute("currentPage", page);
 		model.addAttribute("totalPages", paginated.getTotalPages());
 		model.addAttribute("totalItems", paginated.getTotalElements());
 		model.addAttribute("listOwners", listOwners);
+		if (lastName != null)
+			model.addAttribute("filterLastName", lastName);
+		if (telephone != null)
+			model.addAttribute("filterTelephone", telephone);
+		if (city != null)
+			model.addAttribute("filterCity", city);
+		// Thymeleaf 3.1 includes null URL params as empty strings rather than omitting
+		// them, so we pre-build the encoded filter query string for pagination links.
+		StringBuilder filterQuery = new StringBuilder();
+		if (lastName != null)
+			filterQuery.append("&lastName=").append(UriUtils.encodeQueryParam(lastName, StandardCharsets.UTF_8));
+		if (telephone != null)
+			filterQuery.append("&telephone=").append(UriUtils.encodeQueryParam(telephone, StandardCharsets.UTF_8));
+		if (city != null)
+			filterQuery.append("&city=").append(UriUtils.encodeQueryParam(city, StandardCharsets.UTF_8));
+		model.addAttribute("filterQuery", filterQuery.toString());
 		return "owners/ownersList";
 	}
 
