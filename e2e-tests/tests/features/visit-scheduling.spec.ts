@@ -27,7 +27,9 @@ test.describe('Visit Scheduling', () => {
 
     await expect(visitPage.heading()).toBeVisible();
 
-    const visitDate = '2024-02-02';
+    const futureDate = new Date();
+    futureDate.setFullYear(futureDate.getFullYear() + 1);
+    const visitDate = futureDate.toISOString().split('T')[0];
     const description = `E2E visit ${Date.now()}`;
     await visitPage.fillVisitDate(visitDate);
     await visitPage.fillDescription(description);
@@ -45,6 +47,26 @@ test.describe('Visit Scheduling', () => {
 
     const visitRow = petVisitsTable.locator('tr').filter({ hasText: visitDate }).filter({ hasText: description });
     await expect(visitRow).toHaveCount(1);
+  });
+
+  test('rejects past date with validation message', async ({ page }, testInfo) => {
+    const visitPage = new VisitPage(page);
+    await page.goto('/owners/1');
+    await expect(page.getByRole('heading', { name: /Owner Information/i })).toBeVisible();
+
+    await page.getByRole('link', { name: /^Add Visit$/i }).first().click();
+    await expect(visitPage.heading()).toBeVisible();
+
+    const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+    await visitPage.fillVisitDate(yesterday);
+    await visitPage.fillDescription('past date test');
+
+    await visitPage.submit();
+
+    await expect(page).toHaveURL(/visits\/new/);
+    await expect(page.getByText(/must be today or in the future/i)).toBeVisible();
+
+    await page.screenshot({ path: testInfo.outputPath('past-date-validation-error.png'), fullPage: true });
   });
 
   test('validates visit description is required', async ({ page }) => {
