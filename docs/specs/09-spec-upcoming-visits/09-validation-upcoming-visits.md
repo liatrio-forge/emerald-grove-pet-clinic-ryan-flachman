@@ -94,8 +94,8 @@ cd e2e-tests && npm test -- --grep "Upcoming Visits"
 | AC-5.a | Owner name fields referenced in `upcomingVisits.html` | `09-proofs/09-task-03-proofs.md` | command output | PASS |
 | AC-5.b | Pet name, date, description referenced in `upcomingVisits.html` | `09-proofs/09-task-03-proofs.md` | command output | PASS |
 | AC-5.c | Empty-state element in `upcomingVisits.html` | `09-proofs/09-task-03-proofs.md` | command output | PASS |
-| AC-6.a | Nav link referencing `/visits/upcoming` in `layout.html` | `09-proofs/09-task-04-proofs.md` | command output | PENDING |
-| AC-7.a | `upcomingVisits` key present in all 9 language files | `09-proofs/09-task-04-proofs.md` | command output | PENDING |
+| AC-6.a | Nav link referencing `/visits/upcoming` in `layout.html` | `09-proofs/09-task-04-proofs.md` | command output | PASS |
+| AC-7.a | `upcomingVisits` key present in all 9 language files | `09-proofs/09-task-04-proofs.md` | command output | PASS |
 | AC-8.a | E2E test creates visit and asserts row visible on `/visits/upcoming` | `09-proofs/09-task-05-proofs.md` | Playwright screenshot | PENDING |
 | AC-8.b | E2E test captures screenshot of populated table | `09-proofs/09-task-05-proofs.md` | Playwright screenshot | PENDING |
 | AC-8.c | `npm test -- --grep "Upcoming Visits"` exits 0 | `09-proofs/09-task-05-proofs.md` | command output | PENDING |
