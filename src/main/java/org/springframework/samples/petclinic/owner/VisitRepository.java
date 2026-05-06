@@ -16,9 +16,10 @@ public interface VisitRepository extends Repository<Visit, Integer> {
 			    o.firstName, o.lastName, o.id
 			)
 			FROM Owner o JOIN o.pets p JOIN p.visits v
-			WHERE v.date BETWEEN :start AND :end
+			WHERE v.date >= :start AND v.date < :endExclusive
 			ORDER BY v.date ASC
 			""")
-	List<UpcomingVisitRow> findUpcomingVisits(@Param("start") LocalDate start, @Param("end") LocalDate end);
+	List<UpcomingVisitRow> findUpcomingVisits(@Param("start") LocalDate start,
+			@Param("endExclusive") LocalDate endExclusive);
 
 }

@@ -18,6 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -62,6 +63,20 @@ class UpcomingVisitsControllerTests {
 		ArgumentCaptor<LocalDate> endCaptor = ArgumentCaptor.forClass(LocalDate.class);
 		verify(visits).findUpcomingVisits(startCaptor.capture(), endCaptor.capture());
 		assertThat(ChronoUnit.DAYS.between(startCaptor.getValue(), endCaptor.getValue())).isEqualTo(3);
+	}
+
+	@Test
+	void testShowUpcomingVisitsDaysBelowMinReturnsBadRequest() throws Exception {
+		mockMvc.perform(get("/visits/upcoming").param("days", "0")).andExpect(status().isBadRequest());
+
+		verifyNoInteractions(visits);
+	}
+
+	@Test
+	void testShowUpcomingVisitsDaysAboveMaxReturnsBadRequest() throws Exception {
+		mockMvc.perform(get("/visits/upcoming").param("days", "31")).andExpect(status().isBadRequest());
+
+		verifyNoInteractions(visits);
 	}
 
 }
