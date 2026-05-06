@@ -59,37 +59,37 @@ find src/test -name "VisitValidatorTests.java"
 
 | AC ID | Criterion | Proof artifact | Evidence type | Status |
 |-------|-----------|----------------|---------------|--------|
-| AC-1.a | `VisitControllerTests.testProcessNewVisitFormPastDateRejected` asserts field error, 200, and form view | `10-proofs/10-task-03-proofs.md` | Maven test pass | PENDING |
-| AC-1.b | `VisitValidatorTests.shouldRejectPastDate` asserts error code `visit.date.pastNotAllowed` | `10-proofs/10-task-01-proofs.md` | Maven test pass | PENDING |
-| AC-2.a | `messages.properties` contains `visit.date.pastNotAllowed` | `10-proofs/10-task-04-proofs.md` | command output | PENDING |
-| AC-2.b | All 7 non-English locale files contain `visit.date.pastNotAllowed` (≥8 grep matches) | `10-proofs/10-task-04-proofs.md` | command output | PENDING |
-| AC-2.c | `I18nPropertiesSyncTest` exits 0 | `10-proofs/10-task-04-proofs.md` | Maven test pass | PENDING |
-| AC-2.d | Playwright `rejects past date` test exits 0 | `10-proofs/10-task-05-proofs.md` | Playwright screenshot | PENDING |
-| AC-3.a | `VisitValidatorTests.shouldAcceptToday` asserts no date field errors | `10-proofs/10-task-03-proofs.md` | Maven test pass | PENDING |
-| AC-3.b | `VisitValidatorTests.shouldAcceptFutureDate` asserts no date field errors | `10-proofs/10-task-03-proofs.md` | Maven test pass | PENDING |
-| AC-3.c | `VisitControllerTests.testProcessNewVisitFormTodayAccepted` asserts 3xx redirect | `10-proofs/10-task-03-proofs.md` | Maven test pass | PENDING |
-| AC-3.d | `VisitControllerTests.testProcessNewVisitFormFutureDateAccepted` asserts 3xx redirect | `10-proofs/10-task-03-proofs.md` | Maven test pass | PENDING |
-| AC-4.a | `./mvnw test` exits 0 — all existing tests pass | `10-proofs/10-task-05-proofs.md` | Maven test pass | PENDING |
-| AC-4.b | Updated success-path Playwright test (future date) exits 0 | `10-proofs/10-task-05-proofs.md` | Playwright screenshot | PENDING |
-| AC-5.a | `find src/test -name "VisitValidatorTests.java"` returns one match | `10-proofs/10-task-01-proofs.md` | command output | PENDING |
-| AC-5.b | JaCoCo reports ≥90% line coverage on `VisitValidator` | `10-proofs/10-task-05-proofs.md` | JaCoCo coverage report | PENDING |
+| AC-1.a | `VisitControllerTests.testProcessNewVisitFormPastDateRejected` asserts field error, 200, and form view | `10-proofs/10-task-03-proofs.md` | Maven test pass | PASS |
+| AC-1.b | `VisitValidatorTests.shouldRejectPastDate` asserts error code `visit.date.pastNotAllowed` | `10-proofs/10-task-01-proofs.md` | Maven test pass | PASS |
+| AC-2.a | `messages.properties` contains `visit.date.pastNotAllowed` | `10-proofs/10-task-04-proofs.md` | command output | PASS |
+| AC-2.b | All 7 non-English locale files contain `visit.date.pastNotAllowed` (≥8 grep matches) | `10-proofs/10-task-04-proofs.md` | command output | PASS |
+| AC-2.c | `I18nPropertiesSyncTest` exits 0 | `10-proofs/10-task-04-proofs.md` | Maven test pass | PASS |
+| AC-2.d | Playwright `rejects past date` test exits 0 | `10-proofs/10-task-05-proofs.md` | Playwright screenshot | PASS |
+| AC-3.a | `VisitValidatorTests.shouldAcceptToday` asserts no date field errors | `10-proofs/10-task-03-proofs.md` | Maven test pass | PASS |
+| AC-3.b | `VisitValidatorTests.shouldAcceptFutureDate` asserts no date field errors | `10-proofs/10-task-03-proofs.md` | Maven test pass | PASS |
+| AC-3.c | `VisitControllerTests.testProcessNewVisitFormTodayAccepted` asserts 3xx redirect | `10-proofs/10-task-03-proofs.md` | Maven test pass | PASS |
+| AC-3.d | `VisitControllerTests.testProcessNewVisitFormFutureDateAccepted` asserts 3xx redirect | `10-proofs/10-task-03-proofs.md` | Maven test pass | PASS |
+| AC-4.a | `./mvnw test` exits 0 — all existing tests pass | `10-proofs/10-task-05-proofs.md` | Maven test pass | PASS |
+| AC-4.b | Updated success-path Playwright test (future date) exits 0 | `10-proofs/10-task-05-proofs.md` | Playwright screenshot | PASS |
+| AC-5.a | `find src/test -name "VisitValidatorTests.java"` returns one match | `10-proofs/10-task-01-proofs.md` | command output | PASS |
+| AC-5.b | JaCoCo reports ≥90% line coverage on `VisitValidator` | `10-proofs/10-task-05-proofs.md` | JaCoCo coverage report | PASS |
 
 ## Definition of done
 
-- [ ] AC-1.a: `VisitControllerTests.testProcessNewVisitFormPastDateRejected` asserts field error on `date`, status 200, view `pets/createOrUpdateVisitForm`
-- [ ] AC-1.b: `VisitValidatorTests.shouldRejectPastDate` asserts error code `visit.date.pastNotAllowed`
-- [ ] AC-2.a: `messages.properties` contains key `visit.date.pastNotAllowed`
-- [ ] AC-2.b: All 7 non-English locale files contain `visit.date.pastNotAllowed`
-- [ ] AC-2.c: `I18nPropertiesSyncTest` exits 0
-- [ ] AC-2.d: Playwright `rejects past date` test exits 0
-- [ ] AC-3.a: `VisitValidatorTests.shouldAcceptToday` passes with no date errors
-- [ ] AC-3.b: `VisitValidatorTests.shouldAcceptFutureDate` passes with no date errors
-- [ ] AC-3.c: `VisitControllerTests.testProcessNewVisitFormTodayAccepted` asserts 3xx redirect
-- [ ] AC-3.d: `VisitControllerTests.testProcessNewVisitFormFutureDateAccepted` asserts 3xx redirect
-- [ ] AC-4.a: `./mvnw test` exits 0
-- [ ] AC-4.b: Updated Playwright success-path test (future date) exits 0
-- [ ] AC-5.a: `VisitValidatorTests.java` exists at `find src/test -name "VisitValidatorTests.java"`
-- [ ] AC-5.b: JaCoCo ≥90% line coverage on `VisitValidator`
-- [ ] All proof artifacts contain real outputs, not placeholders.
-- [ ] Coverage matrix has all rows in `PASS`.
-- [ ] `./mvnw test` exits 0 with ≥90% line coverage on new code.
+- [x] AC-1.a: `VisitControllerTests.testProcessNewVisitFormPastDateRejected` asserts field error on `date`, status 200, view `pets/createOrUpdateVisitForm`
+- [x] AC-1.b: `VisitValidatorTests.shouldRejectPastDate` asserts error code `visit.date.pastNotAllowed`
+- [x] AC-2.a: `messages.properties` contains key `visit.date.pastNotAllowed`
+- [x] AC-2.b: All 7 non-English locale files contain `visit.date.pastNotAllowed`
+- [x] AC-2.c: `I18nPropertiesSyncTest` exits 0
+- [x] AC-2.d: Playwright `rejects past date` test exits 0
+- [x] AC-3.a: `VisitValidatorTests.shouldAcceptToday` passes with no date errors
+- [x] AC-3.b: `VisitValidatorTests.shouldAcceptFutureDate` passes with no date errors
+- [x] AC-3.c: `VisitControllerTests.testProcessNewVisitFormTodayAccepted` asserts 3xx redirect
+- [x] AC-3.d: `VisitControllerTests.testProcessNewVisitFormFutureDateAccepted` asserts 3xx redirect
+- [x] AC-4.a: `./mvnw test` exits 0
+- [x] AC-4.b: Updated Playwright success-path test (future date) exits 0
+- [x] AC-5.a: `VisitValidatorTests.java` exists at `find src/test -name "VisitValidatorTests.java"`
+- [x] AC-5.b: JaCoCo ≥90% line coverage on `VisitValidator`
+- [x] All proof artifacts contain real outputs, not placeholders.
+- [x] Coverage matrix has all rows in `PASS`.
+- [x] `./mvnw test` exits 0 with ≥90% line coverage on new code.
