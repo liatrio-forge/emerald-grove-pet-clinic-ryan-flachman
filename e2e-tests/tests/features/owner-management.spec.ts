@@ -122,6 +122,13 @@ test.describe('Owner Management', () => {
     await page.screenshot({ path: testInfo.outputPath('city-search.png'), fullPage: true });
   });
 
+  test('shows friendly 404 page for non-existent owner', async ({ page }, testInfo) => {
+    await page.goto('/owners/99999');
+    await expect(page.getByText(/not found/i)).toBeVisible();
+    await expect(page.locator('.liatrio-error-card').getByRole('link', { name: /find owners/i })).toBeVisible();
+    await page.screenshot({ path: testInfo.outputPath('owner-not-found.png') });
+  });
+
   test('blocks duplicate owner creation', async ({ page }, testInfo) => {
     const ownerPage = new OwnerPage(page);
     const owner = createOwner();

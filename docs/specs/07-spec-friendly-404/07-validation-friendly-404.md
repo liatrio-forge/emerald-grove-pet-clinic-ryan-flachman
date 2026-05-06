@@ -116,9 +116,9 @@ cd e2e-tests && npm test -- --grep "Owner Management"
 | AC-5.a | `testShowOwnerNotFound` asserts `status().isNotFound()` and passes | `07-proofs/07-task-03-proofs.md` | Maven test pass | PASS |
 | AC-6.a | `testInitUpdatePetFormNotFound` asserts `status().isNotFound()` and passes | `07-proofs/07-task-03-proofs.md` | Maven test pass | PASS |
 | AC-7.a | `testInitNewVisitFormOwnerNotFound` asserts `status().isNotFound()` and passes | `07-proofs/07-task-03-proofs.md` | Maven test pass | PASS |
-| AC-8.a | Playwright test navigates to `/owners/99999` and asserts not-found message | `07-proofs/07-task-05-proofs.md` | Playwright screenshot | PENDING |
-| AC-8.b | Playwright test asserts Find Owners link is visible on 404 page | `07-proofs/07-task-05-proofs.md` | Playwright screenshot | PENDING |
-| AC-8.c | `npm test -- --grep "Owner Management"` exits 0 | `07-proofs/07-task-05-proofs.md` | command output | PENDING |
+| AC-8.a | Playwright test navigates to `/owners/99999` and asserts not-found message | `07-proofs/07-task-05-proofs.md` | Playwright screenshot | PASS |
+| AC-8.b | Playwright test asserts Find Owners link is visible on 404 page | `07-proofs/07-task-05-proofs.md` | Playwright screenshot | PASS |
+| AC-8.c | `npm test -- --grep "Owner Management"` exits 0 | `07-proofs/07-task-05-proofs.md` | command output | PASS |
 | AC-9.a | `./mvnw test` exits 0 | `07-proofs/07-task-06-proofs.md` | Maven test pass | PENDING |
 | AC-9.b | JaCoCo ≥90% line coverage on new/changed code | `07-proofs/07-task-06-proofs.md` | JaCoCo coverage report | PENDING |
 
