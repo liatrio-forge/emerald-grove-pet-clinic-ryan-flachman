@@ -119,29 +119,29 @@ cd e2e-tests && npm test -- --grep "Owner Management"
 | AC-8.a | Playwright test navigates to `/owners/99999` and asserts not-found message | `07-proofs/07-task-05-proofs.md` | Playwright screenshot | PASS |
 | AC-8.b | Playwright test asserts Find Owners link is visible on 404 page | `07-proofs/07-task-05-proofs.md` | Playwright screenshot | PASS |
 | AC-8.c | `npm test -- --grep "Owner Management"` exits 0 | `07-proofs/07-task-05-proofs.md` | command output | PASS |
-| AC-9.a | `./mvnw test` exits 0 | `07-proofs/07-task-06-proofs.md` | Maven test pass | PENDING |
-| AC-9.b | JaCoCo ≥90% line coverage on new/changed code | `07-proofs/07-task-06-proofs.md` | JaCoCo coverage report | PENDING |
+| AC-9.a | `./mvnw test` exits 0 | `07-proofs/07-task-06-proofs.md` | Maven test pass | PASS |
+| AC-9.b | JaCoCo ≥90% line coverage on new/changed code | `07-proofs/07-task-06-proofs.md` | JaCoCo coverage report | PASS |
 
 ## Definition of done
 
-- [ ] AC-1.a: `ResourceNotFoundException.java` exists in `system/` package
-- [ ] AC-1.b: Class carries `@ResponseStatus(HttpStatus.NOT_FOUND)`
-- [ ] AC-2.a: `OwnerController` references `ResourceNotFoundException`
-- [ ] AC-2.b: `PetController` references `ResourceNotFoundException`
-- [ ] AC-2.c: `VisitController` references `ResourceNotFoundException`
-- [ ] AC-2.d: No `IllegalArgumentException` thrown for missing resources in `owner/` package
-- [ ] AC-3.a: `src/main/resources/templates/error/404.html` exists
-- [ ] AC-3.b: `error/404.html` contains a link to `/owners`
-- [ ] AC-3.c: `error/404.html` contains a human-readable not-found message
-- [ ] AC-4.a: `error.html` does not render raw exception/message text
-- [ ] AC-5.a: `testShowOwnerNotFound` in `OwnerControllerTests` asserts `status().isNotFound()` and passes
-- [ ] AC-6.a: `testInitUpdatePetFormNotFound` in `PetControllerTests` asserts `status().isNotFound()` and passes
-- [ ] AC-7.a: `testInitNewVisitFormOwnerNotFound` in `VisitControllerTests` asserts `status().isNotFound()` and passes
-- [ ] AC-8.a: Playwright test asserts not-found message at `/owners/99999`
-- [ ] AC-8.b: Playwright test asserts Find Owners link visible on 404 page
-- [ ] AC-8.c: `cd e2e-tests && npm test -- --grep "Owner Management"` exits 0
-- [ ] AC-9.a: `./mvnw test` exits 0
-- [ ] AC-9.b: JaCoCo ≥90% line coverage on new/changed code
-- [ ] All proof artifacts contain real outputs, not placeholders.
-- [ ] Coverage matrix has all rows in `PASS`.
-- [ ] `./mvnw test` exits 0 with ≥90% line coverage on new code.
+- [x] AC-1.a: `ResourceNotFoundException.java` exists in `system/` package
+- [x] AC-1.b: Class carries `@ResponseStatus(HttpStatus.NOT_FOUND)`
+- [x] AC-2.a: `OwnerController` references `ResourceNotFoundException`
+- [x] AC-2.b: `PetController` references `ResourceNotFoundException`
+- [x] AC-2.c: `VisitController` references `ResourceNotFoundException`
+- [x] AC-2.d: No `IllegalArgumentException` thrown for missing resources in `owner/` package
+- [x] AC-3.a: `src/main/resources/templates/error/404.html` exists
+- [x] AC-3.b: `error/404.html` contains a link to `/owners`
+- [x] AC-3.c: `error/404.html` contains a human-readable not-found message
+- [x] AC-4.a: `error.html` does not render raw exception/message text
+- [x] AC-5.a: `testShowOwnerNotFound` in `OwnerControllerTests` asserts `status().isNotFound()` and passes
+- [x] AC-6.a: `testInitUpdatePetFormNotFound` in `PetControllerTests` asserts `status().isNotFound()` and passes
+- [x] AC-7.a: `testInitNewVisitFormOwnerNotFound` in `VisitControllerTests` asserts `status().isNotFound()` and passes
+- [x] AC-8.a: Playwright test asserts not-found message at `/owners/99999`
+- [x] AC-8.b: Playwright test asserts Find Owners link visible on 404 page
+- [x] AC-8.c: `cd e2e-tests && npm test -- --grep "Owner Management"` exits 0
+- [x] AC-9.a: `./mvnw test` exits 0
+- [x] AC-9.b: JaCoCo ≥90% line coverage on new/changed code
+- [x] All proof artifacts contain real outputs, not placeholders.
+- [x] Coverage matrix has all rows in `PASS`.
+- [x] `./mvnw test` exits 0 with ≥90% line coverage on new code.
