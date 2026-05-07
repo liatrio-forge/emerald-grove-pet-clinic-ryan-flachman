@@ -15,3 +15,4 @@ All SDD spec bundles for the Emerald Grove Veterinary Clinic project.
 | 08 | [delete-pet](08-spec-delete-pet/) | delivered | Delete a pet from owner with confirmation modal and cascade visit removal |
 | 09 | [upcoming-visits](09-spec-upcoming-visits/) | accepted | Read-only page listing all visits within the next N days |
 | 10 | [disallow-past-scheduling](10-spec-disallow-past-scheduling/) | accepted | Reject visit dates earlier than today with a localized validation message |
+| 11 | [owner-csv-export](11-spec-owner-csv-export/) | delivered | CSV export endpoint for owner search results |
