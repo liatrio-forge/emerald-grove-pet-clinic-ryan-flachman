@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasItem;
@@ -42,6 +43,7 @@ import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.startsWith;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -118,6 +120,21 @@ class OwnerControllerTests {
 		Visit visit = new Visit();
 		visit.setDate(LocalDate.now());
 		george.getPet("Max").getVisits().add(visit);
+	}
+
+	@Test
+	void testCsvExportReturnsOkWithCorrectHeaders() throws Exception {
+		mockMvc.perform(get("/owners.csv"))
+			.andExpect(status().isOk())
+			.andExpect(header().string("Content-Type", containsString("text/csv")))
+			.andExpect(header().string("Content-Disposition", "attachment; filename=\"owners.csv\""));
+	}
+
+	@Test
+	void testCsvExportBodyStartsWithHeaderRow() throws Exception {
+		mockMvc.perform(get("/owners.csv"))
+			.andExpect(status().isOk())
+			.andExpect(content().string(startsWith("First Name,Last Name,Address,City,Telephone")));
 	}
 
 	@Test
