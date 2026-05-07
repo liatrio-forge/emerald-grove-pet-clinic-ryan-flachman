@@ -62,12 +62,12 @@ grep -c "findBySearchCriteria" src/main/java/org/springframework/samples/petclin
 | AC-1.c | `Content-Disposition: attachment; filename="owners.csv"` header present | `11-proofs/11-task-02-proofs.md` | Maven test pass | PASS |
 | AC-2.a | First line is exactly `First Name,Last Name,Address,City,Telephone` | `11-proofs/11-task-02-proofs.md` | Maven test pass | PASS |
 | AC-2.b | Each data row has five unquoted comma-separated fields in order | `11-proofs/11-task-02-proofs.md` | Maven test pass | PASS |
-| AC-3.a | `?lastName=X` filters by last name prefix (case-insensitive) | `11-proofs/11-task-04-proofs.md` | Maven test pass | PENDING |
-| AC-3.b | `?telephone=X` filters by telephone prefix | `11-proofs/11-task-04-proofs.md` | Maven test pass | PENDING |
-| AC-3.c | `?city=X` filters by city prefix (case-insensitive) | `11-proofs/11-task-04-proofs.md` | Maven test pass | PENDING |
-| AC-3.d | Combined parameters apply AND logic | `11-proofs/11-task-04-proofs.md` | Maven test pass | PENDING |
+| AC-3.a | `?lastName=X` filters by last name prefix (case-insensitive) | `11-proofs/11-task-04-proofs.md` | Maven test pass | PASS |
+| AC-3.b | `?telephone=X` filters by telephone prefix | `11-proofs/11-task-04-proofs.md` | Maven test pass | PASS |
+| AC-3.c | `?city=X` filters by city prefix (case-insensitive) | `11-proofs/11-task-04-proofs.md` | Maven test pass | PASS |
+| AC-3.d | Combined parameters apply AND logic | `11-proofs/11-task-04-proofs.md` | Maven test pass | PASS |
 | AC-4.a | All matching owners in one response, no pagination required | `11-proofs/11-task-02-proofs.md` | Maven test pass | PASS |
-| AC-5.a | No-match query returns HTTP 200 with header row only | `11-proofs/11-task-04-proofs.md` | Maven test pass | PENDING |
+| AC-5.a | No-match query returns HTTP 200 with header row only | `11-proofs/11-task-04-proofs.md` | Maven test pass | PASS |
 | AC-6.a | Proof doc shows `Content-Type: text/csv` and `Content-Disposition` headers | `11-proofs/11-task-05-proofs.md` | command output | PENDING |
 | AC-6.b | Proof doc shows CSV header line and at least one data row | `11-proofs/11-task-05-proofs.md` | command output | PENDING |
 

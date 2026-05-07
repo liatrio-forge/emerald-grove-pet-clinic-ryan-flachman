@@ -138,6 +138,42 @@ class OwnerControllerTests {
 	}
 
 	@Test
+	void testCsvFilterByLastName() throws Exception {
+		mockMvc.perform(get("/owners.csv").param("lastName", "Franklin"))
+			.andExpect(status().isOk())
+			.andExpect(content().string(containsString("Franklin")));
+		verify(owners).findBySearchCriteria(eq("Franklin"), isNull(), isNull(), any(Pageable.class));
+	}
+
+	@Test
+	void testCsvFilterByTelephone() throws Exception {
+		mockMvc.perform(get("/owners.csv").param("telephone", "608")).andExpect(status().isOk());
+		verify(owners).findBySearchCriteria(isNull(), eq("608"), isNull(), any(Pageable.class));
+	}
+
+	@Test
+	void testCsvFilterByCity() throws Exception {
+		mockMvc.perform(get("/owners.csv").param("city", "Madison")).andExpect(status().isOk());
+		verify(owners).findBySearchCriteria(isNull(), isNull(), eq("Madison"), any(Pageable.class));
+	}
+
+	@Test
+	void testCsvFilterCombined() throws Exception {
+		mockMvc.perform(get("/owners.csv").param("lastName", "Franklin").param("city", "Madison"))
+			.andExpect(status().isOk());
+		verify(owners).findBySearchCriteria(eq("Franklin"), isNull(), eq("Madison"), any(Pageable.class));
+	}
+
+	@Test
+	void testCsvEmptyResultReturnsHeaderOnly() throws Exception {
+		given(owners.findBySearchCriteria(eq("NOMATCH"), isNull(), isNull(), any(Pageable.class)))
+			.willReturn(new PageImpl<>(List.of()));
+		mockMvc.perform(get("/owners.csv").param("lastName", "NOMATCH"))
+			.andExpect(status().isOk())
+			.andExpect(content().string("First Name,Last Name,Address,City,Telephone\n"));
+	}
+
+	@Test
 	void testInitCreationForm() throws Exception {
 		mockMvc.perform(get("/owners/new"))
 			.andExpect(status().isOk())
