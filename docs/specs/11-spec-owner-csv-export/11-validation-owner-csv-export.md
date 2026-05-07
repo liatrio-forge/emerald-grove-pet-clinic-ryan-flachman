@@ -68,24 +68,24 @@ grep -c "findBySearchCriteria" src/main/java/org/springframework/samples/petclin
 | AC-3.d | Combined parameters apply AND logic | `11-proofs/11-task-04-proofs.md` | Maven test pass | PASS |
 | AC-4.a | All matching owners in one response, no pagination required | `11-proofs/11-task-02-proofs.md` | Maven test pass | PASS |
 | AC-5.a | No-match query returns HTTP 200 with header row only | `11-proofs/11-task-04-proofs.md` | Maven test pass | PASS |
-| AC-6.a | Proof doc shows `Content-Type: text/csv` and `Content-Disposition` headers | `11-proofs/11-task-05-proofs.md` | command output | PENDING |
-| AC-6.b | Proof doc shows CSV header line and at least one data row | `11-proofs/11-task-05-proofs.md` | command output | PENDING |
+| AC-6.a | Proof doc shows `Content-Type: text/csv` and `Content-Disposition` headers | `11-proofs/11-task-05-proofs.md` | command output | PASS |
+| AC-6.b | Proof doc shows CSV header line and at least one data row | `11-proofs/11-task-05-proofs.md` | command output | PASS |
 
 ## Definition of done
 
-- [ ] AC-1.a: `GET /owners.csv` returns HTTP 200.
-- [ ] AC-1.b: The response `Content-Type` contains `text/csv`.
-- [ ] AC-1.c: The response includes `Content-Disposition: attachment; filename="owners.csv"`.
-- [ ] AC-2.a: First line is exactly `First Name,Last Name,Address,City,Telephone`.
-- [ ] AC-2.b: Each data row has five unquoted comma-separated fields in the correct order.
-- [ ] AC-3.a: `?lastName=X` filters by last name prefix (case-insensitive).
-- [ ] AC-3.b: `?telephone=X` filters by telephone prefix.
-- [ ] AC-3.c: `?city=X` filters by city prefix (case-insensitive).
-- [ ] AC-3.d: Combined parameters apply AND logic.
-- [ ] AC-4.a: All matching owners returned in one response with no pagination parameters.
-- [ ] AC-5.a: No-match query returns HTTP 200 with header row only.
-- [ ] AC-6.a: Proof doc contains `curl -i` output showing correct response headers.
-- [ ] AC-6.b: Proof doc contains curl output showing the CSV header line and ≥1 data row.
-- [ ] All proof artifacts contain real outputs, not placeholders.
-- [ ] Coverage matrix has all rows in `PASS`.
-- [ ] `./mvnw test` exits 0 with ≥90% line coverage on new code.
+- [x] AC-1.a: `GET /owners.csv` returns HTTP 200.
+- [x] AC-1.b: The response `Content-Type` contains `text/csv`.
+- [x] AC-1.c: The response includes `Content-Disposition: attachment; filename="owners.csv"`.
+- [x] AC-2.a: First line is exactly `First Name,Last Name,Address,City,Telephone`.
+- [x] AC-2.b: Each data row has five unquoted comma-separated fields in the correct order.
+- [x] AC-3.a: `?lastName=X` filters by last name prefix (case-insensitive).
+- [x] AC-3.b: `?telephone=X` filters by telephone prefix.
+- [x] AC-3.c: `?city=X` filters by city prefix (case-insensitive).
+- [x] AC-3.d: Combined parameters apply AND logic.
+- [x] AC-4.a: All matching owners returned in one response with no pagination parameters.
+- [x] AC-5.a: No-match query returns HTTP 200 with header row only.
+- [x] AC-6.a: Proof doc contains `curl -i` output showing correct response headers.
+- [x] AC-6.b: Proof doc contains curl output showing the CSV header line and ≥1 data row.
+- [x] All proof artifacts contain real outputs, not placeholders.
+- [x] Coverage matrix has all rows in `PASS`.
+- [x] `./mvnw test` exits 0 with ≥90% line coverage on new code.
