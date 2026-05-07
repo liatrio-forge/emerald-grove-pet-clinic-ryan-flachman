@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.aot.DisabledInAotMode;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -43,6 +44,7 @@ import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.startsWith;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -416,6 +418,72 @@ class OwnerControllerTests {
 			});
 
 		verify(owners, never()).save(any());
+	}
+
+	@Test
+	void testProcessFindFormWithLastNameFilterExposesModelAttributes() throws Exception {
+		Page<Owner> result = new PageImpl<>(List.of(george(), new Owner()));
+		when(this.owners.findBySearchCriteria(eq("Davis"), isNull(), isNull(), any(Pageable.class))).thenReturn(result);
+
+		mockMvc.perform(get("/owners").param("lastName", "Davis").param("page", "1"))
+			.andExpect(status().isOk())
+			.andExpect(view().name("owners/ownersList"))
+			.andExpect(model().attribute("filterLastName", "Davis"))
+			.andExpect(model().attribute("filterTelephone", nullValue()))
+			.andExpect(model().attribute("filterCity", nullValue()));
+	}
+
+	@Test
+	void testProcessFindFormWithTelephoneFilterExposesModelAttributes() throws Exception {
+		Page<Owner> result = new PageImpl<>(List.of(george(), new Owner()));
+		when(this.owners.findBySearchCriteria(isNull(), eq("608"), isNull(), any(Pageable.class))).thenReturn(result);
+
+		mockMvc.perform(get("/owners").param("telephone", "608").param("page", "1"))
+			.andExpect(status().isOk())
+			.andExpect(view().name("owners/ownersList"))
+			.andExpect(model().attribute("filterLastName", nullValue()))
+			.andExpect(model().attribute("filterTelephone", "608"))
+			.andExpect(model().attribute("filterCity", nullValue()));
+	}
+
+	@Test
+	void testProcessFindFormWithMultipleFiltersExposesAllModelAttributes() throws Exception {
+		Page<Owner> result = new PageImpl<>(List.of(george(), new Owner()));
+		when(this.owners.findBySearchCriteria(eq("D"), eq("6"), eq("M"), any(Pageable.class))).thenReturn(result);
+
+		mockMvc
+			.perform(
+					get("/owners").param("lastName", "D").param("telephone", "6").param("city", "M").param("page", "1"))
+			.andExpect(status().isOk())
+			.andExpect(view().name("owners/ownersList"))
+			.andExpect(model().attribute("filterLastName", "D"))
+			.andExpect(model().attribute("filterTelephone", "6"))
+			.andExpect(model().attribute("filterCity", "M"));
+	}
+
+	@Test
+	void testPaginationLinksIncludeActiveLastNameFilter() throws Exception {
+		List<Owner> content = List.of(george(), new Owner(), new Owner(), new Owner(), new Owner());
+		Page<Owner> multiPage = new PageImpl<>(content, PageRequest.of(0, 5), 10);
+		when(this.owners.findBySearchCriteria(eq("Davis"), isNull(), isNull(), any(Pageable.class)))
+			.thenReturn(multiPage);
+
+		mockMvc.perform(get("/owners").param("lastName", "Davis").param("page", "1"))
+			.andExpect(status().isOk())
+			.andExpect(content().string(containsString("page=2&amp;lastName=Davis")));
+	}
+
+	@Test
+	void testPaginationLinksOmitEmptyFiltersWhenNoFilterActive() throws Exception {
+		List<Owner> content = List.of(george(), new Owner(), new Owner(), new Owner(), new Owner());
+		Page<Owner> multiPage = new PageImpl<>(content, PageRequest.of(0, 5), 10);
+		when(this.owners.findBySearchCriteria(isNull(), isNull(), isNull(), any(Pageable.class))).thenReturn(multiPage);
+
+		mockMvc.perform(get("/owners").param("page", "1"))
+			.andExpect(status().isOk())
+			.andExpect(content().string(not(containsString("lastName="))))
+			.andExpect(content().string(not(containsString("telephone="))))
+			.andExpect(content().string(not(containsString("city="))));
 	}
 
 }

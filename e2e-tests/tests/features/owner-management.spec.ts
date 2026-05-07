@@ -129,6 +129,50 @@ test.describe('Owner Management', () => {
     await page.screenshot({ path: testInfo.outputPath('owner-not-found.png') });
   });
 
+  test('preserves lastName filter when navigating to next page', { timeout: 90_000 }, async ({ page }, testInfo) => {
+    const ownerPage = new OwnerPage(page);
+    // Unique prefix starting with F — both firstName and lastName start with F
+    // so every name cell in the results table starts with "F" (satisfies AC-3.b).
+    const uniquePrefix = `F${Date.now()}`;
+
+    // Create 6 owners so the filtered result spans 2 pages (page size = 5)
+    for (let i = 0; i < 6; i++) {
+      await page.goto('/owners/new');
+      const owner = createOwner({
+        firstName: `${uniquePrefix}${i}`,
+        lastName: `${uniquePrefix}L${i}`,
+      });
+      await ownerPage.fillOwnerForm(owner);
+      await ownerPage.submitOwnerForm();
+      await expect(page.getByRole('heading', { name: /Owner Information/i })).toBeVisible();
+    }
+
+    // Search by the unique prefix — returns exactly the 6 owners created above
+    await ownerPage.openFindOwners();
+    await ownerPage.searchByFilters({ lastName: uniquePrefix });
+    await expect(ownerPage.ownersTable()).toBeVisible();
+
+    // Navigate to page 2
+    const nextLink = page.locator('a.fa-step-forward');
+    await expect(nextLink).toBeVisible();
+    await nextLink.click();
+
+    // AC-3.a: URL still contains the lastName filter
+    await expect(page).toHaveURL(new RegExp(`lastName=${uniquePrefix}`));
+
+    await page.screenshot({ path: testInfo.outputPath('filter-preserved-page2.png'), fullPage: true });
+
+    // AC-3.b: all visible owner name cells start with "F"
+    const nameCells = page.locator('#owners tbody tr td:first-child');
+    await expect(nameCells.first()).toBeVisible();
+    const count = await nameCells.count();
+    expect(count).toBeGreaterThan(0);
+    for (let i = 0; i < count; i++) {
+      const cellText = await nameCells.nth(i).textContent();
+      expect(cellText?.trim()).toMatch(/^F/);
+    }
+  });
+
   test('blocks duplicate owner creation', async ({ page }, testInfo) => {
     const ownerPage = new OwnerPage(page);
     const owner = createOwner();
