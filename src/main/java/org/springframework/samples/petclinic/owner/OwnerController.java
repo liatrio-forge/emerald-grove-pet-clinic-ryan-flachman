@@ -23,6 +23,8 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -128,6 +130,17 @@ class OwnerController {
 		return addPaginationModel(safePage, model, ownersResults, lastName, telephone, city);
 	}
 
+	private static String escapeCsvField(String value) {
+		if (value == null) {
+			return "";
+		}
+		String escaped = value.replace("\"", "\"\"");
+		if (escaped.contains(",") || escaped.contains("\"") || escaped.contains("\n") || escaped.contains("\r")) {
+			return "\"" + escaped + "\"";
+		}
+		return escaped;
+	}
+
 	private static String nullIfBlank(String value) {
 		if (value == null) {
 			return null;
@@ -166,6 +179,30 @@ class OwnerController {
 		int pageSize = 5;
 		Pageable pageable = PageRequest.of(page - 1, pageSize);
 		return owners.findBySearchCriteria(lastName, telephone, city, pageable);
+	}
+
+	@GetMapping(value = "/owners.csv", produces = "text/csv")
+	public ResponseEntity<String> exportOwnersCsv(@RequestParam(required = false, defaultValue = "") String lastName,
+			@RequestParam(required = false, defaultValue = "") String telephone,
+			@RequestParam(required = false, defaultValue = "") String city) {
+		Page<Owner> results = owners.findBySearchCriteria(nullIfBlank(lastName), nullIfBlank(telephone),
+				nullIfBlank(city), Pageable.unpaged());
+		StringBuilder csv = new StringBuilder("First Name,Last Name,Address,City,Telephone\n");
+		for (Owner owner : results) {
+			csv.append(escapeCsvField(owner.getFirstName()))
+				.append(',')
+				.append(escapeCsvField(owner.getLastName()))
+				.append(',')
+				.append(escapeCsvField(owner.getAddress()))
+				.append(',')
+				.append(escapeCsvField(owner.getCity()))
+				.append(',')
+				.append(escapeCsvField(owner.getTelephone()))
+				.append('\n');
+		}
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"owners.csv\"");
+		return ResponseEntity.ok().headers(headers).body(csv.toString());
 	}
 
 	@GetMapping("/owners/{ownerId}/edit")

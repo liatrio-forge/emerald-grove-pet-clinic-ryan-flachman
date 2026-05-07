@@ -45,6 +45,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.startsWith;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -121,6 +122,72 @@ class OwnerControllerTests {
 		Visit visit = new Visit();
 		visit.setDate(LocalDate.now());
 		george.getPet("Max").getVisits().add(visit);
+	}
+
+	@Test
+	void testCsvExportReturnsOkWithCorrectHeaders() throws Exception {
+		mockMvc.perform(get("/owners.csv"))
+			.andExpect(status().isOk())
+			.andExpect(header().string("Content-Type", containsString("text/csv")))
+			.andExpect(header().string("Content-Disposition", "attachment; filename=\"owners.csv\""));
+	}
+
+	@Test
+	void testCsvExportBodyStartsWithHeaderRow() throws Exception {
+		mockMvc.perform(get("/owners.csv"))
+			.andExpect(status().isOk())
+			.andExpect(content().string(startsWith("First Name,Last Name,Address,City,Telephone")));
+	}
+
+	@Test
+	void testCsvFilterByLastName() throws Exception {
+		mockMvc.perform(get("/owners.csv").param("lastName", "Franklin"))
+			.andExpect(status().isOk())
+			.andExpect(content().string(containsString("Franklin")));
+		verify(owners).findBySearchCriteria(eq("Franklin"), isNull(), isNull(), any(Pageable.class));
+	}
+
+	@Test
+	void testCsvFilterByTelephone() throws Exception {
+		mockMvc.perform(get("/owners.csv").param("telephone", "608")).andExpect(status().isOk());
+		verify(owners).findBySearchCriteria(isNull(), eq("608"), isNull(), any(Pageable.class));
+	}
+
+	@Test
+	void testCsvFilterByCity() throws Exception {
+		mockMvc.perform(get("/owners.csv").param("city", "Madison")).andExpect(status().isOk());
+		verify(owners).findBySearchCriteria(isNull(), isNull(), eq("Madison"), any(Pageable.class));
+	}
+
+	@Test
+	void testCsvFilterCombined() throws Exception {
+		mockMvc.perform(get("/owners.csv").param("lastName", "Franklin").param("city", "Madison"))
+			.andExpect(status().isOk());
+		verify(owners).findBySearchCriteria(eq("Franklin"), isNull(), eq("Madison"), any(Pageable.class));
+	}
+
+	@Test
+	void testCsvEmptyResultReturnsHeaderOnly() throws Exception {
+		given(owners.findBySearchCriteria(eq("NOMATCH"), isNull(), isNull(), any(Pageable.class)))
+			.willReturn(new PageImpl<>(List.of()));
+		mockMvc.perform(get("/owners.csv").param("lastName", "NOMATCH"))
+			.andExpect(status().isOk())
+			.andExpect(content().string("First Name,Last Name,Address,City,Telephone\n"));
+	}
+
+	@Test
+	void testCsvFieldsWithCommaAreQuoted() throws Exception {
+		Owner tricky = new Owner();
+		tricky.setFirstName("Anne");
+		tricky.setLastName("O'Brien");
+		tricky.setAddress("123 Main St, Apt 4");
+		tricky.setCity("Madison");
+		tricky.setTelephone("6085551234");
+		given(owners.findBySearchCriteria(eq("OBrien"), isNull(), isNull(), any(Pageable.class)))
+			.willReturn(new PageImpl<>(List.of(tricky)));
+		mockMvc.perform(get("/owners.csv").param("lastName", "OBrien"))
+			.andExpect(status().isOk())
+			.andExpect(content().string(containsString("\"123 Main St, Apt 4\"")));
 	}
 
 	@Test
