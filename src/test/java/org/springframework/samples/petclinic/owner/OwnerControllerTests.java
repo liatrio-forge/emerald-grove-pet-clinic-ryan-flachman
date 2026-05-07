@@ -174,6 +174,21 @@ class OwnerControllerTests {
 	}
 
 	@Test
+	void testCsvFieldsWithCommaAreQuoted() throws Exception {
+		Owner tricky = new Owner();
+		tricky.setFirstName("Anne");
+		tricky.setLastName("O'Brien");
+		tricky.setAddress("123 Main St, Apt 4");
+		tricky.setCity("Madison");
+		tricky.setTelephone("6085551234");
+		given(owners.findBySearchCriteria(eq("OBrien"), isNull(), isNull(), any(Pageable.class)))
+			.willReturn(new PageImpl<>(List.of(tricky)));
+		mockMvc.perform(get("/owners.csv").param("lastName", "OBrien"))
+			.andExpect(status().isOk())
+			.andExpect(content().string(containsString("\"123 Main St, Apt 4\"")));
+	}
+
+	@Test
 	void testInitCreationForm() throws Exception {
 		mockMvc.perform(get("/owners/new"))
 			.andExpect(status().isOk())

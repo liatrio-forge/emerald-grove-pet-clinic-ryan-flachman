@@ -128,6 +128,17 @@ class OwnerController {
 		return addPaginationModel(safePage, model, ownersResults);
 	}
 
+	private static String escapeCsvField(String value) {
+		if (value == null) {
+			return "";
+		}
+		String escaped = value.replace("\"", "\"\"");
+		if (escaped.contains(",") || escaped.contains("\"") || escaped.contains("\n") || escaped.contains("\r")) {
+			return "\"" + escaped + "\"";
+		}
+		return escaped;
+	}
+
 	private static String nullIfBlank(String value) {
 		if (value == null) {
 			return null;
@@ -159,15 +170,15 @@ class OwnerController {
 				nullIfBlank(city), Pageable.unpaged());
 		StringBuilder csv = new StringBuilder("First Name,Last Name,Address,City,Telephone\n");
 		for (Owner owner : results) {
-			csv.append(owner.getFirstName())
+			csv.append(escapeCsvField(owner.getFirstName()))
 				.append(',')
-				.append(owner.getLastName())
+				.append(escapeCsvField(owner.getLastName()))
 				.append(',')
-				.append(owner.getAddress())
+				.append(escapeCsvField(owner.getAddress()))
 				.append(',')
-				.append(owner.getCity())
+				.append(escapeCsvField(owner.getCity()))
 				.append(',')
-				.append(owner.getTelephone())
+				.append(escapeCsvField(owner.getTelephone()))
 				.append('\n');
 		}
 		HttpHeaders headers = new HttpHeaders();
