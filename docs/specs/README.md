@@ -22,4 +22,5 @@ All SDD spec bundles for the Emerald Grove Veterinary Clinic project.
 | 14 | [visit-ai-fields](14-spec-visit-ai-fields/) | delivered | `AiStatus` enum and five AI JPA fields on the `Visit` entity |
 | 16 | [visit-prompt-builder](16-spec-visit-prompt-builder/) | delivered | `PromptRequest` record and `VisitPromptBuilder` static utility for assembling Claude prompts |
 | 17 | [claude-api-client](17-spec-claude-api-client/) | delivered | `ClaudeApiClient` interface and four JSON transport POJOs for the Anthropic Messages API |
-| 18 | [claude-api-client-stub](18-spec-claude-api-client-stub/) | delivered | `ClaudeApiClientStub` — deterministic canned-JSON stub active when API key is blank |
+| 18 | [claude-api-client-impl](18-spec-claude-api-client-impl/) | delivered | `ClaudeApiClientImpl` — production RestClient HTTP implementation of `ClaudeApiClient` |
+| 19 | [claude-api-client-stub](18-spec-claude-api-client-stub/) | delivered | `ClaudeApiClientStub` — deterministic canned-JSON stub active when API key is blank |
