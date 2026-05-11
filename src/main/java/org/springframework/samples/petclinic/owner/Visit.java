@@ -22,6 +22,8 @@ import org.springframework.samples.petclinic.model.BaseEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 
@@ -39,14 +41,32 @@ public class Visit extends BaseEntity {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate date;
 
+	@Column(length = 2000)
 	@NotBlank
 	private String description;
+
+	@Column(name = "ai_status", length = 20)
+	@Enumerated(EnumType.STRING)
+	private AiStatus aiStatus;
+
+	@Column(name = "ai_summary", length = 1000)
+	private String aiSummary;
+
+	@Column(name = "ai_tags", length = 500)
+	private String aiTags;
+
+	@Column(name = "ai_urgency", length = 20)
+	private String aiUrgency;
+
+	@Column(name = "ai_follow_up", length = 500)
+	private String aiFollowUp;
 
 	/**
 	 * Creates a new instance of Visit for the current date
 	 */
 	public Visit() {
 		this.date = LocalDate.now();
+		this.aiStatus = AiStatus.PENDING;
 	}
 
 	public LocalDate getDate() {
@@ -63,6 +83,46 @@ public class Visit extends BaseEntity {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public AiStatus getAiStatus() {
+		return this.aiStatus;
+	}
+
+	public void setAiStatus(AiStatus aiStatus) {
+		this.aiStatus = aiStatus;
+	}
+
+	public String getAiSummary() {
+		return this.aiSummary;
+	}
+
+	public void setAiSummary(String aiSummary) {
+		this.aiSummary = aiSummary;
+	}
+
+	public String getAiTags() {
+		return this.aiTags;
+	}
+
+	public void setAiTags(String aiTags) {
+		this.aiTags = aiTags;
+	}
+
+	public String getAiUrgency() {
+		return this.aiUrgency;
+	}
+
+	public void setAiUrgency(String aiUrgency) {
+		this.aiUrgency = aiUrgency;
+	}
+
+	public String getAiFollowUp() {
+		return this.aiFollowUp;
+	}
+
+	public void setAiFollowUp(String aiFollowUp) {
+		this.aiFollowUp = aiFollowUp;
 	}
 
 }
