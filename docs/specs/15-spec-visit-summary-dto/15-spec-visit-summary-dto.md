@@ -1,7 +1,7 @@
 ---
-status: accepted
+status: delivered
 created: 2026-05-11
-last_amended: ~
+last_amended: 2026-05-11
 supersedes: ~
 superseded_by: ~
 ---
@@ -128,3 +128,4 @@ All source material is stable production code; no freeze required.
 
 | Date | Type | Summary | Amendment doc |
 |------|------|---------|---------------|
+| 2026-05-11 | status | Spec delivered: `VisitUrgency`, `VisitSummary`, tests, proofs, validation PASS | `15-validation-visit-summary-dto.md` |

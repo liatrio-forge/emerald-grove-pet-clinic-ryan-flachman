@@ -12,4 +12,10 @@ Covers: AC-2.b, AC-2.c, AC-3.a, AC-3.b, AC-3.c, AC-3.d, AC-3.e, AC-3.f, AC-4.a, 
 
 ## Completion notes
 
-(Filled in by `implement-sdd-spec`.)
+**Artifact.** `VisitSummaryTest` is present at
+`src/test/java/org/springframework/samples/petclinic/owner/VisitSummaryTest.java`
+(eight test methods per task list).
+
+**RED state (TDD).** With the test class committed before `VisitSummary.java`,
+`./mvnw test-compile` fails: the compiler cannot resolve the type `VisitSummary`
+in the test source. After Task 04 adds the record, the same command succeeds.
