@@ -45,13 +45,13 @@ None — all acceptance criteria are verifiable by automated command.
 | AC-1.b | `anthropic.api.url=https://api.anthropic.com/v1/messages` in `application.properties` | `13-proofs/13-task-04-proofs.md` | file edit | PENDING |
 | AC-1.c | `anthropic.model=claude-haiku-4-5-20251001` in `application.properties` | `13-proofs/13-task-04-proofs.md` | file edit | PENDING |
 | AC-1.d | `AsyncConfigPropertiesTest` passes; all three `containsProperty` calls return `true` | `13-proofs/13-task-05-proofs.md` | Maven test pass | PENDING |
-| AC-2.a | `AsyncConfig.java` exists in `system` package with `@Configuration @EnableAsync` | `13-proofs/13-task-02-proofs.md` | file creation | PENDING |
-| AC-2.b | Bean method `visitSummaryExecutor()` returns `ThreadPoolTaskExecutor` | `13-proofs/13-task-02-proofs.md` | file creation | PENDING |
-| AC-2.c | `AsyncConfigTest` asserts `corePoolSize == 2` | `13-proofs/13-task-05-proofs.md` | Maven test pass | PENDING |
-| AC-2.d | `AsyncConfigTest` asserts `maxPoolSize == 5` | `13-proofs/13-task-05-proofs.md` | Maven test pass | PENDING |
-| AC-2.e | `AsyncConfigTest` asserts `queueCapacity == 25` | `13-proofs/13-task-05-proofs.md` | Maven test pass | PENDING |
-| AC-2.f | `AsyncConfigTest` asserts rejection handler is `CallerRunsPolicy` | `13-proofs/13-task-05-proofs.md` | Maven test pass | PENDING |
-| AC-2.g | `AsyncConfigTest` asserts thread name prefix is `visitSummary-` | `13-proofs/13-task-05-proofs.md` | Maven test pass | PENDING |
+| AC-2.a | `AsyncConfig.java` exists in `system` package with `@Configuration @EnableAsync` | `13-proofs/13-task-02-proofs.md` | file creation | PASS |
+| AC-2.b | Bean method `visitSummaryExecutor()` returns `ThreadPoolTaskExecutor` | `13-proofs/13-task-02-proofs.md` | file creation | PASS |
+| AC-2.c | `AsyncConfigTest` asserts `corePoolSize == 2` | `13-proofs/13-task-02-proofs.md` | Maven test pass | PASS |
+| AC-2.d | `AsyncConfigTest` asserts `maxPoolSize == 5` | `13-proofs/13-task-02-proofs.md` | Maven test pass | PASS |
+| AC-2.e | `AsyncConfigTest` asserts `queueCapacity == 25` | `13-proofs/13-task-02-proofs.md` | Maven test pass | PASS |
+| AC-2.f | `AsyncConfigTest` asserts rejection handler is `CallerRunsPolicy` | `13-proofs/13-task-02-proofs.md` | Maven test pass | PASS |
+| AC-2.g | `AsyncConfigTest` asserts thread name prefix is `visitSummary-` | `13-proofs/13-task-02-proofs.md` | Maven test pass | PASS |
 | AC-3.a | `./mvnw test` exits 0 with no failures | `13-proofs/13-task-05-proofs.md` | command output | PENDING |
 
 ## Definition of done
