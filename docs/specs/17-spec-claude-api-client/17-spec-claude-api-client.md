@@ -1,7 +1,7 @@
 ---
-status: accepted
+status: delivered
 created: 2026-05-11
-last_amended: ~
+last_amended: 2026-05-11
 supersedes: ~
 superseded_by: ~
 ---
@@ -185,3 +185,4 @@ All five types live in `org.springframework.samples.petclinic.owner`.
 
 | Date | Type | Summary | Amendment doc |
 |------|------|---------|---------------|
+| 2026-05-11 | delivery | Implemented `ClaudeApiClient` and four JSON POJOs with TDD proofs | `17-validation-claude-api-client.md` |

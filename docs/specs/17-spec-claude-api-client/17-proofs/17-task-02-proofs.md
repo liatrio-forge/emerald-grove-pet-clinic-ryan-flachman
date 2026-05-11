@@ -1,19 +1,73 @@
 # Proofs: Task 02 — Create ClaudeApiClient interface and all four POJO records (GREEN)
 
-Covers: AC-1.a, AC-1.b, AC-1.c, AC-1.d, AC-2.a, AC-2.b, AC-2.c, AC-2.d,
-        AC-3.a, AC-3.b, AC-3.c, AC-4.a, AC-4.b, AC-4.c, AC-4.d,
-        AC-5.a, AC-5.b, AC-5.c
+Covers: AC-1.a, AC-1.b, AC-1.c, AC-1.d, AC-2.a–AC-2.d, AC-3.a–AC-3.c,
+AC-4.a–AC-4.d, AC-5.a–AC-5.c
 
-## Planned evidence
+## Targeted tests
 
-- Output of `./mvnw test -Dtest="ClaudeRequestTest,MessageTest,ClaudeResponseTest,ContentBlockTest"`
-  showing all four test classes passing.
-- Output of `./mvnw compile` exiting 0.
-- Output of `grep` for the interface method signature.
-- Output of `grep` for no Spring annotations on the interface.
-- Output of `grep` for `@JsonProperty("max_tokens")` and `@JsonProperty("stop_reason")`.
-- File existence checks for all five types.
+```bash
+./mvnw test -Dtest="ClaudeRequestTest,MessageTest,ClaudeResponseTest,ContentBlockTest"
+```
+
+**Result:** `BUILD SUCCESS` — Tests run: 4, Failures: 0, Errors: 0, Skipped: 0.
+
+## Compile
+
+```bash
+./mvnw compile
+```
+
+**Result:** `BUILD SUCCESS` (exit 0).
+
+## grep checks
+
+Interface method (AC-1.b):
+
+```bash
+grep "String complete(String systemPrompt, String userMessage)" \
+  src/main/java/org/springframework/samples/petclinic/owner/ClaudeApiClient.java
+```
+
+**Result:** matching line present (`String complete(String systemPrompt, String userMessage);`).
+
+No Spring stereotype annotations on interface (AC-1.c):
+
+```bash
+grep "@Component\|@Service\|@Bean\|@Repository" \
+  src/main/java/org/springframework/samples/petclinic/owner/ClaudeApiClient.java
+```
+
+**Result:** no output.
+
+JsonProperty on request (AC-2.c):
+
+```bash
+grep '@JsonProperty("max_tokens")' \
+  src/main/java/org/springframework/samples/petclinic/owner/ClaudeRequest.java
+```
+
+**Result:** matching line present on `maxTokens` component.
+
+JsonProperty on response (AC-4.c):
+
+```bash
+grep '@JsonProperty("stop_reason")' \
+  src/main/java/org/springframework/samples/petclinic/owner/ClaudeResponse.java
+```
+
+**Result:** matching line present on `stopReason` component.
+
+## File existence
+
+```text
+ClaudeApiClient.java EXISTS
+ClaudeRequest.java EXISTS
+Message.java EXISTS
+ClaudeResponse.java EXISTS
+ContentBlock.java EXISTS
+```
 
 ## Completion notes
 
-(Filled in by `implement-sdd-spec`.)
+Captured 2026-05-11 after adding five production types under
+`org.springframework.samples.petclinic.owner`.
