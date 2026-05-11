@@ -18,4 +18,5 @@ All SDD spec bundles for the Emerald Grove Veterinary Clinic project.
 | 11 | [owner-csv-export](11-spec-owner-csv-export/) | delivered | CSV export endpoint for owner search results |
 | 11 | [preserve-page-filters](11-spec-preserve-page-filters/) | delivered | Preserve active search filters across pagination links on the Owners list |
 | 12 | [ai-visits-schema](12-spec-ai-visits-schema/) | accepted | Add AI columns and extend description to visits table across all four DB variants |
-| 13 | [health-timeline-css](13-spec-health-timeline-css/) | draft | CSS urgency badges, tag chips, and spinner animation for the AI health timeline |
+| 13 | [async-config](13-spec-async-config/) | accepted | Async thread pool executor bean and Anthropic API properties for AI visit summarizer |
+| 13 | [health-timeline-css](13-spec-health-timeline-css/) | delivered | CSS urgency badges, tag chips, and spinner animation for the AI health timeline |
