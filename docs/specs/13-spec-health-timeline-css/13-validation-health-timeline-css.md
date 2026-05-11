@@ -68,46 +68,46 @@ is up to date:
 
 | AC ID | Criterion | Proof artifact | Evidence type | Status |
 |-------|-----------|----------------|---------------|--------|
-| AC-1.a | `.urgency-routine` in `petclinic.scss` | `13-proofs/13-task-02-proofs.md` | command output | PENDING |
-| AC-1.b | Compiled CSS contains `.urgency-routine` with green background | `13-proofs/13-task-03-proofs.md` | command output | PENDING |
-| AC-1.c | Playwright asserts `background-color` is `rgb(36, 174, 29)` | `13-proofs/13-task-01-proofs.md` | Playwright test pass | PENDING |
-| AC-2.a | `.urgency-monitor` in `petclinic.scss` | `13-proofs/13-task-02-proofs.md` | command output | PENDING |
-| AC-2.b | Compiled CSS contains `.urgency-monitor` with amber background | `13-proofs/13-task-03-proofs.md` | command output | PENDING |
-| AC-2.c | Playwright asserts `background-color` is `rgb(255, 193, 7)` | `13-proofs/13-task-01-proofs.md` | Playwright test pass | PENDING |
-| AC-3.a | `.urgency-urgent` in `petclinic.scss` | `13-proofs/13-task-02-proofs.md` | command output | PENDING |
-| AC-3.b | Compiled CSS contains `.urgency-urgent` with red background | `13-proofs/13-task-03-proofs.md` | command output | PENDING |
-| AC-3.c | Playwright asserts `background-color` is `rgb(220, 53, 69)` | `13-proofs/13-task-01-proofs.md` | Playwright test pass | PENDING |
-| AC-4.a | `.health-tag` in `petclinic.scss` | `13-proofs/13-task-02-proofs.md` | command output | PENDING |
-| AC-4.b | Compiled CSS contains `.health-tag` with pill border-radius | `13-proofs/13-task-03-proofs.md` | command output | PENDING |
-| AC-4.c | Playwright asserts `border-radius` > 50px on `.health-tag` | `13-proofs/13-task-01-proofs.md` | Playwright test pass | PENDING |
-| AC-5.a | `@keyframes ai-spinner-rotate` in `petclinic.scss` | `13-proofs/13-task-02-proofs.md` | command output | PENDING |
-| AC-5.b | `.ai-spinner` in `petclinic.scss` | `13-proofs/13-task-02-proofs.md` | command output | PENDING |
-| AC-5.c | Compiled CSS contains `.ai-spinner` and keyframe | `13-proofs/13-task-03-proofs.md` | command output | PENDING |
-| AC-5.d | Playwright asserts `animation-name` is `ai-spinner-rotate` | `13-proofs/13-task-01-proofs.md` | Playwright test pass | PENDING |
-| AC-6.a | `./mvnw test` exits 0 | `13-proofs/13-task-04-proofs.md` | Maven test pass | PENDING |
-| AC-7.a | Playwright test commit precedes SCSS modification commit | `13-proofs/13-task-01-proofs.md` | behavioral evidence | PENDING |
+| AC-1.a | `.urgency-routine` in `petclinic.scss` | `13-proofs/13-task-02-proofs.md` | command output | PASS |
+| AC-1.b | Compiled CSS contains `.urgency-routine` with green background | `13-proofs/13-task-03-proofs.md` | command output | PASS |
+| AC-1.c | Playwright asserts `background-color` is `rgb(36, 174, 29)` | `13-proofs/13-task-01-proofs.md` | Playwright test pass | PASS |
+| AC-2.a | `.urgency-monitor` in `petclinic.scss` | `13-proofs/13-task-02-proofs.md` | command output | PASS |
+| AC-2.b | Compiled CSS contains `.urgency-monitor` with amber background | `13-proofs/13-task-03-proofs.md` | command output | PASS |
+| AC-2.c | Playwright asserts `background-color` is `rgb(255, 193, 7)` | `13-proofs/13-task-01-proofs.md` | Playwright test pass | PASS |
+| AC-3.a | `.urgency-urgent` in `petclinic.scss` | `13-proofs/13-task-02-proofs.md` | command output | PASS |
+| AC-3.b | Compiled CSS contains `.urgency-urgent` with red background | `13-proofs/13-task-03-proofs.md` | command output | PASS |
+| AC-3.c | Playwright asserts `background-color` is `rgb(220, 53, 69)` | `13-proofs/13-task-01-proofs.md` | Playwright test pass | PASS |
+| AC-4.a | `.health-tag` in `petclinic.scss` | `13-proofs/13-task-02-proofs.md` | command output | PASS |
+| AC-4.b | Compiled CSS contains `.health-tag` with pill border-radius | `13-proofs/13-task-03-proofs.md` | command output | PASS |
+| AC-4.c | Playwright asserts `border-radius` > 50px on `.health-tag` | `13-proofs/13-task-01-proofs.md` | Playwright test pass | PASS |
+| AC-5.a | `@keyframes ai-spinner-rotate` in `petclinic.scss` | `13-proofs/13-task-02-proofs.md` | command output | PASS |
+| AC-5.b | `.ai-spinner` in `petclinic.scss` | `13-proofs/13-task-02-proofs.md` | command output | PASS |
+| AC-5.c | Compiled CSS contains `.ai-spinner` and keyframe | `13-proofs/13-task-03-proofs.md` | command output | PASS |
+| AC-5.d | Playwright asserts `animation-name` is `ai-spinner-rotate` | `13-proofs/13-task-01-proofs.md` | Playwright test pass | PASS |
+| AC-6.a | `./mvnw test` exits 0 | `13-proofs/13-task-04-proofs.md` | Maven test pass | PASS |
+| AC-7.a | Playwright test commit precedes SCSS modification commit | `13-proofs/13-task-01-proofs.md` | behavioral evidence | PASS |
 
 ## Definition of done
 
-- [ ] AC-1.a: `.urgency-routine` exists in `src/main/scss/petclinic.scss`
-- [ ] AC-1.b: Compiled `petclinic.css` contains `.urgency-routine` with green background-color
-- [ ] AC-1.c: Playwright CSS fixture test asserts `background-color` is `rgb(36, 174, 29)`
-- [ ] AC-2.a: `.urgency-monitor` exists in `src/main/scss/petclinic.scss`
-- [ ] AC-2.b: Compiled `petclinic.css` contains `.urgency-monitor` with amber background-color
-- [ ] AC-2.c: Playwright CSS fixture test asserts `background-color` is `rgb(255, 193, 7)`
-- [ ] AC-3.a: `.urgency-urgent` exists in `src/main/scss/petclinic.scss`
-- [ ] AC-3.b: Compiled `petclinic.css` contains `.urgency-urgent` with red background-color
-- [ ] AC-3.c: Playwright CSS fixture test asserts `background-color` is `rgb(220, 53, 69)`
-- [ ] AC-4.a: `.health-tag` exists in `src/main/scss/petclinic.scss`
-- [ ] AC-4.b: Compiled `petclinic.css` contains `.health-tag` with pill border-radius
-- [ ] AC-4.c: Playwright CSS fixture test asserts `border-radius` > 50px on `.health-tag`
-- [ ] AC-5.a: `@keyframes ai-spinner-rotate` exists in `src/main/scss/petclinic.scss`
-- [ ] AC-5.b: `.ai-spinner` exists in `src/main/scss/petclinic.scss`
-- [ ] AC-5.c: Compiled `petclinic.css` contains both `.ai-spinner` and `ai-spinner-rotate`
-- [ ] AC-5.d: Playwright CSS fixture test asserts `animation-name` is `ai-spinner-rotate`
-- [ ] AC-6.a: `./mvnw test` exits 0 with no test failures
-- [ ] AC-7.a: Playwright test commit precedes SCSS modification commit in git history
-- [ ] All proof artifacts contain real outputs, not placeholders.
-- [ ] Coverage matrix has all rows in `PASS` (or `RETIRED` for amended criteria).
-- [ ] `./mvnw test` exits 0.
-- [ ] Parent epic child-registry checkbox ticked (once registry is created).
+- [x] AC-1.a: `.urgency-routine` exists in `src/main/scss/petclinic.scss`
+- [x] AC-1.b: Compiled `petclinic.css` contains `.urgency-routine` with green background-color
+- [x] AC-1.c: Playwright CSS fixture test asserts `background-color` is `rgb(36, 174, 29)`
+- [x] AC-2.a: `.urgency-monitor` exists in `src/main/scss/petclinic.scss`
+- [x] AC-2.b: Compiled `petclinic.css` contains `.urgency-monitor` with amber background-color
+- [x] AC-2.c: Playwright CSS fixture test asserts `background-color` is `rgb(255, 193, 7)`
+- [x] AC-3.a: `.urgency-urgent` exists in `src/main/scss/petclinic.scss`
+- [x] AC-3.b: Compiled `petclinic.css` contains `.urgency-urgent` with red background-color
+- [x] AC-3.c: Playwright CSS fixture test asserts `background-color` is `rgb(220, 53, 69)`
+- [x] AC-4.a: `.health-tag` exists in `src/main/scss/petclinic.scss`
+- [x] AC-4.b: Compiled `petclinic.css` contains `.health-tag` with pill border-radius
+- [x] AC-4.c: Playwright CSS fixture test asserts `border-radius` > 50px on `.health-tag`
+- [x] AC-5.a: `@keyframes ai-spinner-rotate` exists in `src/main/scss/petclinic.scss`
+- [x] AC-5.b: `.ai-spinner` exists in `src/main/scss/petclinic.scss`
+- [x] AC-5.c: Compiled `petclinic.css` contains both `.ai-spinner` and `ai-spinner-rotate`
+- [x] AC-5.d: Playwright CSS fixture test asserts `animation-name` is `ai-spinner-rotate`
+- [x] AC-6.a: `./mvnw test` exits 0 with no test failures
+- [x] AC-7.a: Playwright test commit precedes SCSS modification commit in git history
+- [x] All proof artifacts contain real outputs, not placeholders.
+- [x] Coverage matrix has all rows in `PASS` (or `RETIRED` for amended criteria).
+- [x] `./mvnw test` exits 0.
+- [x] Parent epic child-registry checkbox ticked (once registry is created).
