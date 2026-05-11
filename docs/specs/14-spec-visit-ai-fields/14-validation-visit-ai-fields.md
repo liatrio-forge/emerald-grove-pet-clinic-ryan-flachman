@@ -54,9 +54,9 @@ _None — all criteria are verifiable by automated command._
 
 | AC ID | Criterion | Proof artifact | Evidence type | Status |
 |-------|-----------|----------------|---------------|--------|
-| AC-1.a | `AiStatus.java` exists at the correct path | `14-proofs/14-task-02-proofs.md` | file creation | PENDING |
-| AC-1.b | Enum declares exactly `PENDING`, `PROCESSING`, `DONE`, `FAILED` | `14-proofs/14-task-02-proofs.md` | file creation | PENDING |
-| AC-1.c | `AiStatusTest` passes asserting all four values | `14-proofs/14-task-02-proofs.md` | Maven test pass | PENDING |
+| AC-1.a | `AiStatus.java` exists at the correct path | `14-proofs/14-task-02-proofs.md` | file creation | PASS |
+| AC-1.b | Enum declares exactly `PENDING`, `PROCESSING`, `DONE`, `FAILED` | `14-proofs/14-task-02-proofs.md` | file creation | PASS |
+| AC-1.c | `AiStatusTest` passes asserting all four values | `14-proofs/14-task-02-proofs.md` | Maven test pass | PASS |
 | AC-2.a | `aiStatus` field with `@Column(name="ai_status", length=20)` and `@Enumerated(EnumType.STRING)` | `14-proofs/14-task-04-proofs.md` | file edit | PENDING |
 | AC-2.b | `aiSummary` field with `@Column(name="ai_summary", length=1000)` | `14-proofs/14-task-04-proofs.md` | file edit | PENDING |
 | AC-2.c | `aiTags` field with `@Column(name="ai_tags", length=500)` | `14-proofs/14-task-04-proofs.md` | file edit | PENDING |
