@@ -2,13 +2,22 @@
 
 Covers: AC-4.a, AC-4.b
 
-## Planned evidence
+## Evidence
 
-- Diff of `src/main/resources/db/postgres/schema.sql` showing five `ADD COLUMN
-  IF NOT EXISTS` statements appended at the bottom of the file.
-- `grep -n "description" src/main/resources/db/postgres/schema.sql` output
-  confirming the only match is the original `description TEXT` line (unchanged).
+Appended to `db/postgres/schema.sql` (lines 54–58):
 
-## Completion notes
+```sql
+ALTER TABLE visits ADD COLUMN IF NOT EXISTS ai_status VARCHAR(20) DEFAULT 'PENDING';
+ALTER TABLE visits ADD COLUMN IF NOT EXISTS ai_summary VARCHAR(1000);
+ALTER TABLE visits ADD COLUMN IF NOT EXISTS ai_tags VARCHAR(500);
+ALTER TABLE visits ADD COLUMN IF NOT EXISTS ai_urgency VARCHAR(20);
+ALTER TABLE visits ADD COLUMN IF NOT EXISTS ai_follow_up VARCHAR(500);
+```
 
-(Filled in by `implement-sdd-spec`.)
+`grep -n "description" db/postgres/schema.sql` output:
+
+```text
+50:  description TEXT
+```
+
+Only one match — the original `description TEXT` line is unchanged.

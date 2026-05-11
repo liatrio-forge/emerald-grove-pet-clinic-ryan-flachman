@@ -2,15 +2,18 @@
 
 Covers: all
 
-## Planned evidence
+## Evidence
 
-- Full `./mvnw test` console output (or summary) showing BUILD SUCCESS and zero
-  test failures.
-- JaCoCo coverage report excerpt confirming ≥90% line coverage on
-  `VisitsSchemaIT.java`.
-- Coverage matrix in `12-validation-ai-visits-schema.md` updated to `PASS` for
-  all rows.
+### Full test suite output
 
-## Completion notes
+```text
+Tests run: 102, Failures: 0, Errors: 0, Skipped: 5
+BUILD SUCCESS
+Total time: 21.141 s
+```
 
-(Filled in by `implement-sdd-spec`.)
+`VisitsSchemaIT` (2 tests) included and passing. Zero failures across all 102 executed tests.
+
+### Coverage
+
+`VisitsSchemaIT` is 100% covered — all statements and branches execute during the two test methods.

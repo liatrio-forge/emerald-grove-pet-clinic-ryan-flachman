@@ -2,12 +2,17 @@
 
 Covers: AC-3.a, AC-3.b
 
-## Planned evidence
+## Evidence
 
-- Diff of `src/main/resources/db/mysql/schema.sql` showing the `MODIFY COLUMN
-  description VARCHAR(2000)` statement and five `ADD COLUMN IF NOT EXISTS`
-  statements appended at the bottom of the file.
+Appended to `db/mysql/schema.sql` (lines 57–62):
 
-## Completion notes
+```sql
+ALTER TABLE visits MODIFY COLUMN description VARCHAR(2000);
+ALTER TABLE visits ADD COLUMN IF NOT EXISTS ai_status VARCHAR(20) DEFAULT 'PENDING';
+ALTER TABLE visits ADD COLUMN IF NOT EXISTS ai_summary VARCHAR(1000);
+ALTER TABLE visits ADD COLUMN IF NOT EXISTS ai_tags VARCHAR(500);
+ALTER TABLE visits ADD COLUMN IF NOT EXISTS ai_urgency VARCHAR(20);
+ALTER TABLE visits ADD COLUMN IF NOT EXISTS ai_follow_up VARCHAR(500);
+```
 
-(Filled in by `implement-sdd-spec`.)
+`MODIFY COLUMN description` appears once; `ADD COLUMN IF NOT EXISTS` appears five times.

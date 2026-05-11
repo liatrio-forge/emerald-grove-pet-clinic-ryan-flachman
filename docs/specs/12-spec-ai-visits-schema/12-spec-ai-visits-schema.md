@@ -1,5 +1,5 @@
 ---
-status: accepted
+status: delivered
 created: 2026-05-11
 last_amended: ~
 supersedes: ~

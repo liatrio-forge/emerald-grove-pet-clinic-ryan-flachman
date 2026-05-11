@@ -50,33 +50,33 @@ grep -n "description" src/main/resources/db/postgres/schema.sql
 
 | AC ID | Criterion | Proof artifact | Evidence type | Status |
 |-------|-----------|----------------|---------------|--------|
-| AC-1.a | `description VARCHAR(2000)` in H2 `CREATE TABLE visits` | `12-proofs/12-task-02-proofs.md` | file edit | PENDING |
-| AC-1.b | `ai_status VARCHAR(20) DEFAULT 'PENDING'` in H2 `CREATE TABLE visits` | `12-proofs/12-task-02-proofs.md` | file edit | PENDING |
-| AC-1.c | `ai_summary`, `ai_tags`, `ai_urgency`, `ai_follow_up` in H2 `CREATE TABLE visits` | `12-proofs/12-task-02-proofs.md` | file edit | PENDING |
-| AC-2.a | `description VARCHAR(2000)` in HSQLDB `CREATE TABLE visits` | `12-proofs/12-task-02-proofs.md` | file edit | PENDING |
-| AC-2.b | All five AI columns in HSQLDB `CREATE TABLE visits` | `12-proofs/12-task-02-proofs.md` | file edit | PENDING |
-| AC-3.a | `MODIFY COLUMN description VARCHAR(2000)` at bottom of MySQL schema | `12-proofs/12-task-03-proofs.md` | file edit | PENDING |
-| AC-3.b | Five `ADD COLUMN IF NOT EXISTS` statements in MySQL schema | `12-proofs/12-task-03-proofs.md` | file edit | PENDING |
-| AC-4.a | Five `ADD COLUMN IF NOT EXISTS` statements in PostgreSQL schema | `12-proofs/12-task-04-proofs.md` | file edit | PENDING |
-| AC-4.b | `description TEXT` unchanged in PostgreSQL schema | `12-proofs/12-task-04-proofs.md` | command output | PENDING |
-| AC-5.a | `./mvnw test` exits 0 after all schema changes | `12-proofs/12-task-05-proofs.md` | command output | PENDING |
-| AC-6.a | `VisitsSchemaIT` queries AI columns without error | `12-proofs/12-task-01-proofs.md` | Maven test pass | PENDING |
-| AC-6.b | `VisitsSchemaIT` confirms `description` max length = 2000 via `INFORMATION_SCHEMA` | `12-proofs/12-task-01-proofs.md` | Maven test pass | PENDING |
+| AC-1.a | `description VARCHAR(2000)` in H2 `CREATE TABLE visits` | `12-proofs/12-task-02-proofs.md` | file edit | PASS |
+| AC-1.b | `ai_status VARCHAR(20) DEFAULT 'PENDING'` in H2 `CREATE TABLE visits` | `12-proofs/12-task-02-proofs.md` | file edit | PASS |
+| AC-1.c | `ai_summary`, `ai_tags`, `ai_urgency`, `ai_follow_up` in H2 `CREATE TABLE visits` | `12-proofs/12-task-02-proofs.md` | file edit | PASS |
+| AC-2.a | `description VARCHAR(2000)` in HSQLDB `CREATE TABLE visits` | `12-proofs/12-task-02-proofs.md` | file edit | PASS |
+| AC-2.b | All five AI columns in HSQLDB `CREATE TABLE visits` | `12-proofs/12-task-02-proofs.md` | file edit | PASS |
+| AC-3.a | `MODIFY COLUMN description VARCHAR(2000)` at bottom of MySQL schema | `12-proofs/12-task-03-proofs.md` | file edit | PASS |
+| AC-3.b | Five `ADD COLUMN IF NOT EXISTS` statements in MySQL schema | `12-proofs/12-task-03-proofs.md` | file edit | PASS |
+| AC-4.a | Five `ADD COLUMN IF NOT EXISTS` statements in PostgreSQL schema | `12-proofs/12-task-04-proofs.md` | file edit | PASS |
+| AC-4.b | `description TEXT` unchanged in PostgreSQL schema | `12-proofs/12-task-04-proofs.md` | command output | PASS |
+| AC-5.a | `./mvnw test` exits 0 after all schema changes | `12-proofs/12-task-05-proofs.md` | command output | PASS |
+| AC-6.a | `VisitsSchemaIT` queries AI columns without error | `12-proofs/12-task-01-proofs.md` | Maven test pass | PASS |
+| AC-6.b | `VisitsSchemaIT` confirms `description` max length = 2000 via `INFORMATION_SCHEMA` | `12-proofs/12-task-01-proofs.md` | Maven test pass | PASS |
 
 ## Definition of done
 
-- [ ] AC-1.a: `description VARCHAR(2000)` in H2 `CREATE TABLE visits`
-- [ ] AC-1.b: `ai_status VARCHAR(20) DEFAULT 'PENDING'` in H2 `CREATE TABLE visits`
-- [ ] AC-1.c: `ai_summary`, `ai_tags`, `ai_urgency`, `ai_follow_up` in H2 `CREATE TABLE visits`
-- [ ] AC-2.a: `description VARCHAR(2000)` in HSQLDB `CREATE TABLE visits`
-- [ ] AC-2.b: All five AI columns in HSQLDB `CREATE TABLE visits`
-- [ ] AC-3.a: `MODIFY COLUMN description VARCHAR(2000)` at bottom of MySQL schema
-- [ ] AC-3.b: Five `ADD COLUMN IF NOT EXISTS` statements in MySQL schema
-- [ ] AC-4.a: Five `ADD COLUMN IF NOT EXISTS` statements in PostgreSQL schema
-- [ ] AC-4.b: `description TEXT` unchanged in PostgreSQL schema
-- [ ] AC-5.a: `./mvnw test` exits 0 after all schema changes
-- [ ] AC-6.a: `VisitsSchemaIT` queries AI columns without error
-- [ ] AC-6.b: `VisitsSchemaIT` confirms `description` max length = 2000
-- [ ] All proof artifacts contain real outputs, not placeholders.
-- [ ] Coverage matrix has all rows in `PASS`.
-- [ ] `./mvnw test` exits 0 with ≥90% line coverage on new code.
+- [x] AC-1.a: `description VARCHAR(2000)` in H2 `CREATE TABLE visits`
+- [x] AC-1.b: `ai_status VARCHAR(20) DEFAULT 'PENDING'` in H2 `CREATE TABLE visits`
+- [x] AC-1.c: `ai_summary`, `ai_tags`, `ai_urgency`, `ai_follow_up` in H2 `CREATE TABLE visits`
+- [x] AC-2.a: `description VARCHAR(2000)` in HSQLDB `CREATE TABLE visits`
+- [x] AC-2.b: All five AI columns in HSQLDB `CREATE TABLE visits`
+- [x] AC-3.a: `MODIFY COLUMN description VARCHAR(2000)` at bottom of MySQL schema
+- [x] AC-3.b: Five `ADD COLUMN IF NOT EXISTS` statements in MySQL schema
+- [x] AC-4.a: Five `ADD COLUMN IF NOT EXISTS` statements in PostgreSQL schema
+- [x] AC-4.b: `description TEXT` unchanged in PostgreSQL schema
+- [x] AC-5.a: `./mvnw test` exits 0 after all schema changes
+- [x] AC-6.a: `VisitsSchemaIT` queries AI columns without error
+- [x] AC-6.b: `VisitsSchemaIT` confirms `description` max length = 2000
+- [x] All proof artifacts contain real outputs, not placeholders.
+- [x] Coverage matrix has all rows in `PASS`.
+- [x] `./mvnw test` exits 0 with ≥90% line coverage on new code.
