@@ -19,4 +19,6 @@ All SDD spec bundles for the Emerald Grove Veterinary Clinic project.
 | 11 | [preserve-page-filters](11-spec-preserve-page-filters/) | delivered | Preserve active search filters across pagination links on the Owners list |
 | 12 | [ai-visits-schema](12-spec-ai-visits-schema/) | accepted | Add AI columns and extend description to visits table across all four DB variants |
 | 13 | [async-config](13-spec-async-config/) | accepted | Async thread pool executor bean and Anthropic API properties for AI visit summarizer |
-| 13 | [health-timeline-css](13-spec-health-timeline-css/) | delivered | CSS urgency badges, tag chips, and spinner animation for the AI health timeline |
+| 14 | [visit-ai-fields](14-spec-visit-ai-fields/) | delivered | `AiStatus` enum and five AI JPA fields on the `Visit` entity |
+| 16 | [visit-prompt-builder](16-spec-visit-prompt-builder/) | delivered | `PromptRequest` record and `VisitPromptBuilder` static utility for assembling Claude prompts |
+| 17 | [claude-api-client](17-spec-claude-api-client/) | delivered | `ClaudeApiClient` interface and four JSON transport POJOs for the Anthropic Messages API |
