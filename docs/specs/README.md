@@ -20,3 +20,4 @@ All SDD spec bundles for the Emerald Grove Veterinary Clinic project.
 | 12 | [ai-visits-schema](12-spec-ai-visits-schema/) | accepted | Add AI columns and extend description to visits table across all four DB variants |
 | 13 | [async-config](13-spec-async-config/) | accepted | Async thread pool executor bean and Anthropic API properties for AI visit summarizer |
 | 14 | [visit-ai-fields](14-spec-visit-ai-fields/) | delivered | `AiStatus` enum and five AI JPA fields on the `Visit` entity |
+| 16 | [visit-prompt-builder](16-spec-visit-prompt-builder/) | delivered | `PromptRequest` record and `VisitPromptBuilder` static utility for assembling Claude prompts |
