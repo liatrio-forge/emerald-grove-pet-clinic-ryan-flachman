@@ -2,12 +2,20 @@ package org.springframework.samples.petclinic.owner;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface VisitRepository extends Repository<Visit, Integer> {
+
+	@Transactional(readOnly = true)
+	Optional<Visit> findById(Integer id);
+
+	@Transactional
+	Visit save(Visit visit);
 
 	@Query("""
 			SELECT new org.springframework.samples.petclinic.owner.UpcomingVisitRow(

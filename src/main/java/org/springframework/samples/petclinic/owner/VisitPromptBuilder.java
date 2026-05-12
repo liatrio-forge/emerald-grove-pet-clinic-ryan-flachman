@@ -11,7 +11,7 @@ public final class VisitPromptBuilder {
 			You are a clinical veterinary assistant. The user message describes one veterinary visit \
 			for a specific pet. Respond with JSON only—no markdown fences, no explanations, and no \
 			text before or after a single JSON object. The JSON must include these keys: "summary", \
-			"tags", "urgency", and "followUp".
+			"tags", "urgency", and "follow_up".
 			""".stripIndent().trim();
 
 	private VisitPromptBuilder() {

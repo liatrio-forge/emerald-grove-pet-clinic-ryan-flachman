@@ -89,7 +89,7 @@ public class Pet extends NamedEntity {
 	@Transient
 	public List<Visit> getVisitsSortedDesc() {
 		List<Visit> list = new ArrayList<>(getVisits());
-		list.sort(Comparator.comparing(Visit::getDate).reversed());
+		list.sort(Comparator.comparing(Visit::getDate, Comparator.nullsLast(Comparator.naturalOrder())).reversed());
 		return list;
 	}
 
