@@ -50,3 +50,7 @@ temp
 
 ### Local Dev ###
 .local/
+
+### Generated / tooling ###
+test-results/
+*.save
