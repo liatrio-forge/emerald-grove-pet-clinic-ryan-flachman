@@ -28,4 +28,5 @@ All SDD spec bundles for the Emerald Grove Veterinary Clinic project.
 | 19 | [claude-api-client-stub](18-spec-claude-api-client-stub/) | delivered | `ClaudeApiClientStub` — deterministic canned-JSON stub active when API key is blank |
 | 20 | [owner-detail-health-timeline](20-spec-owner-detail-health-timeline/) | draft | Bootstrap collapse toggle and `healthTimeline` fragment insert on the owner detail page |
 | 20 | [visit-summary-service](20-spec-visit-summary-service/) | draft | `VisitSummaryParser` + `VisitSummaryService` — async Claude orchestration and JSON parsing |
+| 21 | [visit-controller-trigger](21-spec-visit-controller-trigger/) | draft | Wire `VisitSummaryService` into `VisitController` to trigger async AI generation on every saved visit |
 | 21 | [visit-summary-controller](21-spec-visit-summary-controller/) | delivered | `VisitSummaryController` — REST polling endpoint for AI summary status |

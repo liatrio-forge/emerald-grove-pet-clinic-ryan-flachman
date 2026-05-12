@@ -45,8 +45,11 @@ class VisitController {
 
 	private final OwnerRepository owners;
 
-	public VisitController(OwnerRepository owners) {
+	private final VisitSummaryService visitSummaryService;
+
+	public VisitController(OwnerRepository owners, VisitSummaryService visitSummaryService) {
 		this.owners = owners;
+		this.visitSummaryService = visitSummaryService;
 	}
 
 	@InitBinder
@@ -102,6 +105,9 @@ class VisitController {
 
 		owner.addVisit(petId, visit);
 		this.owners.save(owner);
+		if (visit.getId() != null) {
+			this.visitSummaryService.generate(visit.getId());
+		}
 		redirectAttributes.addFlashAttribute("message", "Your visit has been booked");
 		return "redirect:/owners/{ownerId}";
 	}
