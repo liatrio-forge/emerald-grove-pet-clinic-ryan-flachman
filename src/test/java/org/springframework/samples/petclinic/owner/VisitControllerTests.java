@@ -16,7 +16,11 @@
 
 package org.springframework.samples.petclinic.owner;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willAnswer;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -50,11 +54,16 @@ class VisitControllerTests {
 
 	private static final int TEST_PET_ID = 1;
 
+	private static final int TEST_VISIT_ID = 42;
+
 	@Autowired
 	private MockMvc mockMvc;
 
 	@MockitoBean
 	private OwnerRepository owners;
+
+	@MockitoBean
+	private VisitSummaryService visitSummaryService;
 
 	@BeforeEach
 	void init() {
@@ -63,6 +72,14 @@ class VisitControllerTests {
 		owner.addPet(pet);
 		pet.setId(TEST_PET_ID);
 		given(this.owners.findById(TEST_OWNER_ID)).willReturn(Optional.of(owner));
+		willAnswer(inv -> {
+			Owner o = inv.getArgument(0);
+			Pet p = o.getPet(TEST_PET_ID);
+			if (p != null) {
+				p.getVisits().forEach(v -> v.setId(TEST_VISIT_ID));
+			}
+			return o;
+		}).given(this.owners).save(any(Owner.class));
 	}
 
 	@Test
@@ -130,6 +147,23 @@ class VisitControllerTests {
 				.param("date", LocalDate.now().plusDays(1).toString())
 				.param("description", "Future visit"))
 			.andExpect(status().is3xxRedirection());
+	}
+
+	@Test
+	void testGenerateCalledOnSuccessfulVisit() throws Exception {
+		mockMvc
+			.perform(post("/owners/{ownerId}/pets/{petId}/visits/new", TEST_OWNER_ID, TEST_PET_ID).param("description",
+					"Annual checkup"))
+			.andExpect(status().is3xxRedirection());
+		verify(this.visitSummaryService).generate(TEST_VISIT_ID);
+	}
+
+	@Test
+	void testGenerateNotCalledWhenValidationFails() throws Exception {
+		mockMvc.perform(post("/owners/{ownerId}/pets/{petId}/visits/new", TEST_OWNER_ID, TEST_PET_ID))
+			.andExpect(status().isOk())
+			.andExpect(view().name("pets/createOrUpdateVisitForm"));
+		verifyNoInteractions(this.visitSummaryService);
 	}
 
 }
