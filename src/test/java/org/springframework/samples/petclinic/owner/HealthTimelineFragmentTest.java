@@ -85,6 +85,11 @@ class HealthTimelineFragmentTest {
 		return visit;
 	}
 
+	private static String beforeInlineScript(String html) {
+		int i = html.indexOf("<script");
+		return i >= 0 ? html.substring(0, i) : html;
+	}
+
 	@Test
 	void shouldRenderVisitsInReverseChronologicalOrder() {
 		Visit earlier = buildVisit(1, LocalDate.of(2026, 1, 1), AiStatus.DONE);
@@ -108,6 +113,14 @@ class HealthTimelineFragmentTest {
 		String html = render(buildPet(visit));
 
 		assertThat(html).contains("data-ai-status=\"PENDING\"");
+	}
+
+	@Test
+	void shouldRenderDataVisitDateOnEachEntry() {
+		Visit visit = buildVisit(1, LocalDate.of(2026, 5, 1), AiStatus.PENDING);
+		String html = render(buildPet(visit));
+
+		assertThat(html).contains("data-visit-date=\"2026-05-01\"");
 	}
 
 	@Test
@@ -184,7 +197,7 @@ class HealthTimelineFragmentTest {
 		visit.setAiTags("diabetes,weight");
 		String html = render(buildPet(visit));
 
-		assertThat(StringUtils.countOccurrencesOf(html, "health-tag")).isEqualTo(2);
+		assertThat(StringUtils.countOccurrencesOf(beforeInlineScript(html), "health-tag")).isEqualTo(2);
 		assertThat(html).contains("diabetes");
 		assertThat(html).contains("weight");
 	}
@@ -214,7 +227,7 @@ class HealthTimelineFragmentTest {
 		visit.setAiFollowUp(null);
 		String html = render(buildPet(visit));
 
-		assertThat(html.toLowerCase()).doesNotContain("follow");
+		assertThat(beforeInlineScript(html).toLowerCase()).doesNotContain("follow");
 	}
 
 	@Test
