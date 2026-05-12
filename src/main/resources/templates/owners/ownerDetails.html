@@ -83,6 +83,17 @@
             </td>
           </tr>
         </table>
+        <button type="button"
+                class="btn btn-link p-0 mb-2 text-decoration-none"
+                data-bs-toggle="collapse"
+                th:data-bs-target="'#health-timeline-' + ${pet.id}"
+                aria-expanded="false"
+                th:aria-controls="'health-timeline-' + ${pet.id}">
+          ▼ Health Timeline
+        </button>
+        <div class="collapse" th:id="'health-timeline-' + ${pet.id}">
+          <div th:insert="~{fragments/health-timeline :: healthTimeline}"></div>
+        </div>
       </td>
     </tr>
 
