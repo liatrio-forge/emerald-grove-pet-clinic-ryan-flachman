@@ -16,8 +16,11 @@
 package org.springframework.samples.petclinic.owner;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -32,6 +35,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 /**
  * Simple business object representing a pet.
@@ -76,6 +80,17 @@ public class Pet extends NamedEntity {
 
 	public Collection<Visit> getVisits() {
 		return this.visits;
+	}
+
+	/**
+	 * Visits ordered by {@link Visit#getDate()} descending (most recent first).
+	 * Transient-only — used by templates such as the health timeline fragment.
+	 */
+	@Transient
+	public List<Visit> getVisitsSortedDesc() {
+		List<Visit> list = new ArrayList<>(getVisits());
+		list.sort(Comparator.comparing(Visit::getDate).reversed());
+		return list;
 	}
 
 	public void addVisit(Visit visit) {

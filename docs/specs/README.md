@@ -23,3 +23,4 @@ All SDD spec bundles for the Emerald Grove Veterinary Clinic project.
 | 16 | [visit-prompt-builder](16-spec-visit-prompt-builder/) | delivered | `PromptRequest` record and `VisitPromptBuilder` static utility for assembling Claude prompts |
 | 17 | [claude-api-client](17-spec-claude-api-client/) | delivered | `ClaudeApiClient` interface and four JSON transport POJOs for the Anthropic Messages API |
 | 18 | [claude-api-client-stub](18-spec-claude-api-client-stub/) | delivered | `ClaudeApiClientStub` — deterministic canned-JSON stub active when API key is blank |
+| 19 | [health-timeline-fragment](19-spec-health-timeline-fragment/) | delivered | Thymeleaf fragment rendering per-pet AI visit health timeline with spinner, error, and done states |

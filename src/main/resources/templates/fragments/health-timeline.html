@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="#{healthTimeline.previewTitle}">preview</title>
+</head>
+<body>
+<div xmlns:th="https://www.thymeleaf.org" th:fragment="healthTimeline">
+  <div th:each="visit : ${pet.visitsSortedDesc}"
+       th:attr="data-visit-id=${visit.id},data-ai-status=${visit.aiStatus}">
+    <th:block th:if="${visit.aiStatus == T(org.springframework.samples.petclinic.owner.AiStatus).PENDING or visit.aiStatus == T(org.springframework.samples.petclinic.owner.AiStatus).PROCESSING}">
+      <span class="ai-spinner"></span>
+      <span th:text="#{healthTimeline.generatingSummary}">summary</span>
+    </th:block>
+    <th:block th:if="${visit.aiStatus == T(org.springframework.samples.petclinic.owner.AiStatus).DONE}">
+      <span th:text="${visit.date}"></span>
+      <span th:if="${visit.aiUrgency != null}"
+        th:class="${'urgency-' + visit.aiUrgency.toLowerCase()}"
+        th:text="${visit.aiUrgency}"></span>
+      <span th:if="${visit.aiTags != null}"
+        th:each="tag : ${#strings.arraySplit(visit.aiTags, ',')}"
+        class="health-tag"
+        th:text="${tag.trim()}"></span>
+      <span th:text="${visit.aiSummary}"></span>
+      <span th:if="${visit.aiFollowUp != null and !visit.aiFollowUp.isBlank()}"
+        th:text="${visit.aiFollowUp}"></span>
+    </th:block>
+    <th:block th:if="${visit.aiStatus == T(org.springframework.samples.petclinic.owner.AiStatus).FAILED}">
+      <div class="ai-error" th:text="#{healthTimeline.unableToGenerateSummary}">error</div>
+    </th:block>
+  </div>
+</div>
+</body>
+</html>
