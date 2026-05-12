@@ -31,3 +31,4 @@ All SDD spec bundles for the Emerald Grove Veterinary Clinic project.
 | 21 | [visit-controller-trigger](21-spec-visit-controller-trigger/) | draft | Wire `VisitSummaryService` into `VisitController` to trigger async AI generation on every saved visit |
 | 21 | [visit-summary-controller](21-spec-visit-summary-controller/) | delivered | `VisitSummaryController` — REST polling endpoint for AI summary status |
 | 22 | [js-polling-health-timeline](22-spec-js-polling-health-timeline/) | delivered | Vanilla-JS polling block in `health-timeline.html` that live-updates PENDING entries without a page reload |
+| 22 | [visit-summary-integration-test](22-spec-visit-summary-integration-test/) | delivered | Full async flow integration tests: happy path (DONE + urgency routing) and failure path (FAILED) |

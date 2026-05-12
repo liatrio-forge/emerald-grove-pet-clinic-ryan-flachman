@@ -16,7 +16,7 @@
 package org.springframework.samples.petclinic.owner;
 
 import java.util.Map;
-import java.util.Optional;
+import java.util.Objects;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -105,8 +105,19 @@ class VisitController {
 
 		owner.addVisit(petId, visit);
 		this.owners.save(owner);
-		if (visit.getId() != null) {
-			this.visitSummaryService.generate(visit.getId());
+		this.owners.flush();
+		Owner ownerForLookup = owner.getId() != null ? this.owners.findById(owner.getId()).orElse(owner) : owner;
+		Integer visitIdForSummary = ownerForLookup.getPet(petId)
+			.getVisits()
+			.stream()
+			.filter(v -> Objects.equals(v.getDate(), visit.getDate())
+					&& Objects.equals(v.getDescription(), visit.getDescription()))
+			.map(Visit::getId)
+			.filter(Objects::nonNull)
+			.findFirst()
+			.orElse(null);
+		if (visitIdForSummary != null) {
+			this.visitSummaryService.generate(visitIdForSummary);
 		}
 		redirectAttributes.addFlashAttribute("message", "Your visit has been booked");
 		return "redirect:/owners/{ownerId}";
