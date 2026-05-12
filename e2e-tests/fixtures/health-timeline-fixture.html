@@ -2,39 +2,30 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title th:text="#{healthTimeline.previewTitle}">preview</title>
+  <title>health-timeline fixture</title>
 </head>
 <body>
-<div xmlns:th="https://www.thymeleaf.org" th:fragment="healthTimeline">
-  <div th:each="visit : ${pet.visitsSortedDesc}"
-       th:attr="data-visit-id=${visit.id},
-                data-ai-status=${visit.aiStatus},
-                data-visit-date=${#temporals.format(visit.date, 'yyyy-MM-dd')}">
-    <th:block th:if="${visit.aiStatus == T(org.springframework.samples.petclinic.owner.AiStatus).PENDING or visit.aiStatus == T(org.springframework.samples.petclinic.owner.AiStatus).PROCESSING}">
-      <span class="ai-spinner"></span>
-      <span th:text="#{healthTimeline.generatingSummary}">summary</span>
-    </th:block>
-    <th:block th:if="${visit.aiStatus == T(org.springframework.samples.petclinic.owner.AiStatus).DONE}">
-      <span th:text="${visit.date}"></span>
-      <span th:if="${visit.aiUrgency != null}"
-        th:class="${'urgency-' + visit.aiUrgency.toLowerCase()}"
-        th:text="${visit.aiUrgency}"></span>
-      <span th:if="${visit.aiTags != null}"
-        th:each="tag : ${#strings.arraySplit(visit.aiTags, ',')}"
-        class="health-tag"
-        th:text="${tag.trim()}"></span>
-      <span th:text="${visit.aiSummary}"></span>
-      <span th:if="${visit.aiFollowUp != null and !visit.aiFollowUp.isBlank()}"
-        th:text="${visit.aiFollowUp}"></span>
-    </th:block>
-    <th:block th:if="${visit.aiStatus == T(org.springframework.samples.petclinic.owner.AiStatus).FAILED}">
-      <div class="ai-error" th:text="#{healthTimeline.unableToGenerateSummary}">error</div>
-    </th:block>
+  <div data-visit-id="1" data-ai-status="PENDING" data-visit-date="2025-01-10">
+    <span class="ai-spinner"></span>
+    <span>Generating summary…</span>
   </div>
-  <script th:inline="javascript">
+  <div data-visit-id="2" data-ai-status="PENDING" data-visit-date="2025-02-15">
+    <span class="ai-spinner"></span>
+    <span>Generating summary…</span>
+  </div>
+  <div data-visit-id="3" data-ai-status="DONE" data-visit-date="2025-03-01">
+    <span class="visit-date">2025-03-01</span>
+    <span class="urgency-routine">routine</span>
+    <span class="health-tag">vaccination</span>
+    <p class="ai-summary">Annual checkup OK.</p>
+  </div>
+  <div data-visit-id="4" data-ai-status="FAILED" data-visit-date="2025-04-01">
+    <div class="ai-error">Unable to generate summary.</div>
+  </div>
+  <script>
 (function () {
   'use strict';
-  var MSG_UNABLE = /*[[#{healthTimeline.unableToGenerateSummary}]]*/ 'Unable to generate summary.';
+  var MSG_UNABLE = 'Unable to generate summary.';
   var MAX_POLLS = 40;
   var INTERVAL_MS = 3000;
   var activeTimers = new Map();
@@ -137,10 +128,7 @@
           stopEntry(entry);
         }
       })
-      })
-      .catch(function (err) {
-        console.warn('Failed to poll visit summary:', visitId, err);
-      });
+      .catch(function () {});
   }
 
   function startEntry(entry) {
@@ -169,6 +157,5 @@
   }
 })();
   </script>
-</div>
 </body>
 </html>
