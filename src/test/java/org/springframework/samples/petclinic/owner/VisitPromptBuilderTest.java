@@ -43,7 +43,7 @@ class VisitPromptBuilderTest {
 		assertThat(system).containsIgnoringCase("summary");
 		assertThat(system).containsIgnoringCase("tags");
 		assertThat(system).containsIgnoringCase("urgency");
-		assertThat(system).containsIgnoringCase("followUp");
+		assertThat(system).containsIgnoringCase("follow_up");
 	}
 
 	@Test

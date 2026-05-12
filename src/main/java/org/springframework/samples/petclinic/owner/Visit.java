@@ -24,6 +24,9 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 
@@ -60,6 +63,10 @@ public class Visit extends BaseEntity {
 
 	@Column(name = "ai_follow_up", length = 500)
 	private String aiFollowUp;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "pet_id", insertable = false, updatable = false)
+	private Pet pet;
 
 	/**
 	 * Creates a new instance of Visit for the current date
@@ -123,6 +130,10 @@ public class Visit extends BaseEntity {
 
 	public void setAiFollowUp(String aiFollowUp) {
 		this.aiFollowUp = aiFollowUp;
+	}
+
+	public Pet getPet() {
+		return this.pet;
 	}
 
 }
