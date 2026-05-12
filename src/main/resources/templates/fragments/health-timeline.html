@@ -137,7 +137,10 @@
           stopEntry(entry);
         }
       })
-      .catch(function () {});
+      })
+      .catch(function (err) {
+        console.warn('Failed to poll visit summary:', visitId, err);
+      });
   }
 
   function startEntry(entry) {
