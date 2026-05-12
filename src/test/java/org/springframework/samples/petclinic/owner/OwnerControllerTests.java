@@ -372,6 +372,14 @@ class OwnerControllerTests {
 	}
 
 	@Test
+	void testOwnerDetailsContainsHealthTimelineToggle() throws Exception {
+		mockMvc.perform(get("/owners/{ownerId}", TEST_OWNER_ID))
+			.andExpect(status().isOk())
+			.andExpect(content().string(containsString("data-bs-toggle=\"collapse\"")))
+			.andExpect(content().string(containsString("Health Timeline")));
+	}
+
+	@Test
 	void testShowOwnerNotFound() throws Exception {
 		given(this.owners.findById(999)).willReturn(Optional.empty());
 		mockMvc.perform(get("/owners/{ownerId}", 999)).andExpect(status().isNotFound());
