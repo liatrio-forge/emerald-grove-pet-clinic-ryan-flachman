@@ -7,7 +7,6 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -34,7 +33,8 @@ class VisitSummaryServiceTests {
 	@Mock
 	private VisitSummaryParser parser;
 
-	@InjectMocks
+	private VisitSummaryTransactionSteps transactionSteps;
+
 	private VisitSummaryService service;
 
 	private final List<AiStatus> statusesOnSave = new ArrayList<>();
@@ -47,8 +47,11 @@ class VisitSummaryServiceTests {
 	}
 
 	@BeforeEach
-	void saveRecordsStatus() {
+	void setUpService() {
 		statusesOnSave.clear();
+		transactionSteps = new VisitSummaryTransactionSteps(visitRepository);
+		service = new VisitSummaryService(transactionSteps, claudeApiClient, parser);
+
 		lenient().when(visitRepository.save(any(Visit.class))).thenAnswer(invocation -> {
 			Visit v = invocation.getArgument(0);
 			statusesOnSave.add(v.getAiStatus());
