@@ -21,7 +21,15 @@ public class VisitSummaryTransactionSteps {
 	@Transactional(readOnly = true)
 	public Optional<Visit> loadVisitForGeneration(Integer visitId) {
 		return visitRepository.findById(visitId).map(visit -> {
-			visit.getPet();
+			Pet pet = visit.getPet();
+			if (pet != null) {
+				pet.getBirthDate();
+				pet.getName();
+				PetType type = pet.getType();
+				if (type != null) {
+					type.getName();
+				}
+			}
 			return visit;
 		});
 	}
