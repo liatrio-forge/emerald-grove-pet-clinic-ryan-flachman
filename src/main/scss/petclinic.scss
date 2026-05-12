@@ -450,6 +450,62 @@ hr {
   font-size: 12px;
 }
 
+// Health timeline — urgency badges
+.urgency-routine,
+.urgency-monitor,
+.urgency-urgent {
+  display: inline-block;
+  padding: 0.25em 0.6em;
+  font-size: 0.75em;
+  font-weight: 600;
+  line-height: 1;
+  border-radius: 9999px;
+  white-space: nowrap;
+}
+
+.urgency-routine {
+  background-color: $spring-green;
+  color: $spring-brown;
+}
+
+.urgency-monitor {
+  background-color: #ffc107;
+  color: #111111;
+}
+
+.urgency-urgent {
+  background-color: #dc3545;
+  color: #f8f9fa;
+}
+
+// Health timeline — tag chip
+.health-tag {
+  display: inline-block;
+  padding: 0.2em 0.55em;
+  font-size: 0.75em;
+  border: 1px solid $spring-green;
+  border-radius: 9999px;
+  color: $spring-green;
+  background-color: transparent;
+  white-space: nowrap;
+}
+
+// Health timeline — loading spinner
+@keyframes ai-spinner-rotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.ai-spinner {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  border: 0.15em solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: ai-spinner-rotate 0.75s linear infinite;
+}
+
 @import "typography.scss";
 @import "header.scss";
 @import "responsive.scss";
