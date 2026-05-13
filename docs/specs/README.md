@@ -32,3 +32,4 @@ All SDD spec bundles for the Emerald Grove Veterinary Clinic project.
 | 21 | [visit-summary-controller](21-spec-visit-summary-controller/) | delivered | `VisitSummaryController` — REST polling endpoint for AI summary status |
 | 22 | [js-polling-health-timeline](22-spec-js-polling-health-timeline/) | delivered | Vanilla-JS polling block in `health-timeline.html` that live-updates PENDING entries without a page reload |
 | 22 | [visit-summary-integration-test](22-spec-visit-summary-integration-test/) | delivered | Full async flow integration tests: happy path (DONE + urgency routing) and failure path (FAILED) |
+| 23 | [ai-visit-summary-e2e](23-spec-ai-visit-summary-e2e/) | accepted | Playwright E2E test: POST visit → redirect → expand health timeline → assert DONE urgency badge + tags |
