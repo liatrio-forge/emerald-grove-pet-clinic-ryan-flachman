@@ -20,7 +20,7 @@ public class VisitSummaryParser {
 
 	public VisitSummary parse(String rawJson) {
 		try {
-			JsonNode root = MAPPER.readTree(rawJson);
+			JsonNode root = MAPPER.readTree(stripMarkdownFences(rawJson));
 			String summary = root.path("summary").asText();
 			List<String> tags = extractTags(root);
 			VisitUrgency urgency = parseUrgency(root.path("urgency").asText(null));
@@ -33,6 +33,21 @@ public class VisitSummaryParser {
 		catch (Exception e) {
 			throw new VisitSummaryParseException("Failed to parse VisitSummary JSON", e);
 		}
+	}
+
+	private static String stripMarkdownFences(String raw) {
+		if (raw == null) {
+			return raw;
+		}
+		String trimmed = raw.strip();
+		if (trimmed.startsWith("```")) {
+			int firstNewline = trimmed.indexOf('\n');
+			int lastFence = trimmed.lastIndexOf("```");
+			if (firstNewline != -1 && lastFence > firstNewline) {
+				return trimmed.substring(firstNewline + 1, lastFence).strip();
+			}
+		}
+		return trimmed;
 	}
 
 	private static List<String> extractTags(JsonNode root) {
@@ -52,10 +67,21 @@ public class VisitSummaryParser {
 			log.warn("Urgency missing or blank in AI JSON — defaulting to ROUTINE");
 			return VisitUrgency.ROUTINE;
 		}
+		String normalized = raw.trim().toUpperCase();
 		try {
-			return VisitUrgency.valueOf(raw.trim().toUpperCase());
+			return VisitUrgency.valueOf(normalized);
 		}
 		catch (IllegalArgumentException e) {
+			// map common LLM synonyms
+			if (normalized.equals("HIGH") || normalized.equals("EMERGENCY") || normalized.equals("CRITICAL")) {
+				return VisitUrgency.URGENT;
+			}
+			if (normalized.equals("MEDIUM") || normalized.equals("MODERATE") || normalized.equals("WATCH")) {
+				return VisitUrgency.MONITOR;
+			}
+			if (normalized.equals("LOW") || normalized.equals("NORMAL") || normalized.equals("WELLNESS")) {
+				return VisitUrgency.ROUTINE;
+			}
 			log.warn("Unknown urgency '{}' in AI JSON — defaulting to ROUTINE", raw.trim());
 			return VisitUrgency.ROUTINE;
 		}

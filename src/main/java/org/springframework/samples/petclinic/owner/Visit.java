@@ -52,7 +52,7 @@ public class Visit extends BaseEntity {
 	@Enumerated(EnumType.STRING)
 	private AiStatus aiStatus;
 
-	@Column(name = "ai_summary", length = 1000)
+	@Column(name = "ai_summary", length = 4000)
 	private String aiSummary;
 
 	@Column(name = "ai_tags", length = 500)
@@ -61,7 +61,7 @@ public class Visit extends BaseEntity {
 	@Column(name = "ai_urgency", length = 20)
 	private String aiUrgency;
 
-	@Column(name = "ai_follow_up", length = 500)
+	@Column(name = "ai_follow_up", length = 2000)
 	private String aiFollowUp;
 
 	@ManyToOne(fetch = FetchType.LAZY)

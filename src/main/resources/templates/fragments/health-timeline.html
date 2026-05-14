@@ -10,11 +10,11 @@
        th:attr="data-visit-id=${visit.id},
                 data-ai-status=${visit.aiStatus},
                 data-visit-date=${#temporals.format(visit.date, 'yyyy-MM-dd')}">
-    <th:block th:if="${visit.aiStatus == T(org.springframework.samples.petclinic.owner.AiStatus).PENDING or visit.aiStatus == T(org.springframework.samples.petclinic.owner.AiStatus).PROCESSING}">
+    <th:block th:if="${visit.aiStatus != null and (visit.aiStatus == T(org.springframework.samples.petclinic.owner.AiStatus).PENDING or visit.aiStatus == T(org.springframework.samples.petclinic.owner.AiStatus).PROCESSING)}">
       <span class="ai-spinner"></span>
       <span th:text="#{healthTimeline.generatingSummary}">summary</span>
     </th:block>
-    <th:block th:if="${visit.aiStatus == T(org.springframework.samples.petclinic.owner.AiStatus).DONE}">
+    <th:block th:if="${visit.aiStatus != null and visit.aiStatus == T(org.springframework.samples.petclinic.owner.AiStatus).DONE}">
       <span th:text="${visit.date}"></span>
       <span th:if="${visit.aiUrgency != null}"
         th:class="${'urgency-' + visit.aiUrgency.toLowerCase()}"
@@ -27,7 +27,7 @@
       <span th:if="${visit.aiFollowUp != null and !visit.aiFollowUp.isBlank()}"
         th:text="${visit.aiFollowUp}"></span>
     </th:block>
-    <th:block th:if="${visit.aiStatus == T(org.springframework.samples.petclinic.owner.AiStatus).FAILED}">
+    <th:block th:if="${visit.aiStatus != null and visit.aiStatus == T(org.springframework.samples.petclinic.owner.AiStatus).FAILED}">
       <div class="ai-error" th:text="#{healthTimeline.unableToGenerateSummary}">error</div>
     </th:block>
   </div>
@@ -117,29 +117,33 @@
   function pollEntry(entry) {
     var state = activeTimers.get(entry);
     if (!state) {
+      console.log('[health-timeline] pollEntry: no state for entry, skipping');
       return;
     }
     var visitId = entry.dataset.visitId;
     var visitDate = entry.dataset.visitDate;
+    console.log('[health-timeline] polling visit', visitId, '(poll #' + (state.pollCount + 1) + ')');
     fetch('/visits/' + visitId + '/summary')
       .then(function (r) {
         return r.json();
       })
       .then(function (data) {
         state.pollCount += 1;
+        console.log('[health-timeline] visit', visitId, 'status:', data.status);
         if (data.status === 'DONE') {
           entry.innerHTML = buildDoneHtml(visitDate, data);
           entry.dataset.aiStatus = 'DONE';
           stopEntry(entry);
+          console.log('[health-timeline] visit', visitId, 'done — stopped polling');
         } else if (data.status === 'FAILED' || state.pollCount >= MAX_POLLS) {
           entry.innerHTML = buildErrorHtml();
           entry.dataset.aiStatus = 'FAILED';
           stopEntry(entry);
+          console.log('[health-timeline] visit', visitId, 'failed or max polls reached — stopped');
         }
       })
-      })
       .catch(function (err) {
-        console.warn('Failed to poll visit summary:', visitId, err);
+        console.warn('[health-timeline] fetch failed for visit', visitId, err);
       });
   }
 
@@ -149,10 +153,16 @@
       pollEntry(entry);
     }, INTERVAL_MS);
     activeTimers.set(entry, state);
+    console.log('[health-timeline] started polling visit', entry.dataset.visitId, 'every', INTERVAL_MS, 'ms');
   }
 
   function boot() {
-    var pendingEntries = document.querySelectorAll('[data-ai-status="PENDING"]');
+    var allEntries = document.querySelectorAll('[data-visit-id]');
+    var pendingEntries = document.querySelectorAll('[data-ai-status="PENDING"], [data-ai-status="PROCESSING"]');
+    console.log('[health-timeline] boot — total visit entries:', allEntries.length, '| PENDING/PROCESSING:', pendingEntries.length);
+    allEntries.forEach(function (e) {
+      console.log('[health-timeline]   visit', e.dataset.visitId, 'ai-status="' + e.dataset.aiStatus + '"');
+    });
     if (pendingEntries.length === 0) {
       return;
     }
@@ -162,6 +172,7 @@
     document.addEventListener('visibilitychange', onVisibilityChange);
   }
 
+  console.log('[health-timeline] script loaded, readyState:', document.readyState);
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', boot);
   } else {

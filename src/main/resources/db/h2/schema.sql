@@ -60,10 +60,10 @@ CREATE TABLE visits (
   visit_date  DATE,
   description VARCHAR(2000),
   ai_status   VARCHAR(20) DEFAULT 'PENDING',
-  ai_summary  VARCHAR(1000),
+  ai_summary  VARCHAR(4000),
   ai_tags     VARCHAR(500),
   ai_urgency  VARCHAR(20),
-  ai_follow_up VARCHAR(500)
+  ai_follow_up VARCHAR(2000)
 );
 ALTER TABLE visits ADD CONSTRAINT fk_visits_pets FOREIGN KEY (pet_id) REFERENCES pets (id);
 CREATE INDEX visits_pet_id ON visits (pet_id);
