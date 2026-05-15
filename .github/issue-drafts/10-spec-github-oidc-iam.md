@@ -41,6 +41,10 @@ The workflows will interact with AWS. Using GitHub OIDC avoids long-lived keys, 
 - Workflows can assume AWS roles through OIDC
 - No long-lived AWS access keys are required in GitHub secrets
 - Permissions are sufficiently scoped for each workflow responsibility
+- OIDC trust policies use explicit `StringEquals` claim matching for exact-match constraints
+- OIDC trust policies require `aud` to equal `sts.amazonaws.com`
+- OIDC trust policies tightly scope `sub` to the minimum allowed GitHub subject, using patterns such as `repo:ORG/REPO:ref:refs/heads/BRANCH-NAME` or `repo:ORG/REPO:environment:ENV-NAME`
+- The spec defines minimum scoping rules for allowed repositories, branches, and environments so trust is not granted to broad repo-wide or org-wide subjects
 
 ## Dependencies
 
@@ -50,6 +54,7 @@ The workflows will interact with AWS. Using GitHub OIDC avoids long-lived keys, 
 
 - The spec should decide whether a single broad role is acceptable for the POC or whether apply/destroy/deploy should use separate roles
 - Branch and workflow restrictions should be explicit if supported
+- Trust-policy examples should show exact `StringEquals` conditions for `aud` and the allowed `sub` values or patterns chosen for each workflow
 
 ## Risks and open questions
 
