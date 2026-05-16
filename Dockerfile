@@ -14,4 +14,6 @@ WORKDIR /app
 
 COPY --from=build /workspace/target/*.jar /app/app.jar
 
+ENV SPRING_PROFILES_ACTIVE=deploy
+
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]

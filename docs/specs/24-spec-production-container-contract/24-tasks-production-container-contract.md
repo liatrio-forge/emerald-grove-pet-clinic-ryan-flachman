@@ -42,7 +42,7 @@
 - [x] 1.3 Add `.dockerignore` rules that exclude local build output and other non-runtime inputs so the image build context stays reproducible and lean.
 - [x] 1.4 Document and capture the `docker build -t petclinic:spec24 .` proof so downstream CI/CD and infrastructure work can reuse the same image build contract.
 
-### [ ] 2.0 Define the runtime startup and fixed port contract
+### [x] 2.0 Define the runtime startup and fixed port contract
 
 #### 2.0 Proof Artifact(s)
 
@@ -53,10 +53,10 @@
 
 #### 2.0 Tasks
 
-- [ ] 2.1 Add a failing deploy-profile test that asserts deployed runtime uses explicit port `8080`, activates through `SPRING_PROFILES_ACTIVE=deploy`, and leaves secrets supplied only through environment-variable overrides.
-- [ ] 2.2 Create `src/main/resources/application-deploy.properties` with deploy-only runtime settings for the fixed port and documented environment-driven values such as datasource connectivity and optional external API credentials.
-- [ ] 2.3 Update the `Dockerfile` startup contract so the container runs one foreground Spring Boot process using the packaged jar and the deploy profile without requiring baked-in secrets.
-- [ ] 2.4 Capture the `docker run --rm -p 8080:8080 -e SPRING_PROFILES_ACTIVE=deploy petclinic:spec24` plus HTTP smoke-check proof that confirms the startup path and port mapping work as documented.
+- [x] 2.1 Add a failing deploy-profile test that asserts deployed runtime uses explicit port `8080`, activates through `SPRING_PROFILES_ACTIVE=deploy`, and leaves secrets supplied only through environment-variable overrides.
+- [x] 2.2 Create `src/main/resources/application-deploy.properties` with deploy-only runtime settings for the fixed port and documented environment-driven values such as datasource connectivity and optional external API credentials.
+- [x] 2.3 Update the `Dockerfile` startup contract so the container runs one foreground Spring Boot process using the packaged jar and the deploy profile without requiring baked-in secrets.
+- [x] 2.4 Capture the `docker run --rm -p 8080:8080 -e SPRING_PROFILES_ACTIVE=deploy petclinic:spec24` plus HTTP smoke-check proof that confirms the startup path and port mapping work as documented.
 
 ### [ ] 3.0 Define the deployed health-check and actuator exposure contract
 
