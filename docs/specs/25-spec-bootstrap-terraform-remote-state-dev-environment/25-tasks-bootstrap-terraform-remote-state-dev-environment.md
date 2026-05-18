@@ -48,7 +48,7 @@
 - [x] 1.3 Update the spec-facing documentation where needed so backend ownership, long-lived versus manually torn-down dev assets, and destroy-boundary assumptions are explicit and consistent with the state-stack guide.
 - [x] 1.4 Capture the `terraform -chdir=infra/terraform/state/dev init -backend=false` proof path so reviewers can verify state-stack initialization stays local until remote backend resources exist.
 
-### [ ] 2.0 Define the dev remote-state resource contract
+### [x] 2.0 Define the dev remote-state resource contract
 
 #### 2.0 Proof Artifact(s)
 
@@ -59,10 +59,10 @@
 
 #### 2.0 Tasks
 
-- [ ] 2.1 Add a failing contract test that asserts the state stack defines exactly one dev S3 backend bucket, exactly one dev DynamoDB lock table, required lock-table key schema, bucket versioning, and server-side encryption.
-- [ ] 2.2 Create the state-stack Terraform files that encode the bucket, lock table, Terraform and provider constraints, and any outputs needed for downstream backend consumption.
-- [ ] 2.3 Add shared naming and tagging definitions that include environment context, keep resource names human-readable, and avoid ambiguous shared backend identifiers.
-- [ ] 2.4 Capture the `terraform -chdir=infra/terraform/state/dev validate` proof path and document how the validated resource contract maps back to the spec's storage, locking, recovery, and security requirements.
+- [x] 2.1 Add a failing contract test that asserts the state stack defines exactly one dev S3 backend bucket, exactly one dev DynamoDB lock table, required lock-table key schema, bucket versioning, and server-side encryption.
+- [x] 2.2 Create the state-stack Terraform files that encode the bucket, lock table, Terraform and provider constraints, and any outputs needed for downstream backend consumption.
+- [x] 2.3 Add shared naming and tagging definitions that include environment context, keep resource names human-readable, and avoid ambiguous shared backend identifiers.
+- [x] 2.4 Capture the `terraform -chdir=infra/terraform/state/dev validate` proof path and document how the validated resource contract maps back to the spec's storage, locking, recovery, and security requirements.
 
 ### [ ] 3.0 Define the reusable remote-state consumer contract for dev and `floci`
 

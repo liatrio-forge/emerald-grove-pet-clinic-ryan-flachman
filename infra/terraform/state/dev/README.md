@@ -47,3 +47,16 @@ This stack must exist before any downstream stack attempts remote-backend initia
 Run `terraform init -backend=false` in this directory until the backend
 resources exist. This prevents a circular dependency where the stack would need
 its own remote backend before the backend resources have been created.
+
+## Resource Contract
+
+- Storage: the stack creates exactly one S3 bucket for dev Terraform state.
+- Locking: the stack creates exactly one DynamoDB table with the `LockID`
+  string hash key expected by Terraform state locking.
+- Recovery: S3 bucket versioning stays enabled so prior state revisions can be
+  recovered after accidental changes.
+- Security: server-side encryption stays enabled with Amazon S3 managed
+  encryption at rest.
+- Naming and tags: bucket and table names are environment-scoped and
+  human-readable, while shared tags identify the application, environment,
+  stack, and Terraform ownership consistently.
