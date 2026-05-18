@@ -1,0 +1,12 @@
+.agents
+.git
+.github
+.gradle
+.idea
+.mvn/wrapper/maven-wrapper.jar
+.vscode
+docs/specs
+e2e-tests
+target
+test-results
+*.iml
