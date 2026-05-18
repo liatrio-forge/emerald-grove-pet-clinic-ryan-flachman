@@ -75,6 +75,35 @@ Build a Docker container image:
 ./mvnw spring-boot:build-image
 ```
 
+### Deploy Profile Runtime Contract
+
+For deployed environments, use the repository-owned `Dockerfile` and activate the
+dedicated `deploy` profile:
+
+```bash
+docker build -t petclinic:spec24 .
+docker run --rm -p 8080:8080 -e SPRING_PROFILES_ACTIVE=deploy petclinic:spec24
+```
+
+The `deploy` profile keeps the application on port `8080`, exposes only
+`/actuator/health` for health checks, and leaves secrets out of the image.
+
+Runtime environment variables:
+
+- `SPRING_PROFILES_ACTIVE=deploy` is required to activate deployed settings.
+- `SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, and
+  `SPRING_DATASOURCE_PASSWORD` are optional overrides for runtime database
+  connectivity.
+- `ANTHROPIC_API_KEY` is an optional runtime-injected external API credential.
+
+If you do not override datasource settings, the deploy profile keeps the H2
+proof-of-concept path (`jdbc:h2:mem:petclinic`) as the default.
+
+Health-check guidance for downstream infrastructure:
+
+- ALB path: `GET /actuator/health` on the main application port `8080`
+- ECS loopback command: `curl -fsS http://127.0.0.1:8080/actuator/health`
+
 ## Application Features
 
 ### Core Entities

@@ -58,7 +58,7 @@
 - [x] 2.3 Update the `Dockerfile` startup contract so the container runs one foreground Spring Boot process using the packaged jar and the deploy profile without requiring baked-in secrets.
 - [x] 2.4 Capture the `docker run --rm -p 8080:8080 -e SPRING_PROFILES_ACTIVE=deploy petclinic:spec24` plus HTTP smoke-check proof that confirms the startup path and port mapping work as documented.
 
-### [ ] 3.0 Define the deployed health-check and actuator exposure contract
+### [x] 3.0 Define the deployed health-check and actuator exposure contract
 
 #### 3.0 Proof Artifact(s)
 
@@ -69,12 +69,12 @@
 
 #### 3.0 Tasks
 
-- [ ] 3.1 Add a failing integration test that runs with the deploy profile and asserts `/actuator/health` returns success while broader actuator endpoints are not exposed for deployed traffic.
-- [ ] 3.2 Update deploy-specific properties to remove wildcard actuator exposure, keep health on the main application port, and scope health details to the minimum needed for v1 checks.
-- [ ] 3.3 Document one stable ALB health-check path and one ECS loopback health-check command that both target the same deploy-profile application instance.
-- [ ] 3.4 Capture proof from a running container showing `curl http://localhost:8080/actuator/health` succeeds and that the documented health-check guidance matches the implemented contract.
+- [x] 3.1 Add a failing integration test that runs with the deploy profile and asserts `/actuator/health` returns success while broader actuator endpoints are not exposed for deployed traffic.
+- [x] 3.2 Update deploy-specific properties to remove wildcard actuator exposure, keep health on the main application port, and scope health details to the minimum needed for v1 checks.
+- [x] 3.3 Document one stable ALB health-check path and one ECS loopback health-check command that both target the same deploy-profile application instance.
+- [x] 3.4 Capture proof from a running container showing `curl http://localhost:8080/actuator/health` succeeds and that the documented health-check guidance matches the implemented contract.
 
-### [ ] 4.0 Isolate deployed-environment settings behind a dedicated deploy profile
+### [x] 4.0 Isolate deployed-environment settings behind a dedicated deploy profile
 
 #### 4.0 Proof Artifact(s)
 
@@ -85,7 +85,7 @@
 
 #### 4.0 Tasks
 
-- [ ] 4.1 Add a failing profile-isolation test that asserts deploy-specific operational overrides are confined to `application-deploy.properties` and do not duplicate unrelated local-development settings.
-- [ ] 4.2 Refine `application-deploy.properties` so it contains only deployed-environment concerns such as explicit port, actuator exposure, health behavior, and runtime override hooks.
-- [ ] 4.3 Update operator-facing documentation to show how to activate the deploy profile, which environment variables are required or optional at runtime, and that H2 remains the default proof-of-concept database path unless overridden.
-- [ ] 4.4 Capture proof that deploy-profile startup logs or observable runtime behavior confirm the profile activation path works without editing local profile files or embedding secrets in the image.
+- [x] 4.1 Add a failing profile-isolation test that asserts deploy-specific operational overrides are confined to `application-deploy.properties` and do not duplicate unrelated local-development settings.
+- [x] 4.2 Refine `application-deploy.properties` so it contains only deployed-environment concerns such as explicit port, actuator exposure, health behavior, and runtime override hooks.
+- [x] 4.3 Update operator-facing documentation to show how to activate the deploy profile, which environment variables are required or optional at runtime, and that H2 remains the default proof-of-concept database path unless overridden.
+- [x] 4.4 Capture proof that deploy-profile startup logs or observable runtime behavior confirm the profile activation path works without editing local profile files or embedding secrets in the image.
