@@ -1,0 +1,9 @@
+services:
+  floci:
+    image: localstack/localstack:3
+    ports:
+      - "4566:4566"
+    environment:
+      AWS_DEFAULT_REGION: us-east-1
+      DEBUG: 0
+      SERVICES: s3,dynamodb,sts

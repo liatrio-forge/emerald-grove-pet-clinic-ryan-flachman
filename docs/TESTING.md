@@ -12,6 +12,30 @@ The Emerald Grove Veterinary Clinic application employs a **Strict Test-Driven D
 
 The test suite ensures code quality, prevents regressions, and validates application behavior across different layers and environments.
 
+## Infrastructure Testing
+
+Infrastructure changes should be tested locally with `floci` before any AWS
+deployment. In this repository, `floci` is the local AWS-resources environment
+used to validate infrastructure behavior without touching a live AWS account.
+
+### Infrastructure Testing Workflow
+
+1. Make infrastructure changes using the normal TDD workflow where applicable.
+2. Validate the infrastructure locally against `floci` first.
+3. Verify that application-to-infrastructure assumptions still hold in the
+   local environment.
+4. Use AWS only after the `floci` validation path is passing.
+
+### Infrastructure Testing Expectations
+
+- Prefer `floci` for local Terraform and infrastructure validation.
+- Treat `floci` as the default environment for pre-AWS infrastructure testing.
+- Keep local infrastructure tests reproducible and isolated from live AWS
+  credentials or cloud-side state.
+- Do not rely on manual AWS verification as the first feedback loop.
+- Keep proof artifacts sanitized and avoid exposing credentials, account IDs, or
+  raw state contents.
+
 ## Test Structure
 
 ```text

@@ -104,6 +104,44 @@ Health-check guidance for downstream infrastructure:
 - ALB path: `GET /actuator/health` on the main application port `8080`
 - ECS loopback command: `curl -fsS http://127.0.0.1:8080/actuator/health`
 
+## Infrastructure Development
+
+### Local AWS Testing with Floci
+
+For infrastructure work, use `floci` as the local AWS-resources environment
+before deploying anything to AWS. The intended workflow is:
+
+1. Build and validate infrastructure changes locally against `floci`.
+2. Verify the application and infrastructure contract in the local environment.
+3. Promote the same infrastructure changes to AWS only after local validation passes.
+
+`floci` is the repository's local testing target for AWS-style resources. Use it
+to exercise infrastructure behavior, naming, state configuration, and deployment
+assumptions without making changes in a live AWS account.
+
+### Terraform Remote-State Contract
+
+The repository-owned remote-state contract verification entry point is:
+
+```bash
+./scripts/verify-terraform-remote-state-contract.sh
+```
+
+That script validates the `state/dev` stack, starts the compose-managed `floci`
+service, seeds the local backend contract, and verifies consumer attachment with
+the same remote-state contract expected by local operators and future GitHub
+Actions automation.
+
+If you need to inspect the local AWS-resources environment directly, start it
+with:
+
+```bash
+docker compose -f infra/terraform/floci/docker-compose.yml up -d floci
+```
+
+This keeps one reproducible remote-state contract for local verification,
+compose-based `floci` testing, and future CI reuse.
+
 ## Application Features
 
 ### Core Entities
