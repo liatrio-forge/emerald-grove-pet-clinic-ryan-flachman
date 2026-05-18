@@ -64,7 +64,7 @@
 - [x] 2.3 Add shared naming and tagging definitions that include environment context, keep resource names human-readable, and avoid ambiguous shared backend identifiers.
 - [x] 2.4 Capture the `terraform -chdir=infra/terraform/state/dev validate` proof path and document how the validated resource contract maps back to the spec's storage, locking, recovery, and security requirements.
 
-### [ ] 3.0 Define the reusable remote-state consumer contract for dev and `floci`
+### [x] 3.0 Define the reusable remote-state consumer contract for dev and `floci`
 
 #### 3.0 Proof Artifact(s)
 
@@ -76,12 +76,12 @@
 
 #### 3.0 Tasks
 
-- [ ] 3.1 Add a failing contract test that asserts downstream dev stacks use partial backend configuration, a stable application state-key path, explicit documentation that remote state is already managed by the `state/dev` stack, and a documented `floci` local-validation path.
-- [ ] 3.2 Create the sanitized `backend.hcl.example`, a `floci` local backend example, and companion consumer guidance that define expected bucket, key, region, and locking inputs for local operators and GitHub Actions.
-- [ ] 3.3 Document the state-key naming rule for the main application stack plus the source of backend-config values for `floci`, local operators, and GitHub Actions so future Terraform specs reuse one contract instead of inventing incompatible paths.
-- [ ] 3.4 Capture the `terraform -chdir=infra/terraform/app/dev init -backend-config=backend.hcl.example -reconfigure` proof path so reviewers can verify downstream stacks have a reproducible remote-state attachment workflow.
+- [x] 3.1 Add a failing contract test that asserts downstream dev stacks use partial backend configuration, a stable application state-key path, explicit documentation that remote state is already managed by the `state/dev` stack, and a documented `floci` local-validation path.
+- [x] 3.2 Create the sanitized `backend.hcl.example`, a `floci` local backend example, and companion consumer guidance that define expected bucket, key, region, and locking inputs for local operators and GitHub Actions.
+- [x] 3.3 Document the state-key naming rule for the main application stack plus the source of backend-config values for `floci`, local operators, and GitHub Actions so future Terraform specs reuse one contract instead of inventing incompatible paths.
+- [x] 3.4 Capture the `terraform -chdir=infra/terraform/app/dev init -backend-config=backend.hcl.example -reconfigure` proof path so reviewers can verify downstream stacks have a reproducible remote-state attachment workflow.
 
-### [ ] 4.0 Add automated verification and operator-facing proof for the backend contract and `floci` local testing
+### [x] 4.0 Add automated verification and operator-facing proof for the backend contract and `floci` local testing
 
 #### 4.0 Proof Artifact(s)
 
@@ -92,7 +92,7 @@
 
 #### 4.0 Tasks
 
-- [ ] 4.1 Add a failing contract test that asserts a single repository-owned verification workflow checks state-stack initialization, state-stack validation, consumer backend guidance, `floci` local testing, and sanitization requirements together.
-- [ ] 4.2 Create the verification script so it runs the documented Terraform commands in a reproducible order and fails clearly when required state-stack, consumer, or `floci` files are missing.
-- [ ] 4.3 Document the operator verification flow in the most appropriate repository location and include sanitized expectations for local `floci` runs and future GitHub Actions reuse.
-- [ ] 4.4 Capture the `./scripts/verify-terraform-remote-state-contract.sh` proof path and any supporting spec-local proof document so validation evidence is observable, reproducible, scope-linked, and secret-free.
+- [x] 4.1 Add a failing contract test that asserts a single repository-owned verification workflow checks state-stack initialization, state-stack validation, consumer backend guidance, `floci` local testing, and sanitization requirements together.
+- [x] 4.2 Create the verification script so it runs the documented Terraform commands in a reproducible order and fails clearly when required state-stack, consumer, or `floci` files are missing.
+- [x] 4.3 Document the operator verification flow in the most appropriate repository location and include sanitized expectations for local `floci` runs and future GitHub Actions reuse.
+- [x] 4.4 Capture the `./scripts/verify-terraform-remote-state-contract.sh` proof path and any supporting spec-local proof document so validation evidence is observable, reproducible, scope-linked, and secret-free.
