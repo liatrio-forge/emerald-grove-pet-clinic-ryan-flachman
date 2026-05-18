@@ -32,6 +32,7 @@ This feature defines the Terraform remote-state foundation for the dev-only AWS 
 - The system shall define a bootstrap sequence in which backend resources exist before any stack attempts `terraform init` with the remote backend enabled.
 - The system shall define that destroying the main application stack does not implicitly destroy the backend resources in the same operation.
 - The system shall document whether backend resources are long-lived dev-team assets or short-lived POC assets with a controlled manual teardown sequence.
+- The system shall make the long-lived versus manually torn-down dev assets decision explicit so reviewers can see that the dev POC uses a controlled manual teardown sequence for backend resources.
 
 **Proof Artifacts:**
 
@@ -121,6 +122,7 @@ No specific design requirements identified.
 - Current HashiCorp guidance also recommends S3-native locking via `use_lockfile` and marks DynamoDB-based locking as deprecated for newer Terraform versions. This spec intentionally preserves the issue's explicit `S3 + DynamoDB` decision for the dev POC and should record that choice as a deliberate short-term compatibility decision rather than the long-term preferred direction.
 - Current AWS guidance recommends remote state storage in S3, versioning for recovery, and strong protection against accidental loss; this spec should therefore require bucket versioning and durable state retention assumptions.
 - The backend bootstrap implementation should remain separate from the main app stack to avoid circular dependency during `terraform init` and to avoid unsafe teardown ordering where the app stack destroys the resources that hold its own state.
+- For this dev POC, backend resources should be treated as manually torn-down dev assets with a separate operator-controlled destroy sequence, even if the application stack is short-lived.
 - The lock table contract should follow Terraform's expected schema for DynamoDB locking so later stacks can attach without custom lock semantics.
 - The naming convention should be environment-scoped and human-readable so operators can distinguish backend resources from future application resources in the AWS account.
 - Local infrastructure validation should run against `floci` so engineers can test remote-state assumptions before using live AWS resources.

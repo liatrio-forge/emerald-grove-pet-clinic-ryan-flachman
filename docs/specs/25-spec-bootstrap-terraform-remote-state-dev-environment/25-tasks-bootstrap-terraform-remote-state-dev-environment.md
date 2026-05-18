@@ -32,7 +32,7 @@
 
 ## Tasks
 
-### [ ] 1.0 Establish the state-stack ownership and lifecycle boundary
+### [x] 1.0 Establish the state-stack ownership and lifecycle boundary
 
 #### 1.0 Proof Artifact(s)
 
@@ -43,10 +43,10 @@
 
 #### 1.0 Tasks
 
-- [ ] 1.1 Add a failing contract test that asserts the repository includes a dedicated `state/dev` area, documents that backend resources are owned outside the main application stack, and preserves a separate teardown sequence.
-- [ ] 1.2 Create the `state/dev` directory structure and a state-stack README that defines create, update, and destroy ordering before any downstream stack attempts remote-backend initialization.
-- [ ] 1.3 Update the spec-facing documentation where needed so backend ownership, long-lived versus manually torn-down dev assets, and destroy-boundary assumptions are explicit and consistent with the state-stack guide.
-- [ ] 1.4 Capture the `terraform -chdir=infra/terraform/state/dev init -backend=false` proof path so reviewers can verify state-stack initialization stays local until remote backend resources exist.
+- [x] 1.1 Add a failing contract test that asserts the repository includes a dedicated `state/dev` area, documents that backend resources are owned outside the main application stack, and preserves a separate teardown sequence.
+- [x] 1.2 Create the `state/dev` directory structure and a state-stack README that defines create, update, and destroy ordering before any downstream stack attempts remote-backend initialization.
+- [x] 1.3 Update the spec-facing documentation where needed so backend ownership, long-lived versus manually torn-down dev assets, and destroy-boundary assumptions are explicit and consistent with the state-stack guide.
+- [x] 1.4 Capture the `terraform -chdir=infra/terraform/state/dev init -backend=false` proof path so reviewers can verify state-stack initialization stays local until remote backend resources exist.
 
 ### [ ] 2.0 Define the dev remote-state resource contract
 
