@@ -25,6 +25,7 @@ locals {
 
   vpc_name                     = "${var.environment}-vpc"
   public_alb_name              = "${var.environment}-public-http"
+  application_target_group_name = "${var.environment}-application"
   alb_security_group_name      = "${var.environment}-application-load-balancer"
   ecs_task_security_group_name = "${var.environment}-ecs-task"
   ecr_repository_name          = "${var.environment}-petclinic"

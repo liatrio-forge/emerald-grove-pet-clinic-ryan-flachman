@@ -46,7 +46,7 @@
 - [x] 1.3 Add reviewer-readable ALB naming, tags, and any short operator-facing documentation note needed so the ALB is clearly identified as the approved v1 public entrypoint contract.
 - [x] 1.4 Capture `terraform validate` and sanitized `terraform plan -no-color` proof output showing one public ALB with the expected subnet placement, security-group attachment, and internet-facing contract.
 
-### [ ] 2.0 Define the HTTP listener and ECS-compatible target-group health contract
+### [x] 2.0 Define the HTTP listener and ECS-compatible target-group health contract
 
 #### 2.0 Proof Artifact(s)
 
@@ -57,11 +57,11 @@
 
 #### 2.0 Tasks
 
-- [ ] 2.1 Add a failing contract test that asserts the app stack defines one HTTP listener on port `80` with a default forward action to one application target group.
-- [ ] 2.2 Extend the failing contract test coverage to assert the target group uses target type `ip`, application port `8080`, and HTTP health checks on `traffic-port` with path `/actuator/health` and matcher `200-299`.
-- [ ] 2.3 Add the minimum Terraform listener and target-group resources needed to make the forwarding contract explicit, including interval `15`, timeout `5`, healthy threshold `2`, and unhealthy threshold `3` rather than provider defaults.
-- [ ] 2.4 Update the app-stack documentation with a short health-contract summary that explains the v1 readiness signal and explicitly keeps ECS startup-grace behavior out of scope.
-- [ ] 2.5 Capture sanitized `terraform plan -no-color` proof output showing listener-to-target-group wiring plus all explicit target-group health-check settings.
+- [x] 2.1 Add a failing contract test that asserts the app stack defines one HTTP listener on port `80` with a default forward action to one application target group.
+- [x] 2.2 Extend the failing contract test coverage to assert the target group uses target type `ip`, application port `8080`, and HTTP health checks on `traffic-port` with path `/actuator/health` and matcher `200-299`.
+- [x] 2.3 Add the minimum Terraform listener and target-group resources needed to make the forwarding contract explicit, including interval `15`, timeout `5`, healthy threshold `2`, and unhealthy threshold `3` rather than provider defaults.
+- [x] 2.4 Update the app-stack documentation with a short health-contract summary that explains the v1 readiness signal and explicitly keeps ECS startup-grace behavior out of scope.
+- [x] 2.5 Capture sanitized `terraform plan -no-color` proof output showing listener-to-target-group wiring plus all explicit target-group health-check settings.
 
 ### [ ] 3.0 Publish the public endpoint identifier and downstream integration outputs
 
