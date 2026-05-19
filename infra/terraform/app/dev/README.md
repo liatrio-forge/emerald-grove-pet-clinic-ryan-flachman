@@ -39,6 +39,34 @@ This consumer assumes remote state is already managed by the state/dev stack.
 - This stack keeps a single shared NAT gateway as a deliberate dev-cost
   tradeoff.
 
+## ECR Repository Contract
+
+- The dev app stack defines one private ECR repository named
+  `dev-petclinic`.
+- immutable Git SHA tags are the only approved push and deploy reference
+  format in v1.
+- mutable convenience tags such as `latest` are intentionally excluded.
+
+## ECR Lifecycle Policy Contract
+
+- Use a lifecycle policy preview before applying the stack in AWS so a reviewer
+  can confirm cleanup behavior from the planned policy document.
+- The policy expires untagged images automatically.
+- The policy retains the most recent 5 tagged Git SHA images with count-based
+  retention in v1.
+- Review the lifecycle policy preview in the sanitized
+  `terraform -chdir=infra/terraform/app/dev plan -no-color` output and confirm
+  the policy keeps tagged and untagged rules separate.
+
+## CI Consumption and Destroy Contract
+
+- CI pushes immutable Git SHA tags to `repository_uri` and later deployment
+  workflows consume the same repository name without reconstructing it.
+- The dev app stack exports exactly `repository_uri` and `repository_name` for
+  downstream CI and ECS use.
+- The repository destroy deletes all contained images because the repository is
+  configured with explicit `force_delete` behavior for this dev-only POC.
+
 ## Approved Traffic Path
 
 The only approved inbound path is `internet client -> ALB -> ECS task on app port`.

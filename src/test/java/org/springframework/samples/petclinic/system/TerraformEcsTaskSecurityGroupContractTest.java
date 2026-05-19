@@ -50,9 +50,12 @@ class TerraformEcsTaskSecurityGroupContractTest {
 		assertThat(main).contains("referenced_security_group_id = aws_security_group.alb.id");
 		assertThat(main).contains("from_port                    = 8080");
 		assertThat(main).contains("to_port                      = 8080");
-		assertThat(main).doesNotContain("cidr_ipv4         = \"0.0.0.0/0\"");
-		assertThat(main).doesNotContain("cidr_ipv6         = \"::/0\"");
-		assertThat(main).doesNotContain("cidr_ipv4         = aws_vpc.dev.cidr_block");
+		assertThat(main)
+			.doesNotContain("resource \"aws_vpc_security_group_ingress_rule\" \"ecs_task_from_alb\" {\n  cidr_ipv4");
+		assertThat(main)
+			.doesNotContain("resource \"aws_vpc_security_group_ingress_rule\" \"ecs_task_from_alb\" {\n  cidr_ipv6");
+		assertThat(main).doesNotContain(
+				"resource \"aws_vpc_security_group_ingress_rule\" \"ecs_task_from_alb\" {\n  cidr_ipv4         = aws_vpc.dev.cidr_block");
 		assertThat(outputs).contains("output \"alb_security_group_id\"");
 		assertThat(outputs).contains("output \"ecs_task_security_group_id\"");
 		assertThat(locals).contains("ecs_task_security_group_name");

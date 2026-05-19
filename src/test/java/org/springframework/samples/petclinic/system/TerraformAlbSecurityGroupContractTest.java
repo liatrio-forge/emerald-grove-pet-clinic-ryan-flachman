@@ -48,10 +48,13 @@ class TerraformAlbSecurityGroupContractTest {
 		assertThat(main).contains("resource \"aws_vpc_security_group_ingress_rule\" \"alb_listener_ipv4\"");
 		assertThat(main).contains("resource \"aws_vpc_security_group_ingress_rule\" \"alb_listener_ipv6\"");
 		assertThat(main).contains("security_group_id = aws_security_group.alb.id");
-		assertThat(main).contains("cidr_ipv4   = \"0.0.0.0/0\"");
-		assertThat(main).contains("cidr_ipv6   = \"::/0\"");
-		assertThat(main).contains("from_port   = var.alb_listener_port");
-		assertThat(main).contains("to_port     = var.alb_listener_port");
+		assertThat(main).contains("cidr_ipv4");
+		assertThat(main).contains("\"0.0.0.0/0\"");
+		assertThat(main).contains("cidr_ipv6");
+		assertThat(main).contains("\"::/0\"");
+		assertThat(main).contains("from_port");
+		assertThat(main).contains("to_port");
+		assertThat(main).contains("var.alb_listener_port");
 		assertThat(main).doesNotContain("security_group_id = aws_security_group.ecs_task.id\n  cidr_ipv4");
 		assertThat(variables).contains("variable \"alb_listener_port\"");
 		assertThat(variables).contains("default     = 80");

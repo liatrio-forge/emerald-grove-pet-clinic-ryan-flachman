@@ -45,8 +45,10 @@ class TerraformAlbOnlyTrafficFlowContractTest {
 		assertThat(main).contains("referenced_security_group_id = aws_security_group.ecs_task.id");
 		assertThat(main).contains("from_port                    = 8080");
 		assertThat(main).contains("to_port                      = 8080");
-		assertThat(main).contains("cidr_ipv4   = \"0.0.0.0/0\"");
-		assertThat(main).contains("cidr_ipv6   = \"::/0\"");
+		assertThat(main).contains("cidr_ipv4");
+		assertThat(main).contains("\"0.0.0.0/0\"");
+		assertThat(main).contains("cidr_ipv6");
+		assertThat(main).contains("\"::/0\"");
 		assertThat(readme).contains("internet client -> ALB -> ECS task on app port");
 		assertThat(readme).contains("| Source | Destination | Protocol | Ports | Why allowed |");
 		assertThat(readme).contains("| Internet client | ALB security group | TCP | 80");

@@ -23,9 +23,10 @@ locals {
     }
   }
 
-  vpc_name                = "${var.environment}-vpc"
-  alb_security_group_name = "${var.environment}-application-load-balancer"
+  vpc_name                     = "${var.environment}-vpc"
+  alb_security_group_name      = "${var.environment}-application-load-balancer"
   ecs_task_security_group_name = "${var.environment}-ecs-task"
+  ecr_repository_name          = "${var.environment}-petclinic"
 
   common_tags = {
     Application = var.project_name
