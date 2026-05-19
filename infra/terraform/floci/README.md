@@ -50,3 +50,29 @@ terraform -chdir=infra/terraform/app/dev plan -no-color
 
 and uses sanitized local credentials such as `AWS_ACCESS_KEY_ID=test`,
 `AWS_SECRET_ACCESS_KEY=test`, and `AWS_EC2_METADATA_DISABLED=true` throughout.
+
+## ECR Repository Contract
+
+Use the repository-owned verification entry point to exercise the ECR
+repository contract locally:
+
+```bash
+./scripts/verify-ecr-repository-contract.sh
+```
+
+That workflow starts `floci`, initializes the dev stack with
+`backend.hcl.example`, runs:
+
+```bash
+terraform -chdir=infra/terraform/app/dev validate
+terraform -chdir=infra/terraform/app/dev plan -no-color
+```
+
+Use placeholder credentials throughout local verification:
+`AWS_ACCESS_KEY_ID=test`, `AWS_SECRET_ACCESS_KEY=test`, and
+`AWS_EC2_METADATA_DISABLED=true`.
+
+Review the lifecycle policy preview in the plan output and confirm the
+repository contract shows immutable tags, the separate tagged versus untagged
+cleanup rules, and the deterministic repository outputs before applying the
+stack in AWS.

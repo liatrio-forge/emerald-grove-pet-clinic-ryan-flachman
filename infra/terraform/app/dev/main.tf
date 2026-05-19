@@ -2,6 +2,50 @@ terraform {
   backend "s3" {}
 }
 
+resource "aws_ecr_repository" "app" {
+  name                 = local.ecr_repository_name
+  image_tag_mutability = "IMMUTABLE"
+  force_delete         = true
+
+  tags = merge(local.common_tags, {
+    Name           = local.ecr_repository_name
+    RepositoryRole = "application-image"
+  })
+}
+
+resource "aws_ecr_lifecycle_policy" "app" {
+  repository = aws_ecr_repository.app.name
+
+  policy = jsonencode({
+    rules = [
+      {
+        rulePriority = 1
+        description  = "Expire untagged images automatically."
+        selection = {
+          tagStatus   = "untagged"
+          countType   = "imageCountMoreThan"
+          countNumber = 1
+        }
+        action = {
+          type = "expire"
+        }
+      },
+      {
+        rulePriority = 2
+        description  = "Retain the most recent 5 tagged Git SHA images."
+        selection = {
+          tagStatus   = "tagged"
+          countType   = "imageCountMoreThan"
+          countNumber = 5
+        }
+        action = {
+          type = "expire"
+        }
+      }
+    ]
+  })
+}
+
 resource "aws_vpc" "dev" {
   cidr_block           = var.vpc_cidr
   enable_dns_hostnames = true
@@ -125,19 +169,19 @@ resource "aws_security_group" "alb" {
 resource "aws_vpc_security_group_ingress_rule" "alb_listener_ipv4" {
   security_group_id = aws_security_group.alb.id
   description       = "Allow public IPv4 traffic to the ALB listener port."
-  cidr_ipv4   = "0.0.0.0/0"
-  from_port   = var.alb_listener_port
-  ip_protocol = "tcp"
-  to_port     = var.alb_listener_port
+  cidr_ipv4         = "0.0.0.0/0"
+  from_port         = var.alb_listener_port
+  ip_protocol       = "tcp"
+  to_port           = var.alb_listener_port
 }
 
 resource "aws_vpc_security_group_ingress_rule" "alb_listener_ipv6" {
   security_group_id = aws_security_group.alb.id
   description       = "Allow public IPv6 traffic to the ALB listener port."
-  cidr_ipv6   = "::/0"
-  from_port   = var.alb_listener_port
-  ip_protocol = "tcp"
-  to_port     = var.alb_listener_port
+  cidr_ipv6         = "::/0"
+  from_port         = var.alb_listener_port
+  ip_protocol       = "tcp"
+  to_port           = var.alb_listener_port
 }
 
 resource "aws_security_group" "ecs_task" {
@@ -172,13 +216,13 @@ resource "aws_vpc_security_group_egress_rule" "alb_to_ecs_tasks" {
 resource "aws_vpc_security_group_egress_rule" "ecs_task_ipv4_egress" {
   security_group_id = aws_security_group.ecs_task.id
   description       = "Keep ECS task egress open in v1 for NAT-backed dependencies."
-  cidr_ipv4   = "0.0.0.0/0"
-  ip_protocol = "-1"
+  cidr_ipv4         = "0.0.0.0/0"
+  ip_protocol       = "-1"
 }
 
 resource "aws_vpc_security_group_egress_rule" "ecs_task_ipv6_egress" {
   security_group_id = aws_security_group.ecs_task.id
   description       = "Keep ECS task IPv6 egress open in v1 for future compatibility."
-  cidr_ipv6   = "::/0"
-  ip_protocol = "-1"
+  cidr_ipv6         = "::/0"
+  ip_protocol       = "-1"
 }

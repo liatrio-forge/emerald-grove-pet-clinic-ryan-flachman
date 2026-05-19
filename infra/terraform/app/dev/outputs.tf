@@ -45,3 +45,13 @@ output "ecs_task_security_group_id" {
   description = "ID of the ECS task security group for future awsvpc service wiring."
   value       = aws_security_group.ecs_task.id
 }
+
+output "repository_uri" {
+  description = "Deterministic ECR repository URI for CI image pushes."
+  value       = aws_ecr_repository.app.repository_url
+}
+
+output "repository_name" {
+  description = "Deterministic ECR repository name for CI and ECS references."
+  value       = aws_ecr_repository.app.name
+}
