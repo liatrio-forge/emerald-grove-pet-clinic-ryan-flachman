@@ -166,6 +166,19 @@ resource "aws_security_group" "alb" {
   })
 }
 
+resource "aws_lb" "public" {
+  name               = local.public_alb_name
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.alb.id]
+  subnets            = sort([for subnet in values(aws_subnet.public) : subnet.id])
+
+  tags = merge(local.common_tags, {
+    Name = local.public_alb_name
+    Role = "public-entrypoint"
+  })
+}
+
 resource "aws_vpc_security_group_ingress_rule" "alb_listener_ipv4" {
   security_group_id = aws_security_group.alb.id
   description       = "Allow public IPv4 traffic to the ALB listener port."
