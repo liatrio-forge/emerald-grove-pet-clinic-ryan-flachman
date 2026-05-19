@@ -79,7 +79,7 @@
 - [x] 3.3 Update the app-stack documentation so it states that the ALB DNS name is the approved v1 public endpoint identifier and that end-to-end application reachability still depends on later ECS service attachment.
 - [x] 3.4 Capture sanitized `terraform plan -no-color` proof output showing the output contract and confirming downstream consumers can use exported identifiers without rediscovering resource addresses or names.
 
-### [ ] 4.0 Add reproducible local verification for the public HTTP ALB contract
+### [x] 4.0 Add reproducible local verification for the public HTTP ALB contract
 
 #### 4.0 Proof Artifact(s)
 
@@ -90,7 +90,7 @@
 
 #### 4.0 Tasks
 
-- [ ] 4.1 Add a failing contract test that asserts one repository-owned verification workflow covers `floci`, Terraform init and validate and plan ordering, sanitized placeholder credentials, and clear missing-file failures for this ALB contract.
-- [ ] 4.2 Create `scripts/verify-public-http-alb-target-group-contract.sh` so it mirrors the repository’s existing verification-script pattern, reuses the backend contract, and validates the ALB, listener, target group, and outputs reproducibly before AWS use.
-- [ ] 4.3 Update the most appropriate operator-facing README with the exact local verification sequence, including `floci`, `terraform validate`, sanitized `terraform plan -no-color`, and placeholder-credential expectations.
-- [ ] 4.4 Capture the `./scripts/verify-public-http-alb-target-group-contract.sh` proof path so reviewers can reproduce the local validation flow and confirm the artifacts remain observable, reproducible, scope-linked, and sanitized.
+- [x] 4.1 Add a failing contract test that asserts one repository-owned verification workflow covers `floci`, Terraform init and validate and plan ordering, sanitized placeholder credentials, and clear missing-file failures for this ALB contract.
+- [x] 4.2 Create `scripts/verify-public-http-alb-target-group-contract.sh` so it mirrors the repository’s existing verification-script pattern, reuses the backend contract, and validates the ALB, listener, target group, and outputs reproducibly before AWS use.
+- [x] 4.3 Update the most appropriate operator-facing README with the exact local verification sequence, including `floci`, `terraform validate`, sanitized `terraform plan -no-color`, and placeholder-credential expectations.
+- [x] 4.4 Capture the `./scripts/verify-public-http-alb-target-group-contract.sh` proof path so reviewers can reproduce the local validation flow and confirm the artifacts remain observable, reproducible, scope-linked, and sanitized.
