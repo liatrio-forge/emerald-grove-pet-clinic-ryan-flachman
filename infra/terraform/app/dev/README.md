@@ -93,6 +93,15 @@ The only approved inbound path is `internet client -> ALB -> ECS task on app por
 - ECS startup-grace behavior stays out of scope for this ALB contract and must
   be handled later at the ECS service layer.
 
+## Public Endpoint Identifier Contract
+
+- The ALB DNS name is the approved v1 public endpoint identifier for
+  infrastructure wiring and review.
+- The stack exports `alb_dns_name`, `alb_hosted_zone_id`, `alb_arn`,
+  `alb_name`, `http_listener_arn`, `application_target_group_arn`, and
+  `application_target_group_name` directly from Terraform resource attributes.
+- The ALB DNS name is suitable for downstream integrations, but end-to-end application reachability still depends on later ECS service attachment.
+
 private subnets alone are not treated as sufficient protection. The ECS task security group is the explicit boundary that rejects direct internet-originated traffic even when the tasks run in private subnets.
 
 ## Allowed Traffic Matrix

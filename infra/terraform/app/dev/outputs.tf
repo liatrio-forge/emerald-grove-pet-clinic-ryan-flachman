@@ -46,6 +46,41 @@ output "ecs_task_security_group_id" {
   value       = aws_security_group.ecs_task.id
 }
 
+output "alb_dns_name" {
+  description = "Approved v1 public endpoint identifier for the public ALB."
+  value       = aws_lb.public.dns_name
+}
+
+output "alb_hosted_zone_id" {
+  description = "Hosted zone ID for later Route 53 alias-record integration."
+  value       = aws_lb.public.zone_id
+}
+
+output "alb_arn" {
+  description = "ARN of the public ALB for downstream infrastructure wiring."
+  value       = aws_lb.public.arn
+}
+
+output "alb_name" {
+  description = "Human-readable name of the public ALB."
+  value       = aws_lb.public.name
+}
+
+output "http_listener_arn" {
+  description = "ARN of the public HTTP listener for downstream routing integrations."
+  value       = aws_lb_listener.http.arn
+}
+
+output "application_target_group_arn" {
+  description = "ARN of the ECS-compatible application target group."
+  value       = aws_lb_target_group.application.arn
+}
+
+output "application_target_group_name" {
+  description = "Human-readable name of the ECS-compatible application target group."
+  value       = aws_lb_target_group.application.name
+}
+
 output "repository_uri" {
   description = "Deterministic ECR repository URI for CI image pushes."
   value       = aws_ecr_repository.app.repository_url

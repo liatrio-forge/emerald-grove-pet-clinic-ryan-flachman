@@ -63,7 +63,7 @@
 - [x] 2.4 Update the app-stack documentation with a short health-contract summary that explains the v1 readiness signal and explicitly keeps ECS startup-grace behavior out of scope.
 - [x] 2.5 Capture sanitized `terraform plan -no-color` proof output showing listener-to-target-group wiring plus all explicit target-group health-check settings.
 
-### [ ] 3.0 Publish the public endpoint identifier and downstream integration outputs
+### [x] 3.0 Publish the public endpoint identifier and downstream integration outputs
 
 #### 3.0 Proof Artifact(s)
 
@@ -74,10 +74,10 @@
 
 #### 3.0 Tasks
 
-- [ ] 3.1 Add a failing contract test that asserts the app stack exports the exact reviewer-readable output names `alb_dns_name`, `alb_hosted_zone_id`, `alb_arn`, `alb_name`, `http_listener_arn`, `application_target_group_arn`, and `application_target_group_name`.
-- [ ] 3.2 Add the minimum Terraform outputs needed to publish the ALB DNS name, hosted zone ID, ARNs, and human-readable names directly from resource attributes without manual reconstruction.
-- [ ] 3.3 Update the app-stack documentation so it states that the ALB DNS name is the approved v1 public endpoint identifier and that end-to-end application reachability still depends on later ECS service attachment.
-- [ ] 3.4 Capture sanitized `terraform plan -no-color` proof output showing the output contract and confirming downstream consumers can use exported identifiers without rediscovering resource addresses or names.
+- [x] 3.1 Add a failing contract test that asserts the app stack exports the exact reviewer-readable output names `alb_dns_name`, `alb_hosted_zone_id`, `alb_arn`, `alb_name`, `http_listener_arn`, `application_target_group_arn`, and `application_target_group_name`.
+- [x] 3.2 Add the minimum Terraform outputs needed to publish the ALB DNS name, hosted zone ID, ARNs, and human-readable names directly from resource attributes without manual reconstruction.
+- [x] 3.3 Update the app-stack documentation so it states that the ALB DNS name is the approved v1 public endpoint identifier and that end-to-end application reachability still depends on later ECS service attachment.
+- [x] 3.4 Capture sanitized `terraform plan -no-color` proof output showing the output contract and confirming downstream consumers can use exported identifiers without rediscovering resource addresses or names.
 
 ### [ ] 4.0 Add reproducible local verification for the public HTTP ALB contract
 
