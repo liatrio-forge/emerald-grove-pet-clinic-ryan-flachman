@@ -48,7 +48,7 @@
 - [x] 1.3 Add the minimum Terraform ECS cluster resource and supporting locals needed to define the shared runtime cluster without reopening service-level design decisions.
 - [x] 1.4 Capture `terraform validate` and sanitized `terraform plan -no-color` proof output showing one ECS cluster with the expected minimal runtime contract.
 
-### [ ] 2.0 Define the application CloudWatch log-group contract
+### [x] 2.0 Define the application CloudWatch log-group contract
 
 #### 2.0 Proof Artifact(s)
 
@@ -58,13 +58,13 @@
 
 #### 2.0 Tasks
 
-- [ ] 2.1 Add a failing contract test that asserts the app stack defines one application CloudWatch log group for ECS task logs with explicit `7` day retention.
-- [ ] 2.2 Extend the failing contract test coverage to assert the log group name is environment-scoped and reviewer-readable rather than left implicit.
-- [ ] 2.3 Add the minimum Terraform log-group resource and supporting locals needed to make the logging destination and retention behavior explicit.
-- [ ] 2.4 Update the app-stack documentation with a short runtime-logging summary that explains the explicit `7` day retention choice and states that CloudWatch indefinite retention is intentionally overridden in this dev POC.
-- [ ] 2.5 Capture sanitized `terraform plan -no-color` proof output showing the application log group and explicit retention behavior.
+- [x] 2.1 Add a failing contract test that asserts the app stack defines one application CloudWatch log group for ECS task logs with explicit `7` day retention.
+- [x] 2.2 Extend the failing contract test coverage to assert the log group name is environment-scoped and reviewer-readable rather than left implicit.
+- [x] 2.3 Add the minimum Terraform log-group resource and supporting locals needed to make the logging destination and retention behavior explicit.
+- [x] 2.4 Update the app-stack documentation with a short runtime-logging summary that explains the explicit `7` day retention choice and states that CloudWatch indefinite retention is intentionally overridden in this dev POC.
+- [x] 2.5 Capture sanitized `terraform plan -no-color` proof output showing the application log group and explicit retention behavior.
 
-### [ ] 3.0 Define IAM role boundaries and lean ECS runtime outputs
+### [x] 3.0 Define IAM role boundaries and lean ECS runtime outputs
 
 #### 3.0 Proof Artifact(s)
 
@@ -75,14 +75,14 @@
 
 #### 3.0 Tasks
 
-- [ ] 3.1 Add a failing IAM-boundary contract test that asserts the app stack defines a separate execution role and task role with `ecs-tasks.amazonaws.com` trust relationships.
-- [ ] 3.2 Extend the failing IAM-boundary test coverage to assert the execution role uses the AWS-managed `AmazonECSTaskExecutionRolePolicy` baseline and that the task role carries no application-specific AWS permissions in v1.
-- [ ] 3.3 Add a failing outputs contract test that asserts the app stack exports exactly `ecs_cluster_arn`, `ecs_cluster_name`, `application_log_group_name`, `ecs_task_execution_role_arn`, and `ecs_task_role_arn`.
-- [ ] 3.4 Add the minimum Terraform IAM roles, managed policy attachment, and outputs needed to make the role boundary and lean runtime output contract explicit without adding task-definition or service behavior.
-- [ ] 3.5 Update the app-stack documentation so it clearly explains why the task role exists even though it has no app permissions in v1 and why execution-role responsibilities must remain separate.
-- [ ] 3.6 Capture sanitized `terraform plan -no-color` proof output showing both roles and the exact downstream output contract.
+- [x] 3.1 Add a failing IAM-boundary contract test that asserts the app stack defines a separate execution role and task role with `ecs-tasks.amazonaws.com` trust relationships.
+- [x] 3.2 Extend the failing IAM-boundary test coverage to assert the execution role uses the AWS-managed `AmazonECSTaskExecutionRolePolicy` baseline and that the task role carries no application-specific AWS permissions in v1.
+- [x] 3.3 Add a failing outputs contract test that asserts the app stack exports exactly `ecs_cluster_arn`, `ecs_cluster_name`, `application_log_group_name`, `ecs_task_execution_role_arn`, and `ecs_task_role_arn`.
+- [x] 3.4 Add the minimum Terraform IAM roles, managed policy attachment, and outputs needed to make the role boundary and lean runtime output contract explicit without adding task-definition or service behavior.
+- [x] 3.5 Update the app-stack documentation so it clearly explains why the task role exists even though it has no app permissions in v1 and why execution-role responsibilities must remain separate.
+- [x] 3.6 Capture sanitized `terraform plan -no-color` proof output showing both roles and the exact downstream output contract.
 
-### [ ] 4.0 Add reproducible local verification for the ECS runtime contract
+### [x] 4.0 Add reproducible local verification for the ECS runtime contract
 
 #### 4.0 Proof Artifact(s)
 
@@ -93,7 +93,7 @@
 
 #### 4.0 Tasks
 
-- [ ] 4.1 Add a failing workflow contract test that asserts one repository-owned verification workflow covers `floci`, Terraform init and validate and plan ordering, sanitized placeholder credentials, and clear missing-file failures for the ECS runtime contract.
-- [ ] 4.2 Create `scripts/verify-ecs-runtime-foundation-contract.sh` so it mirrors the repository’s existing verification-script pattern, reuses the backend contract, and validates the ECS runtime resources reproducibly before AWS use.
-- [ ] 4.3 Update the most appropriate operator-facing README with the exact local verification sequence, including `floci`, `terraform validate`, sanitized `terraform plan -no-color`, and placeholder-credential expectations for the ECS runtime contract.
-- [ ] 4.4 Capture the `./scripts/verify-ecs-runtime-foundation-contract.sh` proof path so reviewers can reproduce the local validation flow and confirm the artifacts remain observable, reproducible, scope-linked, and sanitized.
+- [x] 4.1 Add a failing workflow contract test that asserts one repository-owned verification workflow covers `floci`, Terraform init and validate and plan ordering, sanitized placeholder credentials, and clear missing-file failures for the ECS runtime contract.
+- [x] 4.2 Create `scripts/verify-ecs-runtime-foundation-contract.sh` so it mirrors the repository’s existing verification-script pattern, reuses the backend contract, and validates the ECS runtime resources reproducibly before AWS use.
+- [x] 4.3 Update the most appropriate operator-facing README with the exact local verification sequence, including `floci`, `terraform validate`, sanitized `terraform plan -no-color`, and placeholder-credential expectations for the ECS runtime contract.
+- [x] 4.4 Capture the `./scripts/verify-ecs-runtime-foundation-contract.sh` proof path so reviewers can reproduce the local validation flow and confirm the artifacts remain observable, reproducible, scope-linked, and sanitized.

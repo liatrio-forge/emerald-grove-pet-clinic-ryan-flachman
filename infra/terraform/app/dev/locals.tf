@@ -26,9 +26,12 @@ locals {
   vpc_name                      = "${var.environment}-vpc"
   public_alb_name               = "${var.environment}-public-http"
   application_target_group_name = "${var.environment}-application"
+  application_log_group_name    = "/aws/ecs/${var.environment}-application"
   alb_security_group_name       = "${var.environment}-application-load-balancer"
   ecs_task_security_group_name  = "${var.environment}-ecs-task"
   ecs_cluster_name              = "${var.environment}-shared"
+  ecs_task_execution_role_name  = "${var.environment}-ecs-task-execution"
+  ecs_task_role_name            = "${var.environment}-ecs-task"
   ecr_repository_name           = "${var.environment}-petclinic"
 
   common_tags = {

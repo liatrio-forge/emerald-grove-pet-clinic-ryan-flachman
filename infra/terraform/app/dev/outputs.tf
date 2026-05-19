@@ -90,3 +90,28 @@ output "repository_name" {
   description = "Deterministic ECR repository name for CI and ECS references."
   value       = aws_ecr_repository.app.name
 }
+
+output "ecs_cluster_arn" {
+  description = "ARN of the shared ECS cluster for later service attachment."
+  value       = aws_ecs_cluster.shared.arn
+}
+
+output "ecs_cluster_name" {
+  description = "Human-readable name of the shared ECS cluster."
+  value       = aws_ecs_cluster.shared.name
+}
+
+output "application_log_group_name" {
+  description = "CloudWatch log-group name reserved for ECS application logs."
+  value       = aws_cloudwatch_log_group.application.name
+}
+
+output "ecs_task_execution_role_arn" {
+  description = "ARN of the ECS task execution role for image pulls and log publishing."
+  value       = aws_iam_role.ecs_task_execution.arn
+}
+
+output "ecs_task_role_arn" {
+  description = "ARN of the ECS task role reserved for future application AWS access."
+  value       = aws_iam_role.ecs_task.arn
+}
