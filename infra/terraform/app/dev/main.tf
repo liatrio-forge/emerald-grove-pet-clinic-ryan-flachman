@@ -166,6 +166,55 @@ resource "aws_security_group" "alb" {
   })
 }
 
+resource "aws_lb" "public" {
+  name               = local.public_alb_name
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.alb.id]
+  subnets            = sort([for subnet in values(aws_subnet.public) : subnet.id])
+
+  tags = merge(local.common_tags, {
+    Name = local.public_alb_name
+    Role = "public-entrypoint"
+  })
+}
+
+resource "aws_lb_target_group" "application" {
+  name        = local.application_target_group_name
+  port        = 8080
+  protocol    = "HTTP"
+  target_type = "ip"
+  vpc_id      = aws_vpc.dev.id
+
+  health_check {
+    enabled             = true
+    healthy_threshold   = 2
+    interval            = 15
+    matcher             = "200-299"
+    path                = "/actuator/health"
+    port                = "traffic-port"
+    protocol            = "HTTP"
+    timeout             = 5
+    unhealthy_threshold = 3
+  }
+
+  tags = merge(local.common_tags, {
+    Name = local.application_target_group_name
+    Role = "application-routing"
+  })
+}
+
+resource "aws_lb_listener" "http" {
+  load_balancer_arn = aws_lb.public.arn
+  port              = var.alb_listener_port
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.application.arn
+  }
+}
+
 resource "aws_vpc_security_group_ingress_rule" "alb_listener_ipv4" {
   security_group_id = aws_security_group.alb.id
   description       = "Allow public IPv4 traffic to the ALB listener port."

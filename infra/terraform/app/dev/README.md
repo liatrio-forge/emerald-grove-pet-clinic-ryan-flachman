@@ -71,6 +71,37 @@ This consumer assumes remote state is already managed by the state/dev stack.
 
 The only approved inbound path is `internet client -> ALB -> ECS task on app port`.
 
+## Public Entrypoint Contract
+
+- The dev app stack defines one internet-facing Application Load Balancer named
+  `dev-public-http`.
+- This ALB is the approved v1 public entrypoint resource contract for later
+  listener, target-group, ECS, and DNS wiring.
+- The ALB stays attached to the existing exported public subnets and the
+  existing ALB security group so v1 does not reopen VPC or security-group
+  design.
+
+## Health Contract
+
+- The public ALB exposes one HTTP listener on port `80`.
+- The listener forwards by default to one application target group that uses
+  ECS-compatible `ip` targets on application port `8080`.
+- The target group treats `GET /actuator/health` on `traffic-port` as the v1
+  traffic-readiness signal and matches success codes `200-299`.
+- The target group keeps explicit v1 health settings of interval `15`, timeout
+  `5`, healthy threshold `2`, and unhealthy threshold `3`.
+- ECS startup-grace behavior stays out of scope for this ALB contract and must
+  be handled later at the ECS service layer.
+
+## Public Endpoint Identifier Contract
+
+- The ALB DNS name is the approved v1 public endpoint identifier for
+  infrastructure wiring and review.
+- The stack exports `alb_dns_name`, `alb_hosted_zone_id`, `alb_arn`,
+  `alb_name`, `http_listener_arn`, `application_target_group_arn`, and
+  `application_target_group_name` directly from Terraform resource attributes.
+- The ALB DNS name is suitable for downstream integrations, but end-to-end application reachability still depends on later ECS service attachment.
+
 private subnets alone are not treated as sufficient protection. The ECS task security group is the explicit boundary that rejects direct internet-originated traffic even when the tasks run in private subnets.
 
 ## Allowed Traffic Matrix

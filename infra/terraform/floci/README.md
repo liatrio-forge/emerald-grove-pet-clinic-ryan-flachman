@@ -76,3 +76,23 @@ Review the lifecycle policy preview in the plan output and confirm the
 repository contract shows immutable tags, the separate tagged versus untagged
 cleanup rules, and the deterministic repository outputs before applying the
 stack in AWS.
+
+## Public HTTP ALB Contract
+
+Use the repository-owned verification entry point to exercise the public HTTP ALB contract locally:
+
+```bash
+./scripts/verify-public-http-alb-target-group-contract.sh
+```
+
+That workflow starts `floci`, initializes the dev stack with
+`backend.hcl.example`, runs:
+
+```bash
+terraform -chdir=infra/terraform/app/dev validate
+terraform -chdir=infra/terraform/app/dev plan -no-color
+```
+
+Use placeholder credentials throughout local verification:
+`AWS_ACCESS_KEY_ID=test`, `AWS_SECRET_ACCESS_KEY=test`, and
+`AWS_EC2_METADATA_DISABLED=true`.
