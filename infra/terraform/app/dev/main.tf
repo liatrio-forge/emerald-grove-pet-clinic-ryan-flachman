@@ -2,6 +2,74 @@ terraform {
   backend "s3" {}
 }
 
+resource "aws_ecs_cluster" "shared" {
+  name = local.ecs_cluster_name
+
+  tags = merge(local.common_tags, {
+    Name = local.ecs_cluster_name
+    Role = "shared-runtime"
+  })
+}
+
+resource "aws_cloudwatch_log_group" "application" {
+  name              = local.application_log_group_name
+  retention_in_days = 7
+
+  tags = merge(local.common_tags, {
+    Name = local.application_log_group_name
+    Role = "application-logs"
+  })
+}
+
+resource "aws_iam_role" "ecs_task_execution" {
+  name = local.ecs_task_execution_role_name
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com"
+        }
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+
+  tags = merge(local.common_tags, {
+    Name = local.ecs_task_execution_role_name
+    Role = "ecs-task-execution"
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_task_execution" {
+  role       = aws_iam_role.ecs_task_execution.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+resource "aws_iam_role" "ecs_task" {
+  name = local.ecs_task_role_name
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com"
+        }
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+
+  tags = merge(local.common_tags, {
+    Name = local.ecs_task_role_name
+    Role = "ecs-task-runtime"
+  })
+}
+
 resource "aws_ecr_repository" "app" {
   name                 = local.ecr_repository_name
   image_tag_mutability = "IMMUTABLE"

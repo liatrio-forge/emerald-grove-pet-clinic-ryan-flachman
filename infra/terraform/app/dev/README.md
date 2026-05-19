@@ -39,6 +39,29 @@ This consumer assumes remote state is already managed by the state/dev stack.
 - This stack keeps a single shared NAT gateway as a deliberate dev-cost
   tradeoff.
 
+## Runtime Logging Contract
+
+- The dev app stack defines one CloudWatch log group named
+  `/aws/ecs/dev-application` for future ECS task logs.
+- CloudWatch Logs retains log events indefinitely by default, but this dev POC
+  intentionally overrides that default with explicit `7` day retention.
+- Later task-definition work should reuse `application_log_group_name` instead
+  of reconstructing the log destination or relying on implicit log-group
+  creation.
+
+## Runtime IAM Boundary Contract
+
+- The dev app stack defines a separate execution role and task role for ECS.
+- The execution role keeps the AWS-managed
+  `AmazonECSTaskExecutionRolePolicy` baseline so image pulls from ECR and log
+  publishing to CloudWatch stay outside application code permissions.
+- The task role intentionally exists with no application-specific AWS
+  permissions in v1. That preserves a clean future expansion point for app AWS
+  access without letting the task role absorb execution responsibilities.
+- Later ECS task-definition work should consume `ecs_task_execution_role_arn`
+  and `ecs_task_role_arn` directly rather than recreating or merging the role
+  boundary.
+
 ## ECR Repository Contract
 
 - The dev app stack defines one private ECR repository named
