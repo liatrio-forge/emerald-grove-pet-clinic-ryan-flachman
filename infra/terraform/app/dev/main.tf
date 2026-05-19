@@ -2,6 +2,15 @@ terraform {
   backend "s3" {}
 }
 
+resource "aws_ecs_cluster" "shared" {
+  name = local.ecs_cluster_name
+
+  tags = merge(local.common_tags, {
+    Name = local.ecs_cluster_name
+    Role = "shared-runtime"
+  })
+}
+
 resource "aws_ecr_repository" "app" {
   name                 = local.ecr_repository_name
   image_tag_mutability = "IMMUTABLE"
