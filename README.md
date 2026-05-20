@@ -173,15 +173,26 @@ Workflow contract highlights:
   `bootstrap dev`.
 - It runs only from the `main` branch and uses a separate protected
   `dev-bootstrap` environment.
-- It is a one-time bootstrap exception that uses temporary admin-backed AWS
-  credential secrets instead of GitHub OIDC so the first apply can create the
-  OIDC roles and ECR repository.
-- It bootstraps `infra/terraform/state/dev`, initializes `infra/terraform/app/dev`,
-  applies the app stack with a caller-supplied immutable `bootstrap_image`, and
-  summarizes the GitHub variable values needed for the steady-state OIDC
-  workflows.
-- After the outputs are promoted into GitHub variables, remove the bootstrap
-  secrets from the `dev-bootstrap` environment.
+- It is the repository-owned foundation bootstrap path that uses protected
+  admin-backed AWS credential secrets instead of GitHub OIDC so it can create
+  `state/dev`, then `identity/dev`, then `app/dev`.
+- It summarizes the GitHub variable values needed for the steady-state OIDC
+  workflows after the three-stack bootstrap completes.
+- The `dev-bootstrap` secrets remain stored by design as a standing POC
+  exception for future foundation rebuilds and final teardown work.
+
+### Dev Infrastructure Lifecycle Layers
+
+The repository now uses three Terraform ownership layers for the dev POC:
+
+- `state/dev` owns the backend S3 bucket and DynamoDB lock table.
+- `identity/dev` owns the GitHub OIDC provider and the Terraform apply,
+  Terraform destroy, app publish, and app deploy IAM roles.
+- `app/dev` owns runtime infrastructure such as ECR, VPC, ALB, ECS, and log
+  groups.
+
+Normal application rebuilds should operate on `app/dev` only. Final cleanup
+destroys `app/dev` first, then `identity/dev`, then `state/dev`.
 
 ### Manual Dev ECR Publish Workflow
 

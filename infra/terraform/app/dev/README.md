@@ -1,14 +1,21 @@
-# Dev App Network and ALB-Only Access Contract
+# Dev App Runtime Infrastructure Contract
 
-The main application stack in `infra/terraform/app/dev` consumes remote state
-that is already managed by the `state/dev` stack. This directory must never
-create or modify the backend bucket or lock table directly.
+The main application stack in `infra/terraform/app/dev` owns runtime
+infrastructure only. It consumes remote state that is already managed by the
+`state/dev` stack and assumes GitHub workflow identity is already managed by the
+`identity/dev` stack.
 
-This consumer assumes remote state is already managed by the state/dev stack.
+This directory must never create or modify the backend bucket, lock table,
+GitHub OIDC provider, or GitHub workflow IAM roles directly.
+
+In other words, `app/dev` does not own the GitHub OIDC provider or the GitHub
+workflow IAM roles.
 
 ## Stable Backend Contract
 
-- Remote state is already managed by the state/dev stack.
+- Remote state is already managed by the `state/dev` stack.
+- remote state is already managed by the state/dev stack.
+- GitHub workflow identity is already managed by the `identity/dev` stack.
 - The main application stack uses the stable state key
   `app/dev/terraform.tfstate`.
 - Backend settings stay outside reusable source through partial backend
@@ -19,33 +26,34 @@ This consumer assumes remote state is already managed by the state/dev stack.
 ## Initialization Workflow
 
 1. Bootstrap or validate the backend resources from `infra/terraform/state/dev`.
-2. Start the local AWS-resources environment with
+2. Bootstrap or validate the GitHub workflow identity resources from
+   `infra/terraform/identity/dev`.
+3. Start the local AWS-resources environment with
    `docker compose -f infra/terraform/floci/docker-compose.yml up -d floci`
    when exercising the contract locally.
-3. Initialize the consumer stack with:
+4. Initialize the consumer stack with:
 
    ```bash
    terraform -chdir=infra/terraform/app/dev init -backend-config=backend.hcl.example -reconfigure
    ```
 
-4. In GitHub Actions, provide the same backend inputs through generated or
+5. In GitHub Actions, provide the same backend inputs through generated or
    secret-backed files rather than hard-coding them in `main.tf`.
 
 ## Bootstrap Workflow Exception
 
 - The repository defines one bootstrap-only workflow named
   `Bootstrap Dev Infrastructure` at `.github/workflows/bootstrap-dev-infra.yml`.
-- This workflow exists to break the first-run circular dependency where
-  `Terraform Apply Dev` needs `TERRAFORM_APPLY_ROLE_ARN`, but that role is
-  created by the `infra/terraform/app/dev` stack itself.
+- This workflow exists to create the full `state/dev` -> `identity/dev` ->
+  `app/dev` lifecycle in one reviewer-visible sequence.
 - The bootstrap workflow runs only from the `main branch`, requires
   `workflow_dispatch`, and requires the operator to type `bootstrap dev`.
 - The bootstrap-capable job uses a separate protected `dev-bootstrap`
-  environment so temporary admin credentials stay isolated from the normal
-  `dev` OIDC path.
-- This is a one-time bootstrap exception. Steady-state Terraform apply, image
-  publish, and ECS deploy workflows must continue using GitHub OIDC instead of
-  long-lived AWS credentials.
+  environment so persistent admin-backed bootstrap credentials stay isolated
+  from the normal `dev` OIDC path.
+- This is a standing bootstrap exception for the POC. Steady-state Terraform
+  apply, image publish, ECS deploy, and app destroy workflows must continue
+  using GitHub OIDC instead of long-lived AWS credentials.
 
 ## Bootstrap Workflow Inputs
 
@@ -71,7 +79,8 @@ one workflow input named `bootstrap_image` that is already pinned by digest.
    and apply the app stack.
 6. Copy the workflow summary outputs into the protected GitHub variables listed
    below.
-7. Remove the bootstrap secrets from `dev-bootstrap`.
+7. Keep the bootstrap secrets in `dev-bootstrap` as the documented POC
+   exception for future foundation rebuilds and final teardown work.
 
 ## Manual Terraform Apply Workflow Contract
 
@@ -102,6 +111,9 @@ one workflow input named `bootstrap_image` that is already pinned by digest.
 The Terraform apply and destroy roles intentionally share one broad proof-of-concept
 policy document so the stack can move forward without premature least-privilege
 authoring, but role trust remains split by environment subject.
+
+These roles are owned by `infra/terraform/identity/dev`, not by the runtime
+stack in this directory.
 
 ## Terraform IAM-sensitive actions
 
@@ -151,9 +163,10 @@ Bootstrap output promotion requirements:
   `APP_PUBLISH_ROLE_ARN`, `APP_DEPLOY_ROLE_ARN`, `REPOSITORY_URI`,
   `TF_STATE_BUCKET`, and `TF_LOCK_TABLE` from the bootstrap workflow summary
   into the protected GitHub variables above.
-- The bootstrap workflow summary is the intended handoff point for the one-time
-  bootstrap exception. After promotion, remove the bootstrap secrets and use
-  the normal OIDC workflows only.
+- The bootstrap workflow summary is the intended handoff point for the standing
+  bootstrap exception. After promotion, use the normal OIDC workflows for day
+  to day operations and keep `dev-bootstrap` secrets protected for future
+  foundation lifecycle actions.
 
 ## GitHub OIDC verification workflow
 
@@ -195,8 +208,17 @@ runner shell access.
 - In scope: manual `dev` stack apply, reviewer approval, typed confirmation,
   GitHub OIDC authentication, reviewed saved-plan creation, and exact-plan
   apply.
-- Out of scope: image build, ECS rollout, destroy workflow, broader deployment
-  automation, and unrelated CI/CD orchestration.
+- Out of scope: image build, ECS rollout, destroy workflow, foundation stack
+  teardown, and unrelated CI/CD orchestration.
+
+## Runtime Ownership Boundary
+
+- `state/dev` owns the backend bucket and lock table.
+- `identity/dev` owns the GitHub OIDC provider and workflow IAM roles.
+- `app/dev` owns runtime infrastructure such as VPC, subnets, ALB, ECR, ECS,
+  and log groups.
+- Normal `app/dev` destroy and recreate must leave backend and identity
+  resources intact.
 
 ## Manual Dev ECR Publish Workflow Contract
 

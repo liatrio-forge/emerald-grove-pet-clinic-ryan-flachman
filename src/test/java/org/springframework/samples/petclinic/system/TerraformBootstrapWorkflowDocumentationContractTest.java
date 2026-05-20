@@ -43,8 +43,9 @@ class TerraformBootstrapWorkflowDocumentationContractTest {
 		assertThat(appDevReadme).contains("dev-bootstrap");
 		assertThat(appDevReadme).contains("BOOTSTRAP_AWS_ACCESS_KEY_ID");
 		assertThat(appDevReadme).contains("BOOTSTRAP_AWS_SECRET_ACCESS_KEY");
-		assertThat(appDevReadme).contains("one-time bootstrap exception");
-		assertThat(appDevReadme).contains("remove the bootstrap secrets");
+		assertThat(appDevReadme).contains("bootstrap exception");
+		assertThat(appDevReadme).contains("persistent");
+		assertThat(appDevReadme).contains("dev-bootstrap");
 	}
 
 	@Test

@@ -1,17 +1,4 @@
 locals {
-  github_oidc_provider_url      = "token.actions.githubusercontent.com"
-  github_oidc_provider_arn_path = "oidc-provider/${local.github_oidc_provider_url}"
-  github_repository             = "liatrio-forge/emerald-grove-pet-clinic-ryan-flachman"
-  github_oidc_audience          = "sts.amazonaws.com"
-  github_oidc_thumbprints       = ["6938fd4d98bab03faadb97b34396831e3780aea1"]
-
-  github_actions_subjects = {
-    terraform_apply   = "repo:${local.github_repository}:environment:dev"
-    terraform_destroy = "repo:${local.github_repository}:environment:dev-destroy"
-    app_publish       = "repo:${local.github_repository}:environment:dev"
-    app_deploy        = "repo:${local.github_repository}:environment:dev"
-  }
-
   public_subnet_indexes = {
     for index, az in var.availability_zones : az => index
   }
@@ -49,11 +36,6 @@ locals {
   ecs_task_execution_role_name  = "${var.environment}-ecs-task-execution"
   ecs_task_role_name            = "${var.environment}-ecs-task"
   ecr_repository_name           = "${var.environment}-petclinic"
-  terraform_apply_role_name     = "terraform-apply-${var.environment}"
-  terraform_destroy_role_name   = "terraform-destroy-${var.environment}"
-  app_publish_role_name         = "app-publish-${var.environment}"
-  app_deploy_role_name          = "app-deploy-${var.environment}"
-
   common_tags = {
     Application = var.project_name
     Environment = var.environment

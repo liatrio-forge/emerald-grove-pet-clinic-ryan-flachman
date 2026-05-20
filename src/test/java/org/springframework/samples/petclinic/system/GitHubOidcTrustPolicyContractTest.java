@@ -26,14 +26,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class GitHubOidcTrustPolicyContractTest {
 
-	private static final Path APP_DEV_DIRECTORY = Path.of("infra/terraform/app/dev");
+	private static final Path IDENTITY_DEV_DIRECTORY = Path.of("infra/terraform/identity/dev");
 
-	private static final Path MAIN = APP_DEV_DIRECTORY.resolve("main.tf");
+	private static final Path MAIN = IDENTITY_DEV_DIRECTORY.resolve("main.tf");
 
-	private static final Path LOCALS = APP_DEV_DIRECTORY.resolve("locals.tf");
+	private static final Path LOCALS = IDENTITY_DEV_DIRECTORY.resolve("locals.tf");
 
 	@Test
-	void devAppStackDefinesOneGitHubOidcProviderForGitHubActions() throws IOException {
+	void devIdentityStackDefinesOneGitHubOidcProviderForGitHubActions() throws IOException {
 		assertThat(MAIN).exists();
 		assertThat(LOCALS).exists();
 
