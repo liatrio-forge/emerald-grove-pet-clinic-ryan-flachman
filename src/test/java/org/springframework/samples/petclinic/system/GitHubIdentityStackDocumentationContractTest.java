@@ -53,6 +53,7 @@ class GitHubIdentityStackDocumentationContractTest {
 		assertThat(state).contains("identity/dev");
 		assertThat(state).contains("app/dev");
 		assertThat(identity).contains("GitHub OIDC provider");
+		assertThat(identity).contains("shared account-level");
 		assertThat(identity).contains("Terraform apply");
 		assertThat(identity).contains("Terraform destroy");
 		assertThat(identity).contains("app publish");

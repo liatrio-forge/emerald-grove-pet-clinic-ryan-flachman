@@ -1,23 +1,27 @@
 # Dev Identity Foundation Contract
 
-The `identity/dev` stack owns the GitHub OIDC provider and the GitHub-assumable
-IAM roles that repository workflows use for `Terraform apply`, `Terraform destroy`,
-`app publish`, and `app deploy`. This stack sits between `state/dev` and
-`app/dev` in the dev lifecycle.
+The `identity/dev` stack consumes the shared account-level GitHub OIDC provider
+and owns the GitHub-assumable IAM roles that repository workflows use for
+`Terraform apply`, `Terraform destroy`, `app publish`, and `app deploy`. This
+stack sits between `state/dev` and `app/dev` in the dev lifecycle.
 
 ## Ownership Boundary
 
 - `state/dev` owns only the Terraform backend bucket and lock table.
-- `identity/dev` owns the GitHub OIDC provider plus the workflow IAM roles.
+- `identity/dev` looks up the shared account-level GitHub OIDC provider by URL
+  and owns the workflow IAM roles.
 - `app/dev` owns runtime infrastructure such as networking, ECR, ECS, and ALB
   resources.
 - `app/dev` does not own the GitHub OIDC provider or GitHub workflow IAM roles
   directly.
+- Final cleanup must not delete the shared GitHub OIDC provider because other
+  repositories in the AWS account may depend on it.
 
 ## Lifecycle Sequence
 
 1. Apply `state/dev` first so downstream stacks can use the remote backend.
-2. Apply `identity/dev` next so GitHub OIDC workflows have assumable roles.
+2. Ensure the shared GitHub OIDC provider already exists in the AWS account,
+   then apply `identity/dev` so repository workflows have assumable roles.
 3. Apply `app/dev` after the backend and workflow identity layers exist.
 4. For final teardown, destroy `app/dev` before `identity/dev`, then destroy
    `state/dev`.
@@ -29,6 +33,15 @@ IAM roles that repository workflows use for `Terraform apply`, `Terraform destro
   `backend.hcl.example` or equivalent operator-provided input.
 - Validate the stack only after backend configuration is materialized, just as
   the repository already does for other Terraform stacks.
+
+## Shared OIDC Provider Contract
+
+- The GitHub OIDC provider is shared account-level infrastructure at
+  `https://token.actions.githubusercontent.com`.
+- `identity/dev` reads that provider by URL and reuses its ARN in role trust
+  policies.
+- If the provider is missing, operators must create it once at the account
+  level before bootstrapping repository-scoped IAM roles.
 
 ## Workflow Role Contract
 

@@ -33,18 +33,19 @@ class GitHubOidcTrustPolicyContractTest {
 	private static final Path LOCALS = IDENTITY_DEV_DIRECTORY.resolve("locals.tf");
 
 	@Test
-	void devIdentityStackDefinesOneGitHubOidcProviderForGitHubActions() throws IOException {
+	void devIdentityStackLooksUpTheSharedGitHubOidcProviderForGitHubActions() throws IOException {
 		assertThat(MAIN).exists();
 		assertThat(LOCALS).exists();
 
 		String main = Files.readString(MAIN);
 		String locals = Files.readString(LOCALS);
 
-		assertThat(main).containsOnlyOnce("resource \"aws_iam_openid_connect_provider\" \"github_actions\"");
-		assertThat(main).contains("https://token.actions.githubusercontent.com");
+		assertThat(main).containsOnlyOnce("data \"aws_iam_openid_connect_provider\" \"github_actions\"");
+		assertThat(main).doesNotContain("resource \"aws_iam_openid_connect_provider\" \"github_actions\"");
+		assertThat(main).contains("url = local.github_oidc_provider_url");
 		assertThat(main).contains("sts.amazonaws.com");
 		assertThat(locals).contains("github_oidc_provider_url");
-		assertThat(locals).contains("token.actions.githubusercontent.com");
+		assertThat(locals).contains("https://token.actions.githubusercontent.com");
 		assertThat(locals).contains("github_repository");
 		assertThat(locals).contains("liatrio-forge/emerald-grove-pet-clinic-ryan-flachman");
 	}

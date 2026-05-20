@@ -1,7 +1,6 @@
 locals {
-  github_oidc_provider_url = "token.actions.githubusercontent.com"
+  github_oidc_provider_url = "https://token.actions.githubusercontent.com"
   github_repository        = "liatrio-forge/emerald-grove-pet-clinic-ryan-flachman"
-  github_oidc_thumbprints  = ["6938fd4d98bab03faadb97b34396831e3780aea1"]
 
   github_actions_subjects = {
     terraform_apply   = "repo:${local.github_repository}:environment:dev"
