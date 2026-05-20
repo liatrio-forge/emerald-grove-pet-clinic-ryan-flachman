@@ -99,7 +99,7 @@
 - [x] 3.5 Add `.github/workflows/bootstrap-destroy-dev-infra.yml` with the minimum ordered teardown logic needed to destroy app, identity, and state layers safely while preserving proof-oriented output and clear failure messages.
 - [x] 3.6 Update repository docs so bootstrap create versus final teardown responsibilities, bootstrap-secret storage, and branch/environment protections are explicit and consistent across root and Terraform-layer readmes.
 
-### [ ] 4.0 Document Final Cleanup Handoff And Persistent GitHub Bootstrap Exception
+### [x] 4.0 Document Final Cleanup Handoff And Persistent GitHub Bootstrap Exception
 
 #### 4.0 Proof Artifact(s)
 
@@ -109,9 +109,9 @@
 
 #### 4.0 Tasks
 
-- [ ] 4.1 Add a failing documentation contract test that asserts the repository lists the exact GitHub variables and environments used by apply, destroy, publish, deploy, and bootstrap lifecycle workflows.
-- [ ] 4.2 Extend the failing documentation contract test to assert the final teardown handoff explicitly instructs operators to blank AWS-derived GitHub variable values while preserving the variable names for future reuse.
-- [ ] 4.3 Extend the failing documentation contract test to assert the repository documents persistent `dev-bootstrap` secrets as a standing POC exception rather than a one-time secret-removal step.
-- [ ] 4.4 Update root and stack-level docs with the final cleanup checklist, variable-reset wording, protected-environment matrix, and the policy that bootstrap secrets persist by design in `dev-bootstrap`.
-- [ ] 4.5 Capture or reference sanitized reviewer-facing proof that shows the expected GitHub environment names and variable names without exposing any secret values or private identifiers.
-- [ ] 4.6 Reconcile any older documentation that still instructs operators to remove bootstrap secrets after bootstrap so repository guidance matches the spec and workflow contract consistently.
+- [x] 4.1 Add a failing documentation contract test that asserts the repository lists the exact GitHub variables and environments used by apply, destroy, publish, deploy, and bootstrap lifecycle workflows.
+- [x] 4.2 Extend the failing documentation contract test to assert the final teardown handoff explicitly instructs operators to blank AWS-derived GitHub variable values while preserving the variable names for future reuse.
+- [x] 4.3 Extend the failing documentation contract test to assert the repository documents persistent `dev-bootstrap` secrets as a standing POC exception rather than a one-time secret-removal step.
+- [x] 4.4 Update root and stack-level docs with the final cleanup checklist, variable-reset wording, protected-environment matrix, and the policy that bootstrap secrets persist by design in `dev-bootstrap`.
+- [x] 4.5 Capture or reference sanitized reviewer-facing proof that shows the expected GitHub environment names and variable names without exposing any secret values or private identifiers.
+- [x] 4.6 Reconcile any older documentation that still instructs operators to remove bootstrap secrets after bootstrap so repository guidance matches the spec and workflow contract consistently.

@@ -195,8 +195,7 @@ Workflow contract highlights:
   environment.
 - It uses bootstrap secrets from the environment rather than dispatch inputs.
 - It destroys `app/dev` first, then `identity/dev`, then `state/dev`.
-- It ends with a cleanup handoff that tells the operator to blank the
-  AWS-derived GitHub variable values while preserving the variable names.
+- It ends with a cleanup handoff that tells the operator to blank the AWS-derived GitHub variable values while preserving the variable names.
 
 ### Dev Infrastructure Lifecycle Layers
 
@@ -214,6 +213,32 @@ Final cleanup destroys `app/dev` first, then `identity/dev`, then `state/dev`.
 The repository-owned `Terraform Destroy Dev` workflow handles normal `app/dev`
 teardown and leaves foundation stacks intact for later recreation through the
 usual OIDC workflows.
+
+### GitHub Lifecycle Configuration
+
+Protected GitHub environments used by the lifecycle workflows:
+
+- `dev` for `Terraform Apply Dev`, `Manual Dev ECR Publish`, and app deploy flows.
+- `dev-destroy` for `Terraform Destroy Dev`.
+- `dev-bootstrap` for `Bootstrap Dev Infrastructure` and `Bootstrap Destroy Dev Infrastructure`.
+
+Stable GitHub Actions variables used across the lifecycle:
+
+- `AWS_REGION`
+- `TERRAFORM_APPLY_ROLE_ARN`
+- `TERRAFORM_DESTROY_ROLE_ARN`
+- `APP_PUBLISH_ROLE_ARN`
+- `APP_DEPLOY_ROLE_ARN`
+- `REPOSITORY_URI`
+- `TF_STATE_BUCKET`
+- `TF_LOCK_TABLE`
+
+Final cleanup handoff:
+
+1. Run `Bootstrap Destroy Dev Infrastructure` to remove `app/dev`, `identity/dev`, and `state/dev`.
+2. Blank the AWS-derived GitHub variable values.
+3. Preserve the variable names for future reuse.
+4. Keep dev-bootstrap secrets remain stored by design as the standing POC bootstrap exception.
 
 ### Manual Dev ECR Publish Workflow
 

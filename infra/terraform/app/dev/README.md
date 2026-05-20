@@ -196,6 +196,28 @@ Bootstrap output promotion requirements:
   to day operations and keep `dev-bootstrap` secrets protected for future
   foundation lifecycle actions.
 
+## Final Cleanup Checklist
+
+After the final `Bootstrap Destroy Dev Infrastructure` workflow completes:
+
+1. Set the AWS-derived GitHub variable values to empty strings.
+   In other words, set the AWS-derived GitHub variable values to empty strings.
+2. Preserve the variable names for future reuse.
+   This means preserve the variable names for future reuse.
+3. Keep `AWS_REGION`, `TERRAFORM_APPLY_ROLE_ARN`, `TERRAFORM_DESTROY_ROLE_ARN`,
+   `APP_PUBLISH_ROLE_ARN`, `APP_DEPLOY_ROLE_ARN`, `REPOSITORY_URI`,
+   `TF_STATE_BUCKET`, and `TF_LOCK_TABLE` in place with intentionally blank
+   AWS-derived values after teardown.
+4. Keep the `dev-bootstrap` secrets as the standing POC bootstrap exception.
+
+Protected environment matrix:
+
+- `dev`: `TERRAFORM_APPLY_ROLE_ARN`, `APP_PUBLISH_ROLE_ARN`,
+  `APP_DEPLOY_ROLE_ARN`, `REPOSITORY_URI`, `TF_STATE_BUCKET`, `TF_LOCK_TABLE`
+- `dev-destroy`: `TERRAFORM_DESTROY_ROLE_ARN`
+- `dev-bootstrap`: `BOOTSTRAP_AWS_ACCESS_KEY_ID`,
+  `BOOTSTRAP_AWS_SECRET_ACCESS_KEY`, `BOOTSTRAP_AWS_SESSION_TOKEN`
+
 ## GitHub OIDC verification workflow
 
 Use the repository-owned verification entry point to validate the IAM contract
