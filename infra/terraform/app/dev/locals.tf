@@ -1,4 +1,16 @@
 locals {
+  github_oidc_provider_url      = "token.actions.githubusercontent.com"
+  github_oidc_provider_arn_path = "oidc-provider/${local.github_oidc_provider_url}"
+  github_repository             = "liatrio-forge/emerald-grove-pet-clinic-ryan-flachman"
+  github_oidc_audience          = "sts.amazonaws.com"
+  github_oidc_thumbprints       = ["6938fd4d98bab03faadb97b34396831e3780aea1"]
+
+  github_actions_subjects = {
+    terraform_apply   = "repo:${local.github_repository}:environment:dev"
+    terraform_destroy = "repo:${local.github_repository}:environment:dev-destroy"
+    app_deploy        = "repo:${local.github_repository}:environment:dev"
+  }
+
   public_subnet_indexes = {
     for index, az in var.availability_zones : az => index
   }

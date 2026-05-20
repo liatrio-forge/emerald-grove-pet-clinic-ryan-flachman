@@ -2,6 +2,43 @@ terraform {
   backend "s3" {}
 }
 
+data "aws_iam_policy_document" "github_actions_oidc_trust" {
+  for_each = local.github_actions_subjects
+
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+
+    principals {
+      type        = "Federated"
+      identifiers = [aws_iam_openid_connect_provider.github_actions.arn]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "token.actions.githubusercontent.com:aud"
+      values   = ["sts.amazonaws.com"]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "token.actions.githubusercontent.com:sub"
+      values   = [each.value]
+    }
+  }
+}
+
+resource "aws_iam_openid_connect_provider" "github_actions" {
+  url             = "https://token.actions.githubusercontent.com"
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = local.github_oidc_thumbprints
+
+  tags = merge(local.common_tags, {
+    Name = "github-actions-oidc"
+    Role = "github-oidc"
+  })
+}
+
 resource "aws_ecs_cluster" "shared" {
   name = local.ecs_cluster_name
 
