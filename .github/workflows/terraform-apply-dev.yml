@@ -1,0 +1,127 @@
+name: Terraform Apply Dev
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Type apply dev to confirm the dev Terraform apply.
+        required: true
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: terraform-apply-dev
+  cancel-in-progress: false
+
+jobs:
+  validate-request:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require main branch
+        if: github.ref != 'refs/heads/main'
+        run: |
+          echo "Apply requires the main branch." >&2
+          exit 1
+
+      - name: Require typed confirmation
+        if: github.event.inputs.confirmation != 'apply dev'
+        run: |
+          echo "Apply requires confirmation: apply dev" >&2
+          exit 1
+
+  plan-dev:
+    needs: validate-request
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      TF_BACKEND_CONFIG_FILE: ${{ runner.temp }}/backend.hcl
+    steps:
+      - name: Require workflow configuration
+        run: |
+          if [[ -z "${{ vars.TERRAFORM_APPLY_ROLE_ARN }}" ]]; then
+            echo "Terraform apply role ARN is required." >&2
+            exit 1
+          fi
+          if [[ -z "${{ vars.TF_STATE_BUCKET }}" ]]; then
+            echo "Terraform backend bucket is required." >&2
+            exit 1
+          fi
+          if [[ -z "${{ vars.TF_LOCK_TABLE }}" ]]; then
+            echo "Terraform lock table is required." >&2
+            exit 1
+          fi
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials with OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ vars.TERRAFORM_APPLY_ROLE_ARN }}
+
+      - name: Materialize backend configuration
+        run: |
+          cat <<'EOF' > "$TF_BACKEND_CONFIG_FILE"
+          bucket         = "${{ vars.TF_STATE_BUCKET }}"
+          key            = "app/dev/terraform.tfstate"
+          region         = "${{ env.AWS_REGION }}"
+          dynamodb_table = "${{ vars.TF_LOCK_TABLE }}"
+          encrypt        = true
+          EOF
+
+      - name: Terraform init
+        run: terraform -chdir=infra/terraform/app/dev init -input=false -backend-config="$TF_BACKEND_CONFIG_FILE"
+
+      - name: Terraform plan
+        run: |
+          terraform -chdir=infra/terraform/app/dev plan -out=tfplan -input=false -no-color > terraform-plan.txt
+          mv terraform-plan.txt infra/terraform/app/dev/terraform-plan.txt
+
+      - name: Upload reviewed plan artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-apply-dev-plan
+          path: |
+            infra/terraform/app/dev/tfplan
+            infra/terraform/app/dev/terraform-plan.txt
+
+  apply-dev:
+    needs:
+      - validate-request
+      - plan-dev
+    if: github.ref == 'refs/heads/main' && github.event.inputs.confirmation == 'apply dev'
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials with OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.TERRAFORM_APPLY_ROLE_ARN }}
+
+      - name: Download reviewed plan artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: terraform-apply-dev-plan
+          path: infra/terraform/app/dev
+
+      - name: Verify reviewed plan artifact
+        run: |
+          if [[ ! -f infra/terraform/app/dev/tfplan ]]; then
+            echo "Reviewed plan artifact is unavailable." >&2
+            exit 1
+          fi
+
+      - name: Apply reviewed plan
+        run: |
+          cd infra/terraform/app/dev
+          terraform apply -input=false tfplan || {
+            echo "Terraform apply failed." >&2
+            exit 1
+          }
