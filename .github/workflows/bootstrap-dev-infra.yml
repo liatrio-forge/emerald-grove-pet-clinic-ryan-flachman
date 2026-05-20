@@ -25,6 +25,7 @@ jobs:
     env:
       AWS_REGION: ${{ vars.AWS_REGION }}
       TF_BACKEND_CONFIG_FILE: infra/terraform/app/dev/backend.hcl
+      TF_IDENTITY_BACKEND_CONFIG_FILE: infra/terraform/identity/dev/backend.hcl
     steps:
       - name: Require main branch
         if: github.ref != 'refs/heads/main'
@@ -78,6 +79,13 @@ jobs:
         run: |
           state_bucket_name=$(terraform -chdir=infra/terraform/state/dev output -raw state_bucket_name)
           lock_table_name=$(terraform -chdir=infra/terraform/state/dev output -raw lock_table_name)
+          cat <<EOF > "$TF_IDENTITY_BACKEND_CONFIG_FILE"
+          bucket         = "${state_bucket_name}"
+          key            = "identity/dev/terraform.tfstate"
+          region         = "${AWS_REGION}"
+          dynamodb_table = "${lock_table_name}"
+          encrypt        = true
+          EOF
           cat <<EOF > "$TF_BACKEND_CONFIG_FILE"
           bucket         = "${state_bucket_name}"
           key            = "app/dev/terraform.tfstate"
@@ -87,6 +95,12 @@ jobs:
           EOF
           echo "TF_STATE_BUCKET=${state_bucket_name}" >> "$GITHUB_ENV"
           echo "TF_LOCK_TABLE=${lock_table_name}" >> "$GITHUB_ENV"
+
+      - name: Terraform init identity stack
+        run: terraform -chdir=infra/terraform/identity/dev init -input=false -backend-config=infra/terraform/identity/dev/backend.hcl
+
+      - name: Terraform apply identity stack
+        run: terraform -chdir=infra/terraform/identity/dev apply -auto-approve -input=false
 
       - name: Terraform init app stack
         run: terraform -chdir=infra/terraform/app/dev init -input=false -backend-config="$TF_BACKEND_CONFIG_FILE"
@@ -99,15 +113,15 @@ jobs:
 
       - name: Summarize bootstrap outputs
         run: |
-          terraform_apply_role_arn=$(terraform -chdir=infra/terraform/app/dev output -raw terraform_apply_role_arn)
-          terraform_destroy_role_arn=$(terraform -chdir=infra/terraform/app/dev output -raw terraform_destroy_role_arn)
-          app_publish_role_arn=$(terraform -chdir=infra/terraform/app/dev output -raw app_publish_role_arn)
-          app_deploy_role_arn=$(terraform -chdir=infra/terraform/app/dev output -raw app_deploy_role_arn)
+          terraform_apply_role_arn=$(terraform -chdir=infra/terraform/identity/dev output -raw terraform_apply_role_arn)
+          terraform_destroy_role_arn=$(terraform -chdir=infra/terraform/identity/dev output -raw terraform_destroy_role_arn)
+          app_publish_role_arn=$(terraform -chdir=infra/terraform/identity/dev output -raw app_publish_role_arn)
+          app_deploy_role_arn=$(terraform -chdir=infra/terraform/identity/dev output -raw app_deploy_role_arn)
           repository_uri=$(terraform -chdir=infra/terraform/app/dev output -raw repository_uri)
           {
             echo "## Bootstrap outputs"
             echo ""
-            echo "Promote these values into GitHub Actions configuration before using the OIDC workflows."
+            echo "Promote these stable foundation values into GitHub Actions configuration before using the OIDC workflows."
             echo ""
             echo "| Variable | Value | Scope |"
             echo "| --- | --- | --- |"
@@ -120,5 +134,5 @@ jobs:
             echo "| APP_DEPLOY_ROLE_ARN | ${app_deploy_role_arn} | environment: dev |"
             echo "| REPOSITORY_URI | ${repository_uri} | environment: dev |"
             echo ""
-            echo "After these variables are set, remove the bootstrap secrets from the dev-bootstrap environment."
+            echo "Keep the dev-bootstrap secrets protected for future foundation rebuild and final teardown workflows."
           } >> "$GITHUB_STEP_SUMMARY"

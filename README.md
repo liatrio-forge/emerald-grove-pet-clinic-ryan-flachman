@@ -181,6 +181,23 @@ Workflow contract highlights:
 - The `dev-bootstrap` secrets remain stored by design as a standing POC
   exception for future foundation rebuilds and final teardown work.
 
+### Bootstrap Destroy Dev Infrastructure Workflow
+
+The repository-owned GitHub Actions workflow for final dev foundation teardown
+is `Bootstrap Destroy Dev Infrastructure` in
+`.github/workflows/bootstrap-destroy-dev-infra.yml`.
+
+Workflow contract highlights:
+
+- It starts only through `workflow_dispatch` and requires the operator to type
+  `destroy bootstrap dev`.
+- It runs only from the `main` branch and uses the protected `dev-bootstrap`
+  environment.
+- It uses bootstrap secrets from the environment rather than dispatch inputs.
+- It destroys `app/dev` first, then `identity/dev`, then `state/dev`.
+- It ends with a cleanup handoff that tells the operator to blank the
+  AWS-derived GitHub variable values while preserving the variable names.
+
 ### Dev Infrastructure Lifecycle Layers
 
 The repository now uses three Terraform ownership layers for the dev POC:

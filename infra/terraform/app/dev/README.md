@@ -112,6 +112,8 @@ one workflow input named `bootstrap_image` that is already pinned by digest.
   workflow.
 - This workflow destroys only `app/dev` runtime infrastructure and keeps
   backend and identity resources intact for later rebuilds.
+- It is not the final foundation teardown path; use the bootstrap-destroy
+  workflow for the full `app/dev` -> `identity/dev` -> `state/dev` teardown.
 
 ## Normal App Rebuild Sequence
 

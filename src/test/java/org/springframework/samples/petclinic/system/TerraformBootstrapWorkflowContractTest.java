@@ -61,7 +61,7 @@ class TerraformBootstrapWorkflowContractTest {
 	}
 
 	@Test
-	void workflowBootstrapsStateThenAppStackAndSurfacesGitHubVariableOutputs() throws IOException {
+	void workflowBootstrapsStateThenIdentityThenAppStackAndSurfacesGitHubVariableOutputs() throws IOException {
 		assertThat(WORKFLOW).exists();
 
 		String workflow = Files.readString(WORKFLOW);
@@ -69,12 +69,16 @@ class TerraformBootstrapWorkflowContractTest {
 		assertThat(workflow).contains("terraform -chdir=infra/terraform/state/dev init -backend=false");
 		assertThat(workflow).contains("terraform -chdir=infra/terraform/state/dev apply -auto-approve -input=false");
 		assertThat(workflow).contains(
+				"terraform -chdir=infra/terraform/identity/dev init -input=false -backend-config=infra/terraform/identity/dev/backend.hcl");
+		assertThat(workflow).contains("terraform -chdir=infra/terraform/identity/dev apply -auto-approve -input=false");
+		assertThat(workflow).contains(
 				"terraform -chdir=infra/terraform/app/dev init -input=false -backend-config=\"$TF_BACKEND_CONFIG_FILE\"");
 		assertThat(workflow).contains(
 				"terraform -chdir=infra/terraform/app/dev plan -out=tfplan -input=false -var \"bootstrap_image=${{ github.event.inputs.bootstrap_image }}\"");
 		assertThat(workflow).contains("terraform -chdir=infra/terraform/app/dev apply -input=false tfplan");
-		assertThat(workflow).contains("terraform_apply_role_arn");
-		assertThat(workflow).contains("app_publish_role_arn");
+		assertThat(workflow)
+			.contains("terraform -chdir=infra/terraform/identity/dev output -raw terraform_apply_role_arn");
+		assertThat(workflow).contains("terraform -chdir=infra/terraform/identity/dev output -raw app_publish_role_arn");
 		assertThat(workflow).contains("repository_uri");
 		assertThat(workflow).contains("TF_STATE_BUCKET");
 		assertThat(workflow).contains("TF_LOCK_TABLE");

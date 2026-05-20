@@ -82,7 +82,7 @@
 - [x] 2.5 Update the app-stack docs and root lifecycle guidance with the exact OIDC-only destroy-and-recreate sequence, required environments, and stable GitHub variable matrix.
 - [x] 2.6 Add or update focused contract tests and documentation wording that prove `Terraform Apply Dev`, `Terraform Destroy Dev`, publish, and deploy workflows all continue using the same variable names after the stack split.
 
-### [ ] 3.0 Add Repo-Owned Bootstrap Create And Final Foundation Teardown Workflows
+### [x] 3.0 Add Repo-Owned Bootstrap Create And Final Foundation Teardown Workflows
 
 #### 3.0 Proof Artifact(s)
 
@@ -92,12 +92,12 @@
 
 #### 3.0 Tasks
 
-- [ ] 3.1 Extend the existing bootstrap workflow contract test so it fails until the create path applies `state/dev`, then `identity/dev`, then `app/dev`, and summarizes the foundation outputs needed by downstream GitHub configuration.
-- [ ] 3.2 Add a failing bootstrap-destroy workflow contract test that asserts the repo-owned teardown workflow is manual-only, `main`-only, protected by `dev-bootstrap`, requires typed confirmation, and uses bootstrap secrets from the environment rather than dispatch inputs.
-- [ ] 3.3 Extend the failing bootstrap-destroy contract test to assert the destroy order is `app/dev` first when present, then `identity/dev`, then `state/dev`, with reviewer-visible summary output for the cleanup handoff.
-- [ ] 3.4 Update `.github/workflows/bootstrap-dev-infra.yml` with the minimum changes needed to bootstrap all three stacks in order and to summarize the stable GitHub variable values operators must maintain.
-- [ ] 3.5 Add `.github/workflows/bootstrap-destroy-dev-infra.yml` with the minimum ordered teardown logic needed to destroy app, identity, and state layers safely while preserving proof-oriented output and clear failure messages.
-- [ ] 3.6 Update repository docs so bootstrap create versus final teardown responsibilities, bootstrap-secret storage, and branch/environment protections are explicit and consistent across root and Terraform-layer readmes.
+- [x] 3.1 Extend the existing bootstrap workflow contract test so it fails until the create path applies `state/dev`, then `identity/dev`, then `app/dev`, and summarizes the foundation outputs needed by downstream GitHub configuration.
+- [x] 3.2 Add a failing bootstrap-destroy workflow contract test that asserts the repo-owned teardown workflow is manual-only, `main`-only, protected by `dev-bootstrap`, requires typed confirmation, and uses bootstrap secrets from the environment rather than dispatch inputs.
+- [x] 3.3 Extend the failing bootstrap-destroy contract test to assert the destroy order is `app/dev` first when present, then `identity/dev`, then `state/dev`, with reviewer-visible summary output for the cleanup handoff.
+- [x] 3.4 Update `.github/workflows/bootstrap-dev-infra.yml` with the minimum changes needed to bootstrap all three stacks in order and to summarize the stable GitHub variable values operators must maintain.
+- [x] 3.5 Add `.github/workflows/bootstrap-destroy-dev-infra.yml` with the minimum ordered teardown logic needed to destroy app, identity, and state layers safely while preserving proof-oriented output and clear failure messages.
+- [x] 3.6 Update repository docs so bootstrap create versus final teardown responsibilities, bootstrap-secret storage, and branch/environment protections are explicit and consistent across root and Terraform-layer readmes.
 
 ### [ ] 4.0 Document Final Cleanup Handoff And Persistent GitHub Bootstrap Exception
 
