@@ -31,6 +31,45 @@ This consumer assumes remote state is already managed by the state/dev stack.
 4. In GitHub Actions, provide the same backend inputs through generated or
    secret-backed files rather than hard-coding them in `main.tf`.
 
+## Manual Terraform Apply Workflow Contract
+
+- The repository defines one manual workflow named `Terraform Apply Dev` at
+  `.github/workflows/terraform-apply-dev.yml`.
+- The workflow is `dev environment only` and allows apply execution only from
+  the `main branch`.
+- Operators must use `workflow_dispatch` and type `apply dev` before the
+  workflow can proceed beyond the initial safety gate.
+- The apply-capable job uses the protected `dev` environment so reviewer approval
+  happens before protected configuration is available.
+- The workflow uses GitHub OIDC with an assumed AWS role instead of long-lived
+  AWS access keys stored in repository secrets.
+- The workflow reuses the existing backend contract through generated backend
+  configuration that follows `backend.hcl.example`.
+- The workflow creates and applies an `exact saved Terraform plan` for
+  `infra/terraform/app/dev`; it does not recompute a fresh implicit apply plan.
+
+## Manual Terraform Apply Verification Commands
+
+Use GitHub CLI after a run to review the workflow and artifacts:
+
+```bash
+gh run list --workflow "Terraform Apply Dev"
+gh run view <run-id> --log
+gh run download <run-id> --name terraform-apply-dev-plan
+```
+
+These verification commands let a maintainer inspect the plan job logs, confirm
+the saved artifact exists, and review apply-job diagnostics without direct
+runner shell access.
+
+## Manual Terraform Apply Scope Boundaries
+
+- In scope: manual `dev` stack apply, reviewer approval, typed confirmation,
+  GitHub OIDC authentication, reviewed saved-plan creation, and exact-plan
+  apply.
+- Out of scope: image build, ECS rollout, destroy workflow, broader deployment
+  automation, and unrelated CI/CD orchestration.
+
 ## Network Reuse Contract
 
 - Later ALB resources must use the exported public subnets from this stack.
