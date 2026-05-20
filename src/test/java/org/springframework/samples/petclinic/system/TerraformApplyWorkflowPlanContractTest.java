@@ -56,7 +56,7 @@ class TerraformApplyWorkflowPlanContractTest {
 		assertThat(workflow).contains("TF_BACKEND_CONFIG_FILE: infra/terraform/app/dev/backend.hcl");
 		assertThat(workflow).doesNotContain("TF_BACKEND_CONFIG_FILE: ${{ runner.temp }}/backend.hcl");
 		assertThat(workflow).contains("terraform -chdir=infra/terraform/app/dev init -input=false");
-		assertThat(workflow).contains("-backend-config=\"$TF_BACKEND_CONFIG_FILE\"");
+		assertThat(workflow).contains("-backend-config=backend.hcl");
 		assertThat(workflow).contains(
 				"terraform -chdir=infra/terraform/app/dev plan -out=tfplan -input=false -var \"deploy_image=${{ github.event.inputs.deploy_image }}\"");
 		assertThat(workflow).contains("> terraform-plan.txt");

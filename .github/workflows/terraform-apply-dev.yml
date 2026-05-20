@@ -87,7 +87,7 @@ jobs:
           EOF
 
       - name: Terraform init
-        run: terraform -chdir=infra/terraform/app/dev init -input=false -backend-config="$TF_BACKEND_CONFIG_FILE"
+        run: terraform -chdir=infra/terraform/app/dev init -input=false -backend-config=backend.hcl
 
       - name: Terraform plan
         run: |

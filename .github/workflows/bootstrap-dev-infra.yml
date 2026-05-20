@@ -93,13 +93,13 @@ jobs:
           echo "TF_LOCK_TABLE=${lock_table_name}" >> "$GITHUB_ENV"
 
       - name: Terraform init identity stack
-        run: terraform -chdir=infra/terraform/identity/dev init -input=false -backend-config=infra/terraform/identity/dev/backend.hcl
+        run: terraform -chdir=infra/terraform/identity/dev init -input=false -backend-config=backend.hcl
 
       - name: Terraform apply identity stack
         run: terraform -chdir=infra/terraform/identity/dev apply -auto-approve -input=false
 
       - name: Terraform init app stack
-        run: terraform -chdir=infra/terraform/app/dev init -input=false -backend-config="$TF_BACKEND_CONFIG_FILE"
+        run: terraform -chdir=infra/terraform/app/dev init -input=false -backend-config=backend.hcl
 
       - name: Terraform plan app stack
         run: terraform -chdir=infra/terraform/app/dev plan -out=tfplan -input=false

@@ -88,13 +88,13 @@ jobs:
           EOF
 
       - name: Terraform init app stack
-        run: terraform -chdir=infra/terraform/app/dev init -input=false -backend-config="$TF_APP_BACKEND_CONFIG_FILE"
+        run: terraform -chdir=infra/terraform/app/dev init -input=false -backend-config=backend.hcl
 
       - name: Terraform destroy app stack
         run: terraform -chdir=infra/terraform/app/dev destroy -auto-approve -input=false
 
       - name: Terraform init identity stack
-        run: terraform -chdir=infra/terraform/identity/dev init -input=false -backend-config=infra/terraform/identity/dev/backend.hcl
+        run: terraform -chdir=infra/terraform/identity/dev init -input=false -backend-config=backend.hcl
 
       - name: Terraform destroy identity stack
         run: terraform -chdir=infra/terraform/identity/dev destroy -auto-approve -input=false
