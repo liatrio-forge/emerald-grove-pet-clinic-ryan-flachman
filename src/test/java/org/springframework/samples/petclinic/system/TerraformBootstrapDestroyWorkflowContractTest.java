@@ -53,6 +53,7 @@ class TerraformBootstrapDestroyWorkflowContractTest {
 
 		String workflow = Files.readString(WORKFLOW);
 
+		assertThat(workflow).contains("uses: hashicorp/setup-terraform@v3");
 		assertThat(workflow).contains("terraform -chdir=infra/terraform/app/dev destroy -auto-approve -input=false");
 		assertThat(workflow)
 			.contains("terraform -chdir=infra/terraform/identity/dev destroy -auto-approve -input=false");

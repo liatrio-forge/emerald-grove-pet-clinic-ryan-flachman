@@ -65,6 +65,7 @@ class TerraformBootstrapWorkflowContractTest {
 
 		String workflow = Files.readString(WORKFLOW);
 
+		assertThat(workflow).contains("uses: hashicorp/setup-terraform@v3");
 		assertThat(workflow).contains("terraform -chdir=infra/terraform/state/dev init -backend=false");
 		assertThat(workflow).contains("terraform -chdir=infra/terraform/state/dev apply -auto-approve -input=false");
 		assertThat(workflow).contains(

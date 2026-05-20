@@ -47,6 +47,7 @@ class TerraformApplyWorkflowDispatchContractTest {
 
 		String workflow = Files.readString(WORKFLOW);
 
+		assertThat(workflow).contains("uses: hashicorp/setup-terraform@v3");
 		assertThat(workflow).contains("confirmation:");
 		assertThat(workflow).contains("deploy_image:");
 		assertThat(workflow).contains("Type apply dev to confirm the dev Terraform apply.");
