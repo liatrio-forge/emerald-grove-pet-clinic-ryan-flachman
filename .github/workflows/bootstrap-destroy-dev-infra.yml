@@ -1,0 +1,110 @@
+name: Bootstrap Destroy Dev Infrastructure
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Type destroy bootstrap dev to confirm the final dev foundation teardown.
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bootstrap-destroy-dev-infra
+  cancel-in-progress: false
+
+jobs:
+  bootstrap-destroy-dev:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: dev-bootstrap
+    env:
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      TF_IDENTITY_BACKEND_CONFIG_FILE: infra/terraform/identity/dev/backend.hcl
+      TF_APP_BACKEND_CONFIG_FILE: infra/terraform/app/dev/backend.hcl
+    steps:
+      - name: Require main branch
+        if: github.ref != 'refs/heads/main'
+        run: |
+          echo "Bootstrap destroy requires the main branch." >&2
+          exit 1
+
+      - name: Require typed confirmation
+        if: github.event.inputs.confirmation != 'destroy bootstrap dev'
+        run: |
+          echo "Bootstrap destroy requires confirmation: destroy bootstrap dev" >&2
+          exit 1
+
+      - name: Require bootstrap configuration
+        run: |
+          if [[ -z "${{ vars.AWS_REGION }}" ]]; then
+            echo "AWS region is required." >&2
+            exit 1
+          fi
+          if [[ -z "${{ secrets.BOOTSTRAP_AWS_ACCESS_KEY_ID }}" ]]; then
+            echo "BOOTSTRAP_AWS_ACCESS_KEY_ID is required." >&2
+            exit 1
+          fi
+          if [[ -z "${{ secrets.BOOTSTRAP_AWS_SECRET_ACCESS_KEY }}" ]]; then
+            echo "BOOTSTRAP_AWS_SECRET_ACCESS_KEY is required." >&2
+            exit 1
+          fi
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials from bootstrap secrets
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.BOOTSTRAP_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.BOOTSTRAP_AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.BOOTSTRAP_AWS_SESSION_TOKEN }}
+
+      - name: Terraform init state stack
+        run: terraform -chdir=infra/terraform/state/dev init -backend=false -input=false
+
+      - name: Materialize backend configuration
+        run: |
+          state_bucket_name=$(terraform -chdir=infra/terraform/state/dev output -raw state_bucket_name)
+          lock_table_name=$(terraform -chdir=infra/terraform/state/dev output -raw lock_table_name)
+          cat <<EOF > "$TF_IDENTITY_BACKEND_CONFIG_FILE"
+          bucket         = "${state_bucket_name}"
+          key            = "identity/dev/terraform.tfstate"
+          region         = "${AWS_REGION}"
+          dynamodb_table = "${lock_table_name}"
+          encrypt        = true
+          EOF
+          cat <<EOF > "$TF_APP_BACKEND_CONFIG_FILE"
+          bucket         = "${state_bucket_name}"
+          key            = "app/dev/terraform.tfstate"
+          region         = "${AWS_REGION}"
+          dynamodb_table = "${lock_table_name}"
+          encrypt        = true
+          EOF
+
+      - name: Terraform init app stack
+        run: terraform -chdir=infra/terraform/app/dev init -input=false -backend-config="$TF_APP_BACKEND_CONFIG_FILE"
+
+      - name: Terraform destroy app stack
+        run: terraform -chdir=infra/terraform/app/dev destroy -auto-approve -input=false
+
+      - name: Terraform init identity stack
+        run: terraform -chdir=infra/terraform/identity/dev init -input=false -backend-config=infra/terraform/identity/dev/backend.hcl
+
+      - name: Terraform destroy identity stack
+        run: terraform -chdir=infra/terraform/identity/dev destroy -auto-approve -input=false
+
+      - name: Terraform destroy state stack
+        run: terraform -chdir=infra/terraform/state/dev destroy -auto-approve -input=false
+
+      - name: Summarize cleanup handoff
+        run: |
+          {
+            echo "## Final cleanup handoff"
+            echo ""
+            echo "The AWS infrastructure teardown is complete."
+            echo "Next, blank the AWS-derived GitHub variable values while preserving the variable names for reuse."
+            echo "The dev-bootstrap secrets remain in place as the standing POC bootstrap exception."
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -173,15 +173,72 @@ Workflow contract highlights:
   `bootstrap dev`.
 - It runs only from the `main` branch and uses a separate protected
   `dev-bootstrap` environment.
-- It is a one-time bootstrap exception that uses temporary admin-backed AWS
-  credential secrets instead of GitHub OIDC so the first apply can create the
-  OIDC roles and ECR repository.
-- It bootstraps `infra/terraform/state/dev`, initializes `infra/terraform/app/dev`,
-  applies the app stack with a caller-supplied immutable `bootstrap_image`, and
-  summarizes the GitHub variable values needed for the steady-state OIDC
-  workflows.
-- After the outputs are promoted into GitHub variables, remove the bootstrap
-  secrets from the `dev-bootstrap` environment.
+- It is the repository-owned foundation bootstrap path that uses protected
+  admin-backed AWS credential secrets instead of GitHub OIDC so it can create
+  `state/dev`, then `identity/dev`, then `app/dev`.
+- It summarizes the GitHub variable values needed for the steady-state OIDC
+  workflows after the three-stack bootstrap completes.
+- The `dev-bootstrap` secrets remain stored by design as a standing POC
+  exception for future foundation rebuilds and final teardown work.
+
+### Bootstrap Destroy Dev Infrastructure Workflow
+
+The repository-owned GitHub Actions workflow for final dev foundation teardown
+is `Bootstrap Destroy Dev Infrastructure` in
+`.github/workflows/bootstrap-destroy-dev-infra.yml`.
+
+Workflow contract highlights:
+
+- It starts only through `workflow_dispatch` and requires the operator to type
+  `destroy bootstrap dev`.
+- It runs only from the `main` branch and uses the protected `dev-bootstrap`
+  environment.
+- It uses bootstrap secrets from the environment rather than dispatch inputs.
+- It destroys `app/dev` first, then `identity/dev`, then `state/dev`.
+- It ends with a cleanup handoff that tells the operator to blank the AWS-derived GitHub variable values while preserving the variable names.
+
+### Dev Infrastructure Lifecycle Layers
+
+The repository now uses three Terraform ownership layers for the dev POC:
+
+- `state/dev` owns the backend S3 bucket and DynamoDB lock table.
+- `identity/dev` owns the GitHub OIDC provider and the Terraform apply,
+  Terraform destroy, app publish, and app deploy IAM roles.
+- `app/dev` owns runtime infrastructure such as ECR, VPC, ALB, ECS, and log
+  groups.
+
+Normal application rebuilds should operate on `app/dev` only.
+Final cleanup destroys `app/dev` first, then `identity/dev`, then `state/dev`.
+
+The repository-owned `Terraform Destroy Dev` workflow handles normal `app/dev`
+teardown and leaves foundation stacks intact for later recreation through the
+usual OIDC workflows.
+
+### GitHub Lifecycle Configuration
+
+Protected GitHub environments used by the lifecycle workflows:
+
+- `dev` for `Terraform Apply Dev`, `Manual Dev ECR Publish`, and app deploy flows.
+- `dev-destroy` for `Terraform Destroy Dev`.
+- `dev-bootstrap` for `Bootstrap Dev Infrastructure` and `Bootstrap Destroy Dev Infrastructure`.
+
+Stable GitHub Actions variables used across the lifecycle:
+
+- `AWS_REGION`
+- `TERRAFORM_APPLY_ROLE_ARN`
+- `TERRAFORM_DESTROY_ROLE_ARN`
+- `APP_PUBLISH_ROLE_ARN`
+- `APP_DEPLOY_ROLE_ARN`
+- `REPOSITORY_URI`
+- `TF_STATE_BUCKET`
+- `TF_LOCK_TABLE`
+
+Final cleanup handoff:
+
+1. Run `Bootstrap Destroy Dev Infrastructure` to remove `app/dev`, `identity/dev`, and `state/dev`.
+2. Blank the AWS-derived GitHub variable values.
+3. Preserve the variable names for future reuse.
+4. Keep dev-bootstrap secrets remain stored by design as the standing POC bootstrap exception.
 
 ### Manual Dev ECR Publish Workflow
 

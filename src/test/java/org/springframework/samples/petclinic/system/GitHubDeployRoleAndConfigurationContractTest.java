@@ -26,18 +26,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class GitHubDeployRoleAndConfigurationContractTest {
 
-	private static final Path APP_DEV_DIRECTORY = Path.of("infra/terraform/app/dev");
+	private static final Path IDENTITY_DEV_DIRECTORY = Path.of("infra/terraform/identity/dev");
 
-	private static final Path MAIN = APP_DEV_DIRECTORY.resolve("main.tf");
+	private static final Path MAIN = IDENTITY_DEV_DIRECTORY.resolve("main.tf");
 
-	private static final Path OUTPUTS = APP_DEV_DIRECTORY.resolve("outputs.tf");
+	private static final Path OUTPUTS = IDENTITY_DEV_DIRECTORY.resolve("outputs.tf");
 
-	private static final Path README = APP_DEV_DIRECTORY.resolve("README.md");
+	private static final Path README = Path.of("infra/terraform/app/dev/README.md");
 
 	private static final Path WORKFLOW = Path.of(".github/workflows/terraform-apply-dev.yml");
 
 	@Test
-	void devAppStackDefinesOneDeployRoleSeparateFromTerraformRoles() throws IOException {
+	void devIdentityStackDefinesOneDeployRoleSeparateFromTerraformRoles() throws IOException {
 		assertThat(MAIN).exists();
 		assertThat(OUTPUTS).exists();
 
@@ -51,7 +51,7 @@ class GitHubDeployRoleAndConfigurationContractTest {
 	}
 
 	@Test
-	void devAppStackAlsoDefinesOnePublishRoleSeparateFromDeployAndTerraformRoles() throws IOException {
+	void devIdentityStackAlsoDefinesOnePublishRoleSeparateFromDeployAndTerraformRoles() throws IOException {
 		assertThat(MAIN).exists();
 		assertThat(OUTPUTS).exists();
 
