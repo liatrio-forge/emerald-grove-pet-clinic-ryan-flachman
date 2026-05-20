@@ -37,7 +37,7 @@ jobs:
     environment: dev
     env:
       AWS_REGION: ${{ vars.AWS_REGION }}
-      TF_BACKEND_CONFIG_FILE: ${{ runner.temp }}/backend.hcl
+      TF_BACKEND_CONFIG_FILE: infra/terraform/app/dev/backend.hcl
     steps:
       - name: Require workflow configuration
         run: |
