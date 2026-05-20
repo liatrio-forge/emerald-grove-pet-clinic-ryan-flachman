@@ -137,7 +137,6 @@
           stopEntry(entry);
         }
       })
-      })
       .catch(function (err) {
         console.warn('Failed to poll visit summary:', visitId, err);
       });
@@ -152,7 +151,7 @@
   }
 
   function boot() {
-    var pendingEntries = document.querySelectorAll('[data-ai-status="PENDING"]');
+    var pendingEntries = document.querySelectorAll('[data-ai-status="PENDING"], [data-ai-status="PROCESSING"]');
     if (pendingEntries.length === 0) {
       return;
     }

@@ -20,7 +20,7 @@ function visitIdFromSummaryUrl(url: string): string {
 }
 
 test.describe('health-timeline polling', () => {
-  test('health-timeline polling | initialises intervals for all PENDING entries on load', async ({ page }) => {
+  test('health-timeline polling | initialises intervals for all non-terminal entries on load', async ({ page }) => {
     await page.clock.install();
     let summaryFetches = 0;
     await page.route('**/visits/*/summary', async (route) => {
@@ -33,7 +33,7 @@ test.describe('health-timeline polling', () => {
     await page.route('**/fixture', serveFixture);
     await page.goto('/fixture');
     await page.clock.runFor(3000);
-    await expect.poll(() => summaryFetches).toBe(2);
+    await expect.poll(() => summaryFetches).toBe(3);
   });
 
   test('health-timeline polling | does not poll DONE or FAILED entries', async ({ page }) => {
@@ -49,9 +49,40 @@ test.describe('health-timeline polling', () => {
     await page.route('**/fixture', serveFixture);
     await page.goto('/fixture');
     await page.clock.runFor(3000);
-    await expect.poll(() => visited.has('1') && visited.has('2')).toBe(true);
+    await expect.poll(() => visited.has('1') && visited.has('2') && visited.has('5')).toBe(true);
     expect(visited.has('3')).toBe(false);
     expect(visited.has('4')).toBe(false);
+  });
+
+  test('health-timeline polling | polls PROCESSING entries on load and resolves them to DONE', async ({ page }) => {
+    await page.clock.install();
+    await page.route('**/visits/*/summary', async (route) => {
+      const id = visitIdFromSummaryUrl(route.request().url());
+      if (id === '5') {
+        await route.fulfill({
+          contentType: 'application/json',
+          body: JSON.stringify({
+            status: 'DONE',
+            summary: 'Follow-up complete.',
+            tags: ['recheck'],
+            urgency: 'routine'
+          })
+        });
+      } else {
+        await route.fulfill({
+          contentType: 'application/json',
+          body: JSON.stringify({ status: 'PENDING' })
+        });
+      }
+    });
+    await page.route('**/fixture', serveFixture);
+    await page.goto('/fixture');
+    await page.clock.runFor(3000);
+
+    const processingEntry = page.locator('[data-visit-id="5"]');
+    await expect(processingEntry).toHaveAttribute('data-ai-status', 'DONE');
+    await expect(processingEntry.locator('.ai-summary')).toContainText('Follow-up complete.');
+    await expect(processingEntry.locator('span.ai-spinner')).toHaveCount(0);
   });
 
   test('health-timeline polling | replaces spinner with summary HTML on DONE response', async ({ page }) => {
@@ -313,7 +344,7 @@ test.describe('health-timeline polling', () => {
     await page.route('**/fixture', serveFixture);
     await page.goto('/fixture');
     await page.clock.runFor(3000);
-    await expect.poll(() => summaryFetches).toBe(2);
+    await expect.poll(() => summaryFetches).toBe(3);
     const afterFirstRound = summaryFetches;
     await page.evaluate(() => {
       Object.defineProperty(document, 'visibilityState', { value: 'hidden', configurable: true });
@@ -336,7 +367,7 @@ test.describe('health-timeline polling', () => {
     await page.route('**/fixture', serveFixture);
     await page.goto('/fixture');
     await page.clock.runFor(3000);
-    await expect.poll(() => summaryFetches).toBe(2);
+    await expect.poll(() => summaryFetches).toBe(3);
     const afterFirstRound = summaryFetches;
     await page.evaluate(() => {
       Object.defineProperty(document, 'visibilityState', { value: 'hidden', configurable: true });
@@ -372,7 +403,7 @@ test.describe('health-timeline polling', () => {
     await page.route('**/fixture', serveFixture);
     await page.goto('/fixture');
     await page.clock.runFor(3000);
-    await expect.poll(() => summaryFetches).toBe(2);
+    await expect.poll(() => summaryFetches).toBe(3);
     const afterResolve = summaryFetches;
     await page.evaluate(() => {
       Object.defineProperty(document, 'visibilityState', { value: 'hidden', configurable: true });
