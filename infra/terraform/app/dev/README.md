@@ -31,6 +31,48 @@ This consumer assumes remote state is already managed by the state/dev stack.
 4. In GitHub Actions, provide the same backend inputs through generated or
    secret-backed files rather than hard-coding them in `main.tf`.
 
+## Bootstrap Workflow Exception
+
+- The repository defines one bootstrap-only workflow named
+  `Bootstrap Dev Infrastructure` at `.github/workflows/bootstrap-dev-infra.yml`.
+- This workflow exists to break the first-run circular dependency where
+  `Terraform Apply Dev` needs `TERRAFORM_APPLY_ROLE_ARN`, but that role is
+  created by the `infra/terraform/app/dev` stack itself.
+- The bootstrap workflow runs only from the `main branch`, requires
+  `workflow_dispatch`, and requires the operator to type `bootstrap dev`.
+- The bootstrap-capable job uses a separate protected `dev-bootstrap`
+  environment so temporary admin credentials stay isolated from the normal
+  `dev` OIDC path.
+- This is a one-time bootstrap exception. Steady-state Terraform apply, image
+  publish, and ECS deploy workflows must continue using GitHub OIDC instead of
+  long-lived AWS credentials.
+
+## Bootstrap Workflow Inputs
+
+Set these protected GitHub environment secrets on `dev-bootstrap` before the
+first live bootstrap:
+
+| Secret | Why it exists |
+| --- | --- |
+| `BOOTSTRAP_AWS_ACCESS_KEY_ID` | Temporary admin-backed AWS access key for the first live bootstrap only. |
+| `BOOTSTRAP_AWS_SECRET_ACCESS_KEY` | Temporary admin-backed AWS secret key paired with the bootstrap access key. |
+| `BOOTSTRAP_AWS_SESSION_TOKEN` | Optional session token when the admin credentials are temporary STS credentials. |
+
+Use the repository-scoped variable `AWS_REGION` for the target region, and pass
+one workflow input named `bootstrap_image` that is already pinned by digest.
+
+## Bootstrap Workflow Sequence
+
+1. Run `Bootstrap Dev Infrastructure` from `main`.
+2. Type `bootstrap dev`.
+3. Provide `bootstrap_image` as one immutable image reference pinned by digest.
+4. Let the workflow apply `infra/terraform/state/dev` with local backend mode.
+5. Let the workflow materialize backend config, initialize `infra/terraform/app/dev`,
+   and apply the app stack.
+6. Copy the workflow summary outputs into the protected GitHub variables listed
+   below.
+7. Remove the bootstrap secrets from `dev-bootstrap`.
+
 ## Manual Terraform Apply Workflow Contract
 
 - The repository defines one manual workflow named `Terraform Apply Dev` at
@@ -102,6 +144,16 @@ All AWS-assuming jobs must request `id-token: write`, declare the protected
 GitHub environment whose exact `sub` claim the trusted role permits, and avoid
 long-lived `AWS_ACCESS_KEY_ID` or `AWS_SECRET_ACCESS_KEY` repository secrets.
 Downstream workflows must use GitHub OIDC and do not use long-lived AWS access keys.
+
+Bootstrap output promotion requirements:
+
+- Promote `TERRAFORM_APPLY_ROLE_ARN`, `TERRAFORM_DESTROY_ROLE_ARN`,
+  `APP_PUBLISH_ROLE_ARN`, `APP_DEPLOY_ROLE_ARN`, `REPOSITORY_URI`,
+  `TF_STATE_BUCKET`, and `TF_LOCK_TABLE` from the bootstrap workflow summary
+  into the protected GitHub variables above.
+- The bootstrap workflow summary is the intended handoff point for the one-time
+  bootstrap exception. After promotion, remove the bootstrap secrets and use
+  the normal OIDC workflows only.
 
 ## GitHub OIDC verification workflow
 
