@@ -142,6 +142,25 @@ docker compose -f infra/terraform/floci/docker-compose.yml up -d floci
 This keeps one reproducible remote-state contract for local verification,
 compose-based `floci` testing, and future CI reuse.
 
+### Manual Terraform Apply Workflow
+
+The repository-owned GitHub Actions workflow for applying the `dev` Terraform
+stack is `Terraform Apply Dev` in
+`.github/workflows/terraform-apply-dev.yml`.
+
+Workflow contract highlights:
+
+- It starts only through `workflow_dispatch`.
+- It is limited to the `dev` environment and requires the operator to type
+  `apply dev` before a run can continue.
+- It uses GitHub OIDC to assume AWS access instead of long-lived AWS keys in
+  repository secrets.
+- It creates a reviewed saved plan for `infra/terraform/app/dev` and applies
+  that exact saved Terraform plan rather than recalculating a fresh apply plan.
+- The apply-capable job remains behind the protected `dev` environment so
+  reviewer approval can stop the workflow before protected configuration is
+  used.
+
 ## Application Features
 
 ### Core Entities
