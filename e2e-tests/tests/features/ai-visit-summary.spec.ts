@@ -10,7 +10,7 @@ const formatLocalDate = (d: Date) => {
 };
 
 test.describe('AI Visit Summary', () => {
-  test('shows DONE urgency badge and tag chips after visit save', async ({ page }) => {
+  test('shows DONE urgency badge and tag chips after visit save', async ({ page }, testInfo) => {
     const visitPage = new VisitPage(page);
 
     await page.goto('/owners/6');
@@ -20,7 +20,7 @@ test.describe('AI Visit Summary', () => {
     await expect(visitPage.heading()).toBeVisible();
 
     const futureDate = new Date();
-    futureDate.setFullYear(futureDate.getFullYear() + 1);
+    futureDate.setDate(futureDate.getDate() + 365 + testInfo.retry + testInfo.workerIndex);
     const visitDate = formatLocalDate(futureDate);
 
     await visitPage.fillVisitDate(visitDate);
@@ -34,9 +34,9 @@ test.describe('AI Visit Summary', () => {
     await page.locator('[data-bs-target="#health-timeline-7"]').click();
 
     const timeline = page.locator('#health-timeline-7');
-    const entry = timeline.locator(`[data-visit-date="${visitDate}"]`);
+    const entry = timeline.locator(`[data-visit-date="${visitDate}"][data-ai-status="DONE"]`).first();
 
-    await expect(entry).toHaveAttribute('data-ai-status', 'DONE', { timeout: 10_000 });
+    await expect(entry).toBeVisible({ timeout: 15_000 });
 
     await expect(entry.locator('.urgency-urgent')).toBeVisible();
     await expect(entry.locator('.health-tag').first()).toBeVisible();

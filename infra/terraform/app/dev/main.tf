@@ -124,6 +124,52 @@ resource "aws_iam_role_policy_attachment" "terraform_destroy_github_actions" {
   policy_arn = aws_iam_policy.terraform_github_actions.arn
 }
 
+resource "aws_iam_policy" "app_publish_github_actions" {
+  name = "${var.environment}-app-publish-github-actions"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "EcrPublicationPath"
+        Effect = "Allow"
+        Action = [
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:BatchGetImage",
+          "ecr:CompleteLayerUpload",
+          "ecr:DescribeImages",
+          "ecr:DescribeRepositories",
+          "ecr:GetAuthorizationToken",
+          "ecr:InitiateLayerUpload",
+          "ecr:PutImage",
+          "ecr:UploadLayerPart",
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+
+  tags = merge(local.common_tags, {
+    Name = "${var.environment}-app-publish-github-actions"
+    Role = "app-publish-github-actions"
+  })
+}
+
+resource "aws_iam_role" "app_publish_github_actions" {
+  name               = local.app_publish_role_name
+  assume_role_policy = data.aws_iam_policy_document.github_actions_oidc_trust["app_publish"].json
+
+  tags = merge(local.common_tags, {
+    Name = local.app_publish_role_name
+    Role = "app-publish"
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "app_publish_github_actions" {
+  role       = aws_iam_role.app_publish_github_actions.name
+  policy_arn = aws_iam_policy.app_publish_github_actions.arn
+}
+
 resource "aws_iam_policy" "app_deploy_github_actions" {
   name = "${var.environment}-app-deploy-github-actions"
 

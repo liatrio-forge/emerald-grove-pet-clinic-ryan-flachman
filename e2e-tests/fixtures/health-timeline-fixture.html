@@ -22,6 +22,10 @@
   <div data-visit-id="4" data-ai-status="FAILED" data-visit-date="2025-04-01">
     <div class="ai-error">Unable to generate summary.</div>
   </div>
+  <div data-visit-id="5" data-ai-status="PROCESSING" data-visit-date="2025-05-10">
+    <span class="ai-spinner"></span>
+    <span>Generating summary…</span>
+  </div>
   <script>
 (function () {
   'use strict';
@@ -140,7 +144,7 @@
   }
 
   function boot() {
-    var pendingEntries = document.querySelectorAll('[data-ai-status="PENDING"]');
+    var pendingEntries = document.querySelectorAll('[data-ai-status="PENDING"], [data-ai-status="PROCESSING"]');
     if (pendingEntries.length === 0) {
       return;
     }

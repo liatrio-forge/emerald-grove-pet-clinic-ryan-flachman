@@ -161,6 +161,26 @@ Workflow contract highlights:
   reviewer approval can stop the workflow before protected configuration is
   used.
 
+### Manual Dev ECR Publish Workflow
+
+The repository-owned GitHub Actions workflow for publishing a `dev` container
+image is `Manual Dev ECR Publish` in
+`.github/workflows/manual-dev-ecr-publish.yml`.
+
+Workflow contract highlights:
+
+- It starts only through `workflow_dispatch` and runs only from the `main`
+  branch.
+- It requires the operator to type `publish dev image` before any AWS-backed
+  publication can proceed.
+- It uses the protected `dev` environment plus GitHub OIDC instead of
+  long-lived AWS access keys.
+- It runs `./mvnw package -DskipTests`, builds from the repository-owned root
+  `Dockerfile`, and publishes one immutable Git SHA tag to the configured ECR
+  repository.
+- It surfaces the final published image reference and pushed digest in
+  workflow-visible output for later deployment review.
+
 ## Application Features
 
 ### Core Entities

@@ -3,6 +3,17 @@ import { test, expect } from '@fixtures/base-test';
 import { OwnerPage } from '@pages/owner-page';
 import { createPet } from '@utils/pet-factory';
 
+const formatFutureDate = (daysAhead: number) => {
+  const d = new Date();
+  d.setDate(d.getDate() + daysAhead);
+
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+};
+
 test.describe('Pet Management', () => {
   test('can add a pet to an existing owner and see it on owner details', async ({ page }, testInfo) => {
     const ownerPage = new OwnerPage(page);
@@ -34,13 +45,15 @@ test.describe('Pet Management', () => {
 
     await petRow.getByRole('link', { name: /Add Visit/i }).first().click();
 
-    await page.locator('input#date').fill('2024-01-01');
+    const visitDate = formatFutureDate(7);
+
+    await page.locator('input#date').fill(visitDate);
     await page.locator('input#description').fill('Annual checkup');
     await page.screenshot({ path: testInfo.outputPath('visit-add-form-filled.png'), fullPage: true });
     await page.getByRole('button', { name: /Add Visit/i }).click();
 
     await expect(page.getByRole('heading', { name: /Pets and Visits/i })).toBeVisible();
-    await expect(petRow.getByRole('cell', { name: '2024-01-01', exact: true })).toBeVisible();
+    await expect(petRow.getByRole('cell', { name: visitDate, exact: true })).toBeVisible();
     await expect(petRow.getByRole('cell', { name: 'Annual checkup', exact: true })).toBeVisible();
 
     await page.screenshot({ path: testInfo.outputPath('pet-details-with-visit-history.png'), fullPage: true });
@@ -120,7 +133,7 @@ test.describe('Pet Management', () => {
       has: page.locator('dd', { hasText: pet.name }),
     });
     await petRow.getByRole('link', { name: /Add Visit/i }).first().click();
-    await page.locator('input#date').fill('2025-01-01');
+    await page.locator('input#date').fill(formatFutureDate(30));
     await page.locator('input#description').fill('Wellness check');
     await page.getByRole('button', { name: /Add Visit/i }).click();
     await expect(page.getByRole('heading', { name: /Pets and Visits/i })).toBeVisible();

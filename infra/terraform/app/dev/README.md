@@ -54,6 +54,7 @@ This consumer assumes remote state is already managed by the state/dev stack.
 | --- | --- | --- | --- |
 | `terraform-apply-dev` | `repo:liatrio-forge/emerald-grove-pet-clinic-ryan-flachman:environment:dev` | protected `dev` environment | Allows reviewed Terraform apply work for the dev stack without sharing destroy access. |
 | `terraform-destroy-dev` | `repo:liatrio-forge/emerald-grove-pet-clinic-ryan-flachman:environment:dev-destroy` | separate protected `dev-destroy` environment | Keeps destructive cleanup behind a stricter approval boundary than normal apply work. |
+| `app-publish-dev` | `repo:liatrio-forge/emerald-grove-pet-clinic-ryan-flachman:environment:dev` | protected `dev` environment | Allows manual ECR image publication without granting Terraform mutation or ECS rollout authority. |
 | `app-deploy-dev` | `repo:liatrio-forge/emerald-grove-pet-clinic-ryan-flachman:environment:dev` | protected `dev` environment | Keeps ECS rollout access narrower than Terraform mutation access for downstream deployment workflows. |
 
 The Terraform apply and destroy roles intentionally share one broad proof-of-concept
@@ -91,7 +92,9 @@ AWS secrets.
 | `AWS_REGION` | Repository-scoped | Stable non-secret default reused by apply, destroy, and deploy automation. |
 | `TERRAFORM_APPLY_ROLE_ARN` | Environment-scoped (`dev`) | Protected value consumed by Terraform apply jobs that assume the `terraform-apply-dev` role. |
 | `TERRAFORM_DESTROY_ROLE_ARN` | Environment-scoped (`dev-destroy`) | Protected value consumed by destructive cleanup workflows only. |
+| `APP_PUBLISH_ROLE_ARN` | Environment-scoped (`dev`) | Protected value consumed by manual ECR publish workflows so image publication stays separate from Terraform and ECS rollout authority. |
 | `APP_DEPLOY_ROLE_ARN` | Environment-scoped (`dev`) | Protected value consumed by ECS rollout workflows so app deploy stays separate from Terraform. |
+| `REPOSITORY_URI` | Environment-scoped (`dev`) | Protected value that points the manual publish workflow at the Terraform-managed `repository_uri` output without reconstructing repository names in YAML. |
 | `TF_STATE_BUCKET` | Environment-scoped (`dev`) | Backend-state value coupled to the protected dev stack. |
 | `TF_LOCK_TABLE` | Environment-scoped (`dev`) | Backend-lock value coupled to the protected dev stack. |
 
@@ -142,6 +145,52 @@ runner shell access.
   apply.
 - Out of scope: image build, ECS rollout, destroy workflow, broader deployment
   automation, and unrelated CI/CD orchestration.
+
+## Manual Dev ECR Publish Workflow Contract
+
+- The repository defines one manual workflow named `Manual Dev ECR Publish` at
+  `.github/workflows/manual-dev-ecr-publish.yml`.
+- The workflow starts only through `workflow_dispatch` and allows publication
+  only from the `main branch`.
+- Operators must type `publish dev image` before the workflow can continue
+  beyond the initial safety gate.
+- The publish-capable job uses the protected `dev` environment, so reviewer
+  approval happens before protected AWS configuration is available.
+- The workflow uses GitHub OIDC with `APP_PUBLISH_ROLE_ARN` and does not use
+  long-lived AWS access keys.
+- The workflow consumes `REPOSITORY_URI` directly from protected GitHub
+  configuration rather than reconstructing repository names in YAML.
+- The workflow builds from the repository-owned root `Dockerfile` and publishes
+  exactly one immutable Git SHA image per successful run.
+- The workflow surfaces the fully qualified image reference plus the pushed
+  digest in workflow-visible output for later rollout review.
+
+## Manual Dev ECR Publish Verification Commands
+
+Use GitHub CLI and AWS CLI after a run to review the workflow end to end:
+
+```bash
+gh workflow run "Manual Dev ECR Publish" --ref main -f confirmation="publish dev image"
+gh run list --workflow "Manual Dev ECR Publish"
+gh run view <run-id> --log
+aws ecr describe-images --repository-name <repository-name> --image-ids imageTag=<full-git-sha>
+```
+
+These verification commands let a maintainer confirm the workflow name,
+inspect the Maven and publish logs, and verify that the expected SHA-tagged
+image exists in ECR.
+
+If you already know the run id, `gh run view --log <run-id>` is the direct log
+inspection form for this workflow.
+
+## Manual Dev ECR Publish Scope Boundaries
+
+- In scope: manual image publication, typed confirmation, `main`-branch
+  restriction, protected `dev` environment approval, GitHub OIDC
+  authentication, one immutable Git SHA tag, and workflow-visible image/digest
+  output.
+- Out of scope: automatic publish, ECS rollout, mutable convenience tags, and
+  any repo-owned verification script for this workflow.
 
 ## Network Reuse Contract
 
