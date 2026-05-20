@@ -116,3 +116,59 @@ terraform -chdir=infra/terraform/app/dev plan -no-color
 Use placeholder credentials throughout local verification:
 `AWS_ACCESS_KEY_ID=test`, `AWS_SECRET_ACCESS_KEY=test`, and
 `AWS_EC2_METADATA_DISABLED=true`.
+
+## Baseline ECS Service Contract
+
+Use the repository-owned verification entry point to exercise the baseline ECS service contract locally:
+
+```bash
+./scripts/verify-baseline-ecs-task-definition-service-contract.sh
+```
+
+That workflow starts `floci`, initializes the dev stack with
+`backend.hcl.example`, runs:
+
+```bash
+terraform -chdir=infra/terraform/app/dev validate
+terraform -chdir=infra/terraform/app/dev plan -no-color
+```
+
+and enforces the immutable `bootstrap_image` digest contract before any
+AWS-backed deployment proof is attempted. Use placeholder credentials
+throughout local verification: `AWS_ACCESS_KEY_ID=test`,
+`AWS_SECRET_ACCESS_KEY=test`, and `AWS_EC2_METADATA_DISABLED=true`.
+
+## Floci ECS-Through-ALB Runtime Check
+
+Use the repository-owned verification entry point to verify the ALB health endpoint locally through the ECS service path:
+
+```bash
+./scripts/verify-floci-ecs-through-alb.sh
+```
+
+That floci ECS-through-ALB runtime check starts `floci`, initializes the dev
+stack with `backend.hcl.example`, builds and pushes a digest-pinned bootstrap
+image into local ECR, runs:
+
+```bash
+terraform -chdir=infra/terraform/app/dev validate
+terraform -chdir=infra/terraform/app/dev apply -auto-approve
+terraform -chdir=infra/terraform/app/dev destroy -auto-approve
+```
+
+and then verifies the ECS service state, target-group health, and ALB
+reachability at `/actuator/health` before teardown.
+
+Use placeholder credentials throughout local verification:
+`AWS_ACCESS_KEY_ID=test`, `AWS_SECRET_ACCESS_KEY=test`, and
+`AWS_EC2_METADATA_DISABLED=true`.
+
+This runtime check is still a local floci proof path. It does not replace the
+separate live AWS evidence required for the final spec proof artifacts.
+
+The current repository implementation verified the first hard blocker in this
+path: local ECR creation returns `501` from the emulator, so this script
+currently stops before ECS task launch. Until `floci` uses an emulator/runtime
+that supports ECR, ECS, and ELBv2 together, the runtime script serves as a
+capability check plus a clear failure boundary rather than a guaranteed
+green-path proof.

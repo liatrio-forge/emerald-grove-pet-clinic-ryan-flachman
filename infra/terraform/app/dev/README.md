@@ -62,6 +62,61 @@ This consumer assumes remote state is already managed by the state/dev stack.
   and `ecs_task_role_arn` directly rather than recreating or merging the role
   boundary.
 
+## Baseline ECS Task-Definition Contract
+
+- The dev app stack defines one ECS Fargate task definition for the application
+  runtime.
+- The task definition uses `awsvpc` networking with fixed task sizing of `1024`
+  CPU units and `2048` MiB memory.
+- The task family name and CloudWatch log stream prefix are reviewer-readable
+  locals so later service and proof workflows reuse a stable runtime contract.
+- The application container exposes only port `8080`, matching the existing
+  repository-owned deploy and ALB health-check contracts.
+- The task definition reuses the existing execution role, task role, and
+  application log group instead of redefining runtime IAM or logging
+  destinations.
+- The bootstrap image input must be an immutable image reference pinned by
+  digest. Mutable tags such as `latest` are intentionally excluded from the
+  Terraform contract.
+- The baseline task definition intentionally keeps the runtime configuration
+  surface minimal: no Terraform-managed secret injection, no environment files,
+  and no extra environment variables beyond what the container image already
+  owns.
+
+## Baseline ECS Service Contract
+
+- The dev app stack defines one ECS service attached to the shared ECS cluster,
+  the baseline application task definition, and the existing application target
+  group.
+- The service runs exactly one task in the existing private subnets and reuses
+  the existing ECS task security group.
+- `assign_public_ip = false` is required, so tasks are not directly
+  internet-reachable and remain available only through the ALB ingress path.
+- The service uses `health_check_grace_period_seconds = 120` to give the Spring
+  Boot application time to start before ALB health checks count against it.
+- The deployment settings intentionally allow single-task replacement with brief downtime
+  for the dev H2 proof of concept: `minimumHealthyPercent = 0` and
+  `maximumPercent = 100`.
+- Later rollout automation should consume only the exported
+  `baseline_ecs_service_name`, `baseline_ecs_service_arn`,
+  `baseline_task_definition_family`, and `baseline_task_definition_arn`
+  identifiers instead of reconstructing names or owning task-definition
+  revision churn.
+
+## Baseline ECS Verification Order
+
+- build and push a real immutable Git SHA image before the first ECS deployment.
+- Apply Terraform only after the bootstrap image reference is pinned by digest.
+- verify ECS steady state with `aws ecs describe-services --cluster <cluster-name> --services <service-name>`.
+- verify the running task identity with `aws ecs list-tasks --cluster <cluster-name> --service-name <service-name>`.
+- verify target health with `aws elbv2 describe-target-health --target-group-arn <target-group-arn>`.
+- verify ALB reachability with `curl -fsS http://<alb-dns-name>/actuator/health`.
+- verify CloudWatch logs with `aws logs get-log-events --log-group-name /aws/ecs/dev-application --log-stream-name <stream-name>`.
+- no direct task public-IP path exists because the baseline ECS service keeps
+  `assign_public_ip = false`.
+- This baseline verification flow stays within scope and intentionally excludes
+  CI rollout automation, autoscaling, and database redesign.
+
 ## ECR Repository Contract
 
 - The dev app stack defines one private ECR repository named
