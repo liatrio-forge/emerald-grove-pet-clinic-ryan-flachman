@@ -65,7 +65,7 @@
 - [x] 1.5 Update `infra/terraform/app/dev` to consume the foundation identity contract without recreating GitHub identity resources, keeping runtime resources and any downstream references intact.
 - [x] 1.6 Update lifecycle documentation so the three-stack ownership model, validation entry points, and destroy boundaries are explicit for reviewers and junior maintainers.
 
-### [ ] 2.0 Restore Independent OIDC-Based App Destroy And Rebuild
+### [x] 2.0 Restore Independent OIDC-Based App Destroy And Rebuild
 
 #### 2.0 Proof Artifact(s)
 
@@ -75,12 +75,12 @@
 
 #### 2.0 Tasks
 
-- [ ] 2.1 Add a failing workflow contract test that asserts `.github/workflows/terraform-destroy-dev.yml` exists, is manual-only, requires typed confirmation, and restricts destructive execution to `main`.
-- [ ] 2.2 Extend the failing workflow contract test to assert the destroy workflow uses the protected `dev-destroy` environment, GitHub OIDC, `TERRAFORM_DESTROY_ROLE_ARN`, and the same backend variable names already used by steady-state workflows.
-- [ ] 2.3 Add a failing documentation contract test that asserts the repo distinguishes normal `app/dev` destroy/recreate from final foundation teardown and states that backend plus identity resources survive normal app destruction.
-- [ ] 2.4 Add the minimum destroy workflow steps needed to materialize backend configuration, initialize `infra/terraform/app/dev`, and run a reviewer-visible `terraform destroy` path without touching `state/dev` or `identity/dev`.
-- [ ] 2.5 Update the app-stack docs and root lifecycle guidance with the exact OIDC-only destroy-and-recreate sequence, required environments, and stable GitHub variable matrix.
-- [ ] 2.6 Add or update focused contract tests and documentation wording that prove `Terraform Apply Dev`, `Terraform Destroy Dev`, publish, and deploy workflows all continue using the same variable names after the stack split.
+- [x] 2.1 Add a failing workflow contract test that asserts `.github/workflows/terraform-destroy-dev.yml` exists, is manual-only, requires typed confirmation, and restricts destructive execution to `main`.
+- [x] 2.2 Extend the failing workflow contract test to assert the destroy workflow uses the protected `dev-destroy` environment, GitHub OIDC, `TERRAFORM_DESTROY_ROLE_ARN`, and the same backend variable names already used by steady-state workflows.
+- [x] 2.3 Add a failing documentation contract test that asserts the repo distinguishes normal `app/dev` destroy/recreate from final foundation teardown and states that backend plus identity resources survive normal app destruction.
+- [x] 2.4 Add the minimum destroy workflow steps needed to materialize backend configuration, initialize `infra/terraform/app/dev`, and run a reviewer-visible `terraform destroy` path without touching `state/dev` or `identity/dev`.
+- [x] 2.5 Update the app-stack docs and root lifecycle guidance with the exact OIDC-only destroy-and-recreate sequence, required environments, and stable GitHub variable matrix.
+- [x] 2.6 Add or update focused contract tests and documentation wording that prove `Terraform Apply Dev`, `Terraform Destroy Dev`, publish, and deploy workflows all continue using the same variable names after the stack split.
 
 ### [ ] 3.0 Add Repo-Owned Bootstrap Create And Final Foundation Teardown Workflows
 

@@ -191,8 +191,12 @@ The repository now uses three Terraform ownership layers for the dev POC:
 - `app/dev` owns runtime infrastructure such as ECR, VPC, ALB, ECS, and log
   groups.
 
-Normal application rebuilds should operate on `app/dev` only. Final cleanup
-destroys `app/dev` first, then `identity/dev`, then `state/dev`.
+Normal application rebuilds should operate on `app/dev` only.
+Final cleanup destroys `app/dev` first, then `identity/dev`, then `state/dev`.
+
+The repository-owned `Terraform Destroy Dev` workflow handles normal `app/dev`
+teardown and leaves foundation stacks intact for later recreation through the
+usual OIDC workflows.
 
 ### Manual Dev ECR Publish Workflow
 

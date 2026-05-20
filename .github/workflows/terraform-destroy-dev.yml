@@ -1,0 +1,90 @@
+name: Terraform Destroy Dev
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Type destroy dev to confirm the dev Terraform destroy.
+        required: true
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: terraform-destroy-dev
+  cancel-in-progress: false
+
+jobs:
+  validate-request:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require main branch
+        if: github.ref != 'refs/heads/main'
+        run: |
+          echo "Destroy requires the main branch." >&2
+          exit 1
+
+      - name: Require typed confirmation
+        if: github.event.inputs.confirmation != 'destroy dev'
+        run: |
+          echo "Destroy requires confirmation: destroy dev" >&2
+          exit 1
+
+  destroy-dev:
+    needs: validate-request
+    if: github.ref == 'refs/heads/main' && github.event.inputs.confirmation == 'destroy dev'
+    runs-on: ubuntu-latest
+    environment: dev-destroy
+    env:
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      TF_BACKEND_CONFIG_FILE: infra/terraform/app/dev/backend.hcl
+    steps:
+      - name: Require workflow configuration
+        run: |
+          if [[ -z "${{ vars.TERRAFORM_DESTROY_ROLE_ARN }}" ]]; then
+            echo "Terraform destroy role ARN is required." >&2
+            exit 1
+          fi
+          if [[ -z "${{ vars.TF_STATE_BUCKET }}" ]]; then
+            echo "Terraform backend bucket is required." >&2
+            exit 1
+          fi
+          if [[ -z "${{ vars.TF_LOCK_TABLE }}" ]]; then
+            echo "Terraform lock table is required." >&2
+            exit 1
+          fi
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials with OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ vars.TERRAFORM_DESTROY_ROLE_ARN }}
+
+      - name: Materialize backend configuration
+        run: |
+          cat <<'EOF' > "$TF_BACKEND_CONFIG_FILE"
+          bucket         = "${{ vars.TF_STATE_BUCKET }}"
+          key            = "app/dev/terraform.tfstate"
+          region         = "${{ env.AWS_REGION }}"
+          dynamodb_table = "${{ vars.TF_LOCK_TABLE }}"
+          encrypt        = true
+          EOF
+
+      - name: Terraform init
+        run: terraform -chdir=infra/terraform/app/dev init -input=false -backend-config="$TF_BACKEND_CONFIG_FILE"
+
+      - name: Terraform destroy
+        run: terraform -chdir=infra/terraform/app/dev destroy -auto-approve -input=false
+
+      - name: Summarize destroy scope
+        run: |
+          {
+            echo "## Terraform destroy scope"
+            echo ""
+            echo "This workflow destroys \`app/dev\` runtime resources only."
+            echo "The \`identity/dev\` and \`state/dev\` stacks stay in place for normal rebuilds."
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -99,6 +99,32 @@ one workflow input named `bootstrap_image` that is already pinned by digest.
 - The workflow creates and applies an `exact saved Terraform plan` for
   `infra/terraform/app/dev`; it does not recompute a fresh implicit apply plan.
 
+## Manual Terraform Destroy Workflow Contract
+
+- The repository defines one manual workflow named `Terraform Destroy Dev` at
+  `.github/workflows/terraform-destroy-dev.yml`.
+- The workflow uses `workflow_dispatch`, requires the operator to type
+  `destroy dev`, and allows destructive execution only from the `main branch`.
+- The destroy-capable job uses the protected `dev-destroy` environment so
+  destructive access stays behind a separate reviewer boundary.
+- The workflow uses GitHub OIDC with `TERRAFORM_DESTROY_ROLE_ARN` and reuses
+  the same `TF_STATE_BUCKET` and `TF_LOCK_TABLE` variable names as the apply
+  workflow.
+- This workflow destroys only `app/dev` runtime infrastructure and keeps
+  backend and identity resources intact for later rebuilds.
+
+## Normal App Rebuild Sequence
+
+1. Run `Terraform Destroy Dev` from `main`.
+2. Type `destroy dev`.
+3. Let the workflow destroy only the `app/dev` stack.
+4. Keep `state/dev` and `identity/dev` in place.
+5. Run `Terraform Apply Dev` to recreate `app/dev` with the same stable GitHub
+   variable names.
+
+Normal `app/dev` destroy and recreate is distinct from final foundation
+teardown.
+
 ## GitHub OIDC Terraform Role Matrix
 
 | Role | Trusted GitHub subject | Environment boundary | Why it exists |
