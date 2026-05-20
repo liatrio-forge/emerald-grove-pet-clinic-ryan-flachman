@@ -343,3 +343,69 @@ resource "aws_vpc_security_group_egress_rule" "ecs_task_ipv6_egress" {
   cidr_ipv6         = "::/0"
   ip_protocol       = "-1"
 }
+
+resource "aws_ecs_task_definition" "application" {
+  family                   = local.ecs_task_definition_family
+  cpu                      = "1024"
+  memory                   = "2048"
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  execution_role_arn       = aws_iam_role.ecs_task_execution.arn
+  task_role_arn            = aws_iam_role.ecs_task.arn
+
+  container_definitions = jsonencode([
+    {
+      name      = "application"
+      image     = var.bootstrap_image
+      essential = true
+      portMappings = [
+        {
+          containerPort = 8080
+          hostPort      = 8080
+          protocol      = "tcp"
+        }
+      ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.application.name
+          "awslogs-region"        = var.aws_region
+          "awslogs-stream-prefix" = local.ecs_task_log_stream_prefix
+        }
+      }
+    }
+  ])
+
+  tags = merge(local.common_tags, {
+    Name = local.ecs_task_definition_family
+    Role = "application-runtime"
+  })
+}
+
+resource "aws_ecs_service" "application" {
+  name                               = local.ecs_service_name
+  cluster                            = aws_ecs_cluster.shared.id
+  task_definition                    = aws_ecs_task_definition.application.arn
+  desired_count                      = 1
+  launch_type                        = "FARGATE"
+  health_check_grace_period_seconds  = 120
+  deployment_minimum_healthy_percent = 0
+  deployment_maximum_percent         = 100
+
+  network_configuration {
+    subnets          = sort([for subnet in values(aws_subnet.private) : subnet.id])
+    security_groups  = [aws_security_group.ecs_task.id]
+    assign_public_ip = false
+  }
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.application.arn
+    container_name   = "application"
+    container_port   = 8080
+  }
+
+  tags = merge(local.common_tags, {
+    Name = local.ecs_service_name
+    Role = "application-service"
+  })
+}

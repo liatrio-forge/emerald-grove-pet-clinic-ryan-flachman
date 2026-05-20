@@ -115,3 +115,23 @@ output "ecs_task_role_arn" {
   description = "ARN of the ECS task role reserved for future application AWS access."
   value       = aws_iam_role.ecs_task.arn
 }
+
+output "baseline_ecs_service_name" {
+  description = "Stable ECS service name for later rollout automation."
+  value       = aws_ecs_service.application.name
+}
+
+output "baseline_ecs_service_arn" {
+  description = "Stable ECS service identifier for later rollout automation."
+  value       = aws_ecs_service.application.id
+}
+
+output "baseline_task_definition_family" {
+  description = "Stable ECS task-definition family for later rollout automation."
+  value       = aws_ecs_task_definition.application.family
+}
+
+output "baseline_task_definition_arn" {
+  description = "Stable baseline ECS task-definition identifier for later rollout automation."
+  value       = aws_ecs_task_definition.application.arn
+}

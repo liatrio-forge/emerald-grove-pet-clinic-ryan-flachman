@@ -43,3 +43,14 @@ variable "alb_listener_port" {
   type        = number
   default     = 80
 }
+
+variable "bootstrap_image" {
+  description = "Immutable bootstrap image reference for the baseline ECS service."
+  type        = string
+  default     = "123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-petclinic@sha256:1111111111111111111111111111111111111111111111111111111111111111"
+
+  validation {
+    condition     = can(regex(".+@sha256:[0-9a-f]{64}$", var.bootstrap_image))
+    error_message = "Provide an immutable bootstrap image reference pinned by digest."
+  }
+}

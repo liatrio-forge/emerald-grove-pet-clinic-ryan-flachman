@@ -33,7 +33,7 @@ class TerraformEcsClusterContractTest {
 	private static final Path LOCALS = APP_DEV_DIRECTORY.resolve("locals.tf");
 
 	@Test
-	void devAppStackDefinesExactlyOneMinimalEcsClusterForFutureFargateServices() throws IOException {
+	void devAppStackDefinesExactlyOneMinimalSharedEcsClusterWithoutAdvancedCapacityConfiguration() throws IOException {
 		assertThat(MAIN).exists();
 		assertThat(LOCALS).exists();
 
@@ -49,7 +49,6 @@ class TerraformEcsClusterContractTest {
 		assertThat(main).doesNotContain("default_capacity_provider_strategy");
 		assertThat(main).doesNotContain("container_insights");
 		assertThat(main).doesNotContain("execute_command_configuration");
-		assertThat(main).doesNotContain("resource \"aws_ecs_service\"");
 		assertThat(locals).contains("ecs_cluster_name");
 	}
 
