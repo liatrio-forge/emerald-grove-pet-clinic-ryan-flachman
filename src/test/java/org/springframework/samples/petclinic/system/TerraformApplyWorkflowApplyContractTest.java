@@ -29,18 +29,26 @@ class TerraformApplyWorkflowApplyContractTest {
 	private static final Path WORKFLOW = Path.of(".github/workflows/terraform-apply-dev.yml");
 
 	@Test
-	void workflowAppliesThePreviouslySavedPlanArtifactInsteadOfReplanning() throws IOException {
+	void workflowReinitializesTerraformBeforeApplyingThePreviouslySavedPlanArtifact() throws IOException {
 		assertThat(WORKFLOW).exists();
 
 		String workflow = Files.readString(WORKFLOW);
+		String applyJob = workflow.substring(workflow.indexOf("  apply-dev:"));
 
 		assertThat(workflow).contains("concurrency:");
 		assertThat(workflow).contains("group: terraform-apply-dev");
 		assertThat(workflow).contains("cancel-in-progress: false");
-		assertThat(workflow).contains("actions/download-artifact@v4");
-		assertThat(workflow).contains("name: terraform-apply-dev-plan");
-		assertThat(workflow).contains("terraform apply -input=false tfplan");
-		assertThat(workflow).doesNotContain("terraform apply -auto-approve");
+		assertThat(applyJob).contains("environment: dev");
+		assertThat(applyJob).contains("actions/download-artifact@v4");
+		assertThat(applyJob).contains("name: terraform-apply-dev-plan");
+		assertThat(applyJob).contains("TF_BACKEND_CONFIG_FILE: infra/terraform/app/dev/backend.hcl");
+		assertThat(applyJob).contains("bucket         = \"${{ vars.TF_STATE_BUCKET }}\"");
+		assertThat(applyJob).contains("key            = \"app/dev/terraform.tfstate\"");
+		assertThat(applyJob).contains("dynamodb_table = \"${{ vars.TF_LOCK_TABLE }}\"");
+		assertThat(applyJob)
+			.contains("terraform -chdir=infra/terraform/app/dev init -input=false -backend-config=backend.hcl");
+		assertThat(applyJob).contains("terraform apply -input=false tfplan");
+		assertThat(applyJob).doesNotContain("terraform apply -auto-approve");
 	}
 
 	@Test
