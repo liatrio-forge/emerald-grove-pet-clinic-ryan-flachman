@@ -54,6 +54,12 @@ class TerraformBootstrapDestroyWorkflowContractTest {
 		String workflow = Files.readString(WORKFLOW);
 
 		assertThat(workflow).contains("uses: hashicorp/setup-terraform@v3");
+		assertThat(workflow).contains("TF_IDENTITY_BACKEND_CONFIG_FILE: infra/terraform/identity/dev/backend.hcl");
+		assertThat(workflow).contains("TF_APP_BACKEND_CONFIG_FILE: infra/terraform/app/dev/backend.hcl");
+		assertThat(workflow)
+			.contains("terraform -chdir=infra/terraform/app/dev init -input=false -backend-config=backend.hcl");
+		assertThat(workflow)
+			.contains("terraform -chdir=infra/terraform/identity/dev init -input=false -backend-config=backend.hcl");
 		assertThat(workflow).contains("terraform -chdir=infra/terraform/app/dev destroy -auto-approve -input=false");
 		assertThat(workflow)
 			.contains("terraform -chdir=infra/terraform/identity/dev destroy -auto-approve -input=false");
