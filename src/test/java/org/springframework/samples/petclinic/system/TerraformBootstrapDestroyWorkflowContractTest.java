@@ -48,12 +48,14 @@ class TerraformBootstrapDestroyWorkflowContractTest {
 	}
 
 	@Test
-	void workflowDestroysAppThenIdentityThenStateAndSummarizesCleanupHandoff() throws IOException {
+	void workflowDestroysTrackedAppThenIdentityAndPointsOperatorsToTheSeparateStateCleanup() throws IOException {
 		assertThat(WORKFLOW).exists();
 
 		String workflow = Files.readString(WORKFLOW);
 
 		assertThat(workflow).contains("uses: hashicorp/setup-terraform@v3");
+		assertThat(workflow).contains("TF_STATE_BUCKET");
+		assertThat(workflow).contains("TF_LOCK_TABLE");
 		assertThat(workflow).contains("TF_IDENTITY_BACKEND_CONFIG_FILE: infra/terraform/identity/dev/backend.hcl");
 		assertThat(workflow).contains("TF_APP_BACKEND_CONFIG_FILE: infra/terraform/app/dev/backend.hcl");
 		assertThat(workflow)
@@ -63,7 +65,9 @@ class TerraformBootstrapDestroyWorkflowContractTest {
 		assertThat(workflow).contains("terraform -chdir=infra/terraform/app/dev destroy -auto-approve -input=false");
 		assertThat(workflow)
 			.contains("terraform -chdir=infra/terraform/identity/dev destroy -auto-approve -input=false");
-		assertThat(workflow).contains("terraform -chdir=infra/terraform/state/dev destroy -auto-approve -input=false");
+		assertThat(workflow)
+			.doesNotContain("terraform -chdir=infra/terraform/state/dev destroy -auto-approve -input=false");
+		assertThat(workflow).contains("Bootstrap Destroy Dev State Backend");
 		assertThat(workflow).contains("blank the AWS-derived GitHub variable values");
 		assertThat(workflow).contains("dev-bootstrap secrets remain in place");
 	}

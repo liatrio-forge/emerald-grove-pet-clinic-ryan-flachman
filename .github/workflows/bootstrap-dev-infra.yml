@@ -42,6 +42,14 @@ jobs:
             echo "AWS region is required." >&2
             exit 1
           fi
+          if [[ -z "${{ vars.TF_STATE_BUCKET }}" ]]; then
+            echo "Terraform backend bucket is required." >&2
+            exit 1
+          fi
+          if [[ -z "${{ vars.TF_LOCK_TABLE }}" ]]; then
+            echo "Terraform lock table is required." >&2
+            exit 1
+          fi
           if [[ -z "${{ secrets.BOOTSTRAP_AWS_ACCESS_KEY_ID }}" ]]; then
             echo "BOOTSTRAP_AWS_ACCESS_KEY_ID is required." >&2
             exit 1
@@ -65,32 +73,24 @@ jobs:
           aws-secret-access-key: ${{ secrets.BOOTSTRAP_AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.BOOTSTRAP_AWS_SESSION_TOKEN }}
 
-      - name: Terraform init state stack
-        run: terraform -chdir=infra/terraform/state/dev init -backend=false -input=false
-
-      - name: Terraform apply state stack
-        run: terraform -chdir=infra/terraform/state/dev apply -auto-approve -input=false
-
       - name: Materialize backend configuration
         run: |
-          state_bucket_name=$(terraform -chdir=infra/terraform/state/dev output -raw state_bucket_name)
-          lock_table_name=$(terraform -chdir=infra/terraform/state/dev output -raw lock_table_name)
           cat <<EOF > "$TF_IDENTITY_BACKEND_CONFIG_FILE"
-          bucket         = "${state_bucket_name}"
+          bucket         = "${{ vars.TF_STATE_BUCKET }}"
           key            = "identity/dev/terraform.tfstate"
           region         = "${AWS_REGION}"
-          dynamodb_table = "${lock_table_name}"
+          dynamodb_table = "${{ vars.TF_LOCK_TABLE }}"
           encrypt        = true
           EOF
           cat <<EOF > "$TF_BACKEND_CONFIG_FILE"
-          bucket         = "${state_bucket_name}"
+          bucket         = "${{ vars.TF_STATE_BUCKET }}"
           key            = "app/dev/terraform.tfstate"
           region         = "${AWS_REGION}"
-          dynamodb_table = "${lock_table_name}"
+          dynamodb_table = "${{ vars.TF_LOCK_TABLE }}"
           encrypt        = true
           EOF
-          echo "TF_STATE_BUCKET=${state_bucket_name}" >> "$GITHUB_ENV"
-          echo "TF_LOCK_TABLE=${lock_table_name}" >> "$GITHUB_ENV"
+          echo "TF_STATE_BUCKET=${{ vars.TF_STATE_BUCKET }}" >> "$GITHUB_ENV"
+          echo "TF_LOCK_TABLE=${{ vars.TF_LOCK_TABLE }}" >> "$GITHUB_ENV"
 
       - name: Terraform init identity stack
         run: terraform -chdir=infra/terraform/identity/dev init -input=false -backend-config=backend.hcl
@@ -133,6 +133,8 @@ jobs:
             echo "Next steps:"
             echo "1. Publish one immutable Git SHA image to the new repository."
             echo "2. Run Terraform Apply Dev with that exact digest to create the ECS runtime."
+            echo ""
+            echo "State backend creation is managed separately by Bootstrap Dev State Backend."
             echo ""
             echo "Keep the dev-bootstrap secrets protected for future foundation rebuild and final teardown workflows."
           } >> "$GITHUB_STEP_SUMMARY"

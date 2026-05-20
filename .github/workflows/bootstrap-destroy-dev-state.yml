@@ -1,0 +1,92 @@
+name: Bootstrap Destroy Dev State Backend
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Type destroy bootstrap dev state to confirm the final dev backend teardown.
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bootstrap-destroy-dev-state
+  cancel-in-progress: false
+
+jobs:
+  bootstrap-destroy-dev-state:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: dev-bootstrap
+    env:
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      STATE_BUCKET_NAME: emerald-grove-pet-clinic-dev-terraform-state
+      LOCK_TABLE_NAME: emerald-grove-pet-clinic-dev-terraform-locks
+    steps:
+      - name: Require main branch
+        if: github.ref != 'refs/heads/main'
+        run: |
+          echo "State backend destroy requires the main branch." >&2
+          exit 1
+
+      - name: Require typed confirmation
+        if: github.event.inputs.confirmation != 'destroy bootstrap dev state'
+        run: |
+          echo "State backend destroy requires confirmation: destroy bootstrap dev state" >&2
+          exit 1
+
+      - name: Require bootstrap configuration
+        run: |
+          if [[ -z "${{ vars.AWS_REGION }}" ]]; then
+            echo "AWS region is required." >&2
+            exit 1
+          fi
+          if [[ -z "${{ secrets.BOOTSTRAP_AWS_ACCESS_KEY_ID }}" ]]; then
+            echo "BOOTSTRAP_AWS_ACCESS_KEY_ID is required." >&2
+            exit 1
+          fi
+          if [[ -z "${{ secrets.BOOTSTRAP_AWS_SECRET_ACCESS_KEY }}" ]]; then
+            echo "BOOTSTRAP_AWS_SECRET_ACCESS_KEY is required." >&2
+            exit 1
+          fi
+
+      - name: Configure AWS credentials from bootstrap secrets
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.BOOTSTRAP_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.BOOTSTRAP_AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.BOOTSTRAP_AWS_SESSION_TOKEN }}
+
+      - name: Delete versioned bucket contents
+        run: |
+          if aws s3api head-bucket --bucket "$STATE_BUCKET_NAME" 2>/dev/null; then
+            while read -r key version_id; do
+              if [[ -n "$key" && -n "$version_id" ]]; then
+                aws s3api delete-object --bucket "$STATE_BUCKET_NAME" --key "$key" --version-id "$version_id"
+              fi
+            done < <(aws s3api list-object-versions --bucket "$STATE_BUCKET_NAME" --query 'Versions[].[Key,VersionId]' --output text)
+            while read -r key version_id; do
+              if [[ -n "$key" && -n "$version_id" ]]; then
+                aws s3api delete-object --bucket "$STATE_BUCKET_NAME" --key "$key" --version-id "$version_id"
+              fi
+            done < <(aws s3api list-object-versions --bucket "$STATE_BUCKET_NAME" --query 'DeleteMarkers[].[Key,VersionId]' --output text)
+            aws s3api delete-bucket --bucket "$STATE_BUCKET_NAME"
+          fi
+
+      - name: Delete backend lock table
+        run: |
+          if aws dynamodb describe-table --table-name "$LOCK_TABLE_NAME" >/dev/null 2>&1; then
+            aws dynamodb delete-table --table-name "$LOCK_TABLE_NAME"
+          fi
+
+      - name: Summarize cleanup handoff
+        run: |
+          {
+            echo "## Final cleanup handoff"
+            echo ""
+            echo "The non-tracked backend resources teardown is complete."
+            echo "Next, blank the AWS-derived GitHub variable values while preserving the variable names for reuse."
+            echo "The dev-bootstrap secrets remain in place as the standing POC bootstrap exception."
+          } >> "$GITHUB_STEP_SUMMARY"

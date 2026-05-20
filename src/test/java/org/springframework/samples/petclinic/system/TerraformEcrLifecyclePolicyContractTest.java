@@ -41,8 +41,9 @@ class TerraformEcrLifecyclePolicyContractTest {
 		assertThat(main).contains("resource \"aws_ecr_lifecycle_policy\" \"app\"");
 		assertThat(main).contains("repository = aws_ecr_repository.app.name");
 		assertThat(main).contains("tagStatus   = \"untagged\"");
+		assertThat(main).contains("tagPatternList = [\"*\"]");
 		assertThat(main).contains("countType   = \"imageCountMoreThan\"");
-		assertThat(main).contains("countNumber = 5");
+		assertThat(main).contains("countNumber    = 5");
 		assertThat(main).doesNotContain("countType   = \"sinceImagePushed\"");
 		assertThat(readme).contains("lifecycle policy preview");
 		assertThat(readme).contains("untagged images");

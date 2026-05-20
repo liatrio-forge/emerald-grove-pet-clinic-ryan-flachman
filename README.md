@@ -163,9 +163,26 @@ Workflow contract highlights:
   reviewer approval can stop the workflow before protected configuration is
   used.
 
+### Bootstrap Dev State Backend Workflow
+
+The repository-owned GitHub Actions workflow for the non-tracked backend
+bootstrap is `Bootstrap Dev State Backend` in
+`.github/workflows/bootstrap-dev-state.yml`.
+
+Workflow contract highlights:
+
+- It starts only through `workflow_dispatch` and requires the operator to type
+  `bootstrap dev state`.
+- It runs only from the `main` branch and uses the protected `dev-bootstrap`
+  environment.
+- It uses bootstrap secrets from the environment rather than GitHub OIDC.
+- It creates or reconciles only the backend bucket and lock table, then
+  summarizes `TF_STATE_BUCKET` and `TF_LOCK_TABLE` for promotion into GitHub
+  configuration.
+
 ### Bootstrap Dev Infrastructure Workflow
 
-The repository-owned GitHub Actions workflow for the first live AWS bootstrap
+The repository-owned GitHub Actions workflow for the tracked AWS bootstrap
 is `Bootstrap Dev Infrastructure` in
 `.github/workflows/bootstrap-dev-infra.yml`.
 
@@ -175,16 +192,32 @@ Workflow contract highlights:
   `bootstrap dev`.
 - It runs only from the `main` branch and uses a separate protected
   `dev-bootstrap` environment.
-- It is the repository-owned foundation bootstrap path that uses protected
+- It is the repository-owned tracked bootstrap path that uses protected
   admin-backed AWS credential secrets instead of GitHub OIDC so it can create
-  `state/dev`, then `identity/dev`, then `app/dev`.
+  `identity/dev`, then `app/dev`, against an already-promoted backend contract.
 - It bootstraps the foundation and app base without requiring a pre-existing
   application image.
 - In other words, it runs without requiring a pre-existing application image.
 - It summarizes the GitHub variable values needed for the steady-state OIDC
-  workflows after the three-stack bootstrap completes.
+  workflows after the tracked bootstrap completes.
 - The `dev-bootstrap` secrets remain stored by design as a standing POC
   exception for future foundation rebuilds and final teardown work.
+
+### Bootstrap Destroy Dev State Backend Workflow
+
+The repository-owned GitHub Actions workflow for final backend teardown is
+`Bootstrap Destroy Dev State Backend` in
+`.github/workflows/bootstrap-destroy-dev-state.yml`.
+
+Workflow contract highlights:
+
+- It starts only through `workflow_dispatch` and requires the operator to type
+  `destroy bootstrap dev state`.
+- It runs only from the `main` branch and uses the protected `dev-bootstrap`
+  environment.
+- It uses bootstrap secrets from the environment rather than GitHub OIDC.
+- It deletes the versioned backend bucket contents and the backend lock table
+  directly so non-tracked cleanup does not depend on ephemeral Terraform state.
 
 ### Bootstrap Destroy Dev Infrastructure Workflow
 
@@ -199,8 +232,8 @@ Workflow contract highlights:
 - It runs only from the `main` branch and uses the protected `dev-bootstrap`
   environment.
 - It uses bootstrap secrets from the environment rather than dispatch inputs.
-- It destroys `app/dev` first, then `identity/dev`, then `state/dev`.
-- It ends with a cleanup handoff that tells the operator to blank the AWS-derived GitHub variable values while preserving the variable names.
+- It destroys `app/dev` first, then `identity/dev`.
+- It ends with a cleanup handoff that tells the operator to run `Bootstrap Destroy Dev State Backend`, then blank the AWS-derived GitHub variable values while preserving the variable names.
 
 ### Dev Infrastructure Lifecycle Layers
 
@@ -226,7 +259,8 @@ Protected GitHub environments used by the lifecycle workflows:
 
 - `dev` for `Terraform Apply Dev`, `Manual Dev ECR Publish`, and app deploy flows.
 - `dev-destroy` for `Terraform Destroy Dev`.
-- `dev-bootstrap` for `Bootstrap Dev Infrastructure` and `Bootstrap Destroy Dev Infrastructure`.
+- `dev-bootstrap` for `Bootstrap Dev State Backend`, `Bootstrap Dev Infrastructure`,
+  `Bootstrap Destroy Dev Infrastructure`, and `Bootstrap Destroy Dev State Backend`.
 
 Stable GitHub Actions variables used across the lifecycle:
 
@@ -241,10 +275,11 @@ Stable GitHub Actions variables used across the lifecycle:
 
 Final cleanup handoff:
 
-1. Run `Bootstrap Destroy Dev Infrastructure` to remove `app/dev`, `identity/dev`, and `state/dev`.
-2. Blank the AWS-derived GitHub variable values.
-3. Preserve the variable names for future reuse.
-4. Keep dev-bootstrap secrets remain stored by design as the standing POC bootstrap exception.
+1. Run `Bootstrap Destroy Dev Infrastructure` to remove `app/dev` and `identity/dev`.
+2. Run `Bootstrap Destroy Dev State Backend` to remove the non-tracked backend resources.
+3. Blank the AWS-derived GitHub variable values.
+4. Preserve the variable names for future reuse.
+5. Keep dev-bootstrap secrets remain stored by design as the standing POC bootstrap exception.
 
 ### Manual Dev ECR Publish Workflow
 

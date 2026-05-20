@@ -42,6 +42,14 @@ jobs:
             echo "AWS region is required." >&2
             exit 1
           fi
+          if [[ -z "${{ vars.TF_STATE_BUCKET }}" ]]; then
+            echo "Terraform backend bucket is required." >&2
+            exit 1
+          fi
+          if [[ -z "${{ vars.TF_LOCK_TABLE }}" ]]; then
+            echo "Terraform lock table is required." >&2
+            exit 1
+          fi
           if [[ -z "${{ secrets.BOOTSTRAP_AWS_ACCESS_KEY_ID }}" ]]; then
             echo "BOOTSTRAP_AWS_ACCESS_KEY_ID is required." >&2
             exit 1
@@ -65,25 +73,20 @@ jobs:
           aws-secret-access-key: ${{ secrets.BOOTSTRAP_AWS_SECRET_ACCESS_KEY }}
           aws-session-token: ${{ secrets.BOOTSTRAP_AWS_SESSION_TOKEN }}
 
-      - name: Terraform init state stack
-        run: terraform -chdir=infra/terraform/state/dev init -backend=false -input=false
-
       - name: Materialize backend configuration
         run: |
-          state_bucket_name=$(terraform -chdir=infra/terraform/state/dev output -raw state_bucket_name)
-          lock_table_name=$(terraform -chdir=infra/terraform/state/dev output -raw lock_table_name)
           cat <<EOF > "$TF_IDENTITY_BACKEND_CONFIG_FILE"
-          bucket         = "${state_bucket_name}"
+          bucket         = "${{ vars.TF_STATE_BUCKET }}"
           key            = "identity/dev/terraform.tfstate"
           region         = "${AWS_REGION}"
-          dynamodb_table = "${lock_table_name}"
+          dynamodb_table = "${{ vars.TF_LOCK_TABLE }}"
           encrypt        = true
           EOF
           cat <<EOF > "$TF_APP_BACKEND_CONFIG_FILE"
-          bucket         = "${state_bucket_name}"
+          bucket         = "${{ vars.TF_STATE_BUCKET }}"
           key            = "app/dev/terraform.tfstate"
           region         = "${AWS_REGION}"
-          dynamodb_table = "${lock_table_name}"
+          dynamodb_table = "${{ vars.TF_LOCK_TABLE }}"
           encrypt        = true
           EOF
 
@@ -99,15 +102,13 @@ jobs:
       - name: Terraform destroy identity stack
         run: terraform -chdir=infra/terraform/identity/dev destroy -auto-approve -input=false
 
-      - name: Terraform destroy state stack
-        run: terraform -chdir=infra/terraform/state/dev destroy -auto-approve -input=false
-
       - name: Summarize cleanup handoff
         run: |
           {
             echo "## Final cleanup handoff"
             echo ""
-            echo "The AWS infrastructure teardown is complete."
-            echo "Next, blank the AWS-derived GitHub variable values while preserving the variable names for reuse."
+            echo "The tracked AWS infrastructure teardown is complete."
+            echo "Next, run Bootstrap Destroy Dev State Backend to remove the non-tracked backend resources."
+            echo "After the backend teardown, blank the AWS-derived GitHub variable values while preserving the variable names for reuse."
             echo "The dev-bootstrap secrets remain in place as the standing POC bootstrap exception."
           } >> "$GITHUB_STEP_SUMMARY"

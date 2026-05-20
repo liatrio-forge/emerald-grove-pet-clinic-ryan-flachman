@@ -43,10 +43,15 @@ provider or the GitHub workflow IAM roles.
 
 ## Bootstrap Workflow Exception
 
-- The repository defines one bootstrap-only workflow named
+- The repository defines one backend bootstrap workflow named
+  `Bootstrap Dev State Backend` at `.github/workflows/bootstrap-dev-state.yml`.
+- Run `Bootstrap Dev State Backend` first to create the non-tracked backend
+  resources and promote `TF_STATE_BUCKET` plus `TF_LOCK_TABLE` into GitHub
+  configuration.
+- The repository defines one tracked bootstrap workflow named
   `Bootstrap Dev Infrastructure` at `.github/workflows/bootstrap-dev-infra.yml`.
-- This workflow exists to create the full `state/dev` -> `identity/dev` ->
-  `app/dev` lifecycle in one reviewer-visible sequence.
+- This workflow exists to create the tracked `identity/dev` -> `app/dev`
+  lifecycle after the backend contract already exists.
 - The bootstrap workflow runs only from the `main branch`, requires
   `workflow_dispatch`, and requires the operator to type `bootstrap dev`.
 - The bootstrap-capable job uses a separate protected `dev-bootstrap`
@@ -72,16 +77,19 @@ no application image input during foundation bootstrap.
 
 ## Bootstrap Workflow Sequence
 
-1. Run `Bootstrap Dev Infrastructure` from `main`.
-2. Type `bootstrap dev`.
-3. Let the workflow apply `infra/terraform/state/dev` with local backend mode.
-4. Let the workflow materialize backend config, initialize `infra/terraform/app/dev`,
-   and apply the app stack.
-5. Copy the workflow summary outputs into the protected GitHub variables listed
+1. Run `Bootstrap Dev State Backend` from `main`.
+2. Type `bootstrap dev state`.
+3. Copy `TF_STATE_BUCKET` and `TF_LOCK_TABLE` from the workflow summary into the
+   protected GitHub variables listed below.
+4. Run `Bootstrap Dev Infrastructure` from `main`.
+5. Type `bootstrap dev`.
+6. Let the workflow materialize backend config, initialize `infra/terraform/identity/dev`,
+   and apply the tracked stacks.
+7. Copy the remaining workflow summary outputs into the protected GitHub variables listed
    below.
-6. Publish into the new repository before the first ECS deployment.
+8. Publish into the new repository before the first ECS deployment.
    In other words, publish into the new repository before the first ECS deployment.
-7. Keep the bootstrap secrets in `dev-bootstrap` as the documented POC
+9. Keep the bootstrap secrets in `dev-bootstrap` as the documented POC
    exception for future foundation rebuilds and final teardown work.
 
 ## Manual Terraform Apply Workflow Contract
@@ -206,15 +214,16 @@ Bootstrap output promotion requirements:
 
 After the final `Bootstrap Destroy Dev Infrastructure` workflow completes:
 
-1. Set the AWS-derived GitHub variable values to empty strings.
+1. Run `Bootstrap Destroy Dev State Backend` after the tracked teardown.
+2. Set the AWS-derived GitHub variable values to empty strings.
    In other words, set the AWS-derived GitHub variable values to empty strings.
-2. Preserve the variable names for future reuse.
+3. Preserve the variable names for future reuse.
    This means preserve the variable names for future reuse.
-3. Keep `AWS_REGION`, `TERRAFORM_APPLY_ROLE_ARN`, `TERRAFORM_DESTROY_ROLE_ARN`,
+4. Keep `AWS_REGION`, `TERRAFORM_APPLY_ROLE_ARN`, `TERRAFORM_DESTROY_ROLE_ARN`,
    `APP_PUBLISH_ROLE_ARN`, `APP_DEPLOY_ROLE_ARN`, `REPOSITORY_URI`,
    `TF_STATE_BUCKET`, and `TF_LOCK_TABLE` in place with intentionally blank
    AWS-derived values after teardown.
-4. Keep the `dev-bootstrap` secrets as the standing POC bootstrap exception.
+5. Keep the `dev-bootstrap` secrets as the standing POC bootstrap exception.
 
 Protected environment matrix:
 
