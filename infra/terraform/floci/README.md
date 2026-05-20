@@ -117,6 +117,30 @@ Use placeholder credentials throughout local verification:
 `AWS_ACCESS_KEY_ID=test`, `AWS_SECRET_ACCESS_KEY=test`, and
 `AWS_EC2_METADATA_DISABLED=true`.
 
+## GitHub OIDC IAM Contract
+
+Use the repository-owned verification entry point to exercise the GitHub OIDC
+IAM contract locally:
+
+```bash
+./scripts/verify-github-oidc-iam-contract.sh
+```
+
+That workflow starts `floci`, reuses `backend.hcl.example`, materializes the
+partial backend stub for local verification, and runs:
+
+```bash
+terraform -chdir=infra/terraform/app/dev validate
+terraform -chdir=infra/terraform/app/dev plan -no-color
+```
+
+Use placeholder credentials throughout local verification:
+`AWS_ACCESS_KEY_ID=test`, `AWS_SECRET_ACCESS_KEY=test`, and
+`AWS_EC2_METADATA_DISABLED=true`.
+
+Do not use long-lived AWS access keys for GitHub OIDC workflows. The point of
+this contract is to verify short-lived GitHub OIDC role assumption instead.
+
 ## Baseline ECS Service Contract
 
 Use the repository-owned verification entry point to exercise the baseline ECS service contract locally:

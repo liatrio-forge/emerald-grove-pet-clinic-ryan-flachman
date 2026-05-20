@@ -48,6 +48,79 @@ This consumer assumes remote state is already managed by the state/dev stack.
 - The workflow creates and applies an `exact saved Terraform plan` for
   `infra/terraform/app/dev`; it does not recompute a fresh implicit apply plan.
 
+## GitHub OIDC Terraform Role Matrix
+
+| Role | Trusted GitHub subject | Environment boundary | Why it exists |
+| --- | --- | --- | --- |
+| `terraform-apply-dev` | `repo:liatrio-forge/emerald-grove-pet-clinic-ryan-flachman:environment:dev` | protected `dev` environment | Allows reviewed Terraform apply work for the dev stack without sharing destroy access. |
+| `terraform-destroy-dev` | `repo:liatrio-forge/emerald-grove-pet-clinic-ryan-flachman:environment:dev-destroy` | separate protected `dev-destroy` environment | Keeps destructive cleanup behind a stricter approval boundary than normal apply work. |
+| `app-deploy-dev` | `repo:liatrio-forge/emerald-grove-pet-clinic-ryan-flachman:environment:dev` | protected `dev` environment | Keeps ECS rollout access narrower than Terraform mutation access for downstream deployment workflows. |
+
+The Terraform apply and destroy roles intentionally share one broad proof-of-concept
+policy document so the stack can move forward without premature least-privilege
+authoring, but role trust remains split by environment subject.
+
+## Terraform IAM-sensitive actions
+
+The shared Terraform GitHub policy is intentionally broad for the dev proof of
+concept, but it still avoids unconstrained administrator access. Reviewer-sensitive
+IAM actions are called out explicitly in policy source rather than hidden behind
+`iam:*` or `Action: "*"`.
+
+The current policy intentionally grants these IAM-sensitive actions:
+
+- `iam:CreateRole`
+- `iam:DeleteRole`
+- `iam:AttachRolePolicy`
+- `iam:DetachRolePolicy`
+- `iam:PutRolePolicy`
+- `iam:DeleteRolePolicy`
+- `iam:PassRole`
+- `iam:UpdateAssumeRolePolicy`
+- read and tagging actions required to inspect and manage the GitHub OIDC
+  provider and Terraform-managed roles
+
+## GitHub configuration contract
+
+The downstream GitHub workflows must consume the following variables and keep
+deployment-sensitive AWS values on protected environments instead of long-lived
+AWS secrets.
+
+| Variable | Ownership | Why it belongs there |
+| --- | --- | --- |
+| `AWS_REGION` | Repository-scoped | Stable non-secret default reused by apply, destroy, and deploy automation. |
+| `TERRAFORM_APPLY_ROLE_ARN` | Environment-scoped (`dev`) | Protected value consumed by Terraform apply jobs that assume the `terraform-apply-dev` role. |
+| `TERRAFORM_DESTROY_ROLE_ARN` | Environment-scoped (`dev-destroy`) | Protected value consumed by destructive cleanup workflows only. |
+| `APP_DEPLOY_ROLE_ARN` | Environment-scoped (`dev`) | Protected value consumed by ECS rollout workflows so app deploy stays separate from Terraform. |
+| `TF_STATE_BUCKET` | Environment-scoped (`dev`) | Backend-state value coupled to the protected dev stack. |
+| `TF_LOCK_TABLE` | Environment-scoped (`dev`) | Backend-lock value coupled to the protected dev stack. |
+
+All AWS-assuming jobs must request `id-token: write`, declare the protected
+GitHub environment whose exact `sub` claim the trusted role permits, and avoid
+long-lived `AWS_ACCESS_KEY_ID` or `AWS_SECRET_ACCESS_KEY` repository secrets.
+Downstream workflows must use GitHub OIDC and do not use long-lived AWS access keys.
+
+## GitHub OIDC verification workflow
+
+Use the repository-owned verification entry point to validate the IAM contract
+locally before relying on live AWS:
+
+```bash
+./scripts/verify-github-oidc-iam-contract.sh
+```
+
+That workflow starts `floci`, reuses `backend.hcl.example`, materializes the
+partial backend stub for local verification, and runs:
+
+```bash
+terraform -chdir=infra/terraform/app/dev validate
+terraform -chdir=infra/terraform/app/dev plan -no-color
+```
+
+Use placeholder credentials throughout this verification flow:
+`AWS_ACCESS_KEY_ID=test`, `AWS_SECRET_ACCESS_KEY=test`, and
+`AWS_EC2_METADATA_DISABLED=true`.
+
 ## Manual Terraform Apply Verification Commands
 
 Use GitHub CLI after a run to review the workflow and artifacts:
