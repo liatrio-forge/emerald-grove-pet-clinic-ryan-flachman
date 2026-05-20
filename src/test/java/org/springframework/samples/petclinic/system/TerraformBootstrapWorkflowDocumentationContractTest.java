@@ -38,7 +38,9 @@ class TerraformBootstrapWorkflowDocumentationContractTest {
 		String rootReadme = Files.readString(ROOT_README);
 		String appDevReadme = Files.readString(APP_DEV_README);
 
+		assertThat(rootReadme).contains("Bootstrap Dev State Backend");
 		assertThat(rootReadme).contains("Bootstrap Dev Infrastructure");
+		assertThat(rootReadme).contains("bootstrap dev state");
 		assertThat(rootReadme).contains("bootstrap dev");
 		assertThat(rootReadme).contains("without requiring a pre-existing application image");
 		assertThat(appDevReadme).contains("dev-bootstrap");
@@ -62,6 +64,7 @@ class TerraformBootstrapWorkflowDocumentationContractTest {
 		assertThat(appDevReadme).contains("REPOSITORY_URI");
 		assertThat(appDevReadme).contains("TF_STATE_BUCKET");
 		assertThat(appDevReadme).contains("TF_LOCK_TABLE");
+		assertThat(appDevReadme).contains("Run `Bootstrap Dev State Backend` first");
 		assertThat(appDevReadme).contains("publish into the new repository before the first ECS deployment");
 	}
 

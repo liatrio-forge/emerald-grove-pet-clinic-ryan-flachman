@@ -53,6 +53,8 @@ class TerraformBootstrapWorkflowContractTest {
 		assertThat(workflow).contains("environment: dev-bootstrap");
 		assertThat(workflow).contains("BOOTSTRAP_AWS_ACCESS_KEY_ID");
 		assertThat(workflow).contains("BOOTSTRAP_AWS_SECRET_ACCESS_KEY");
+		assertThat(workflow).contains("TF_STATE_BUCKET");
+		assertThat(workflow).contains("TF_LOCK_TABLE");
 		assertThat(workflow).contains("aws-access-key-id: ${{ secrets.BOOTSTRAP_AWS_ACCESS_KEY_ID }}");
 		assertThat(workflow).contains("aws-secret-access-key: ${{ secrets.BOOTSTRAP_AWS_SECRET_ACCESS_KEY }}");
 		assertThat(workflow).doesNotContain("role-to-assume:");
@@ -60,7 +62,8 @@ class TerraformBootstrapWorkflowContractTest {
 	}
 
 	@Test
-	void workflowBootstrapsStateThenIdentityThenAppStackAndSurfacesGitHubVariableOutputs() throws IOException {
+	void workflowBootstrapsTrackedIdentityAndAppStacksFromAnExistingBackendAndSurfacesGitHubVariableOutputs()
+			throws IOException {
 		assertThat(WORKFLOW).exists();
 
 		String workflow = Files.readString(WORKFLOW);
@@ -68,8 +71,9 @@ class TerraformBootstrapWorkflowContractTest {
 		assertThat(workflow).contains("uses: hashicorp/setup-terraform@v3");
 		assertThat(workflow).contains("TF_BACKEND_CONFIG_FILE: infra/terraform/app/dev/backend.hcl");
 		assertThat(workflow).contains("TF_IDENTITY_BACKEND_CONFIG_FILE: infra/terraform/identity/dev/backend.hcl");
-		assertThat(workflow).contains("terraform -chdir=infra/terraform/state/dev init -backend=false");
-		assertThat(workflow).contains("terraform -chdir=infra/terraform/state/dev apply -auto-approve -input=false");
+		assertThat(workflow).doesNotContain("terraform -chdir=infra/terraform/state/dev init -backend=false");
+		assertThat(workflow)
+			.doesNotContain("terraform -chdir=infra/terraform/state/dev apply -auto-approve -input=false");
 		assertThat(workflow)
 			.contains("terraform -chdir=infra/terraform/identity/dev init -input=false -backend-config=backend.hcl");
 		assertThat(workflow).contains("terraform -chdir=infra/terraform/identity/dev apply -auto-approve -input=false");
@@ -85,6 +89,7 @@ class TerraformBootstrapWorkflowContractTest {
 		assertThat(workflow).contains("TF_LOCK_TABLE");
 		assertThat(workflow).contains("Publish one immutable Git SHA image to the new repository.");
 		assertThat(workflow).contains("Run Terraform Apply Dev with that exact digest to create the ECS runtime.");
+		assertThat(workflow).contains("Bootstrap Dev State Backend");
 	}
 
 }

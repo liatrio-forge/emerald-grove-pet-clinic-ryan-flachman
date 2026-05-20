@@ -38,9 +38,11 @@ class TerraformFinalCleanupDocumentationContractTest {
 		String rootReadme = Files.readString(ROOT_README);
 		String appReadme = Files.readString(APP_README);
 
+		assertThat(rootReadme).contains("Bootstrap Destroy Dev State Backend");
 		assertThat(rootReadme).contains("blank the AWS-derived GitHub variable values");
 		assertThat(rootReadme).contains("preserving the variable names");
 		assertThat(rootReadme).contains("dev-bootstrap secrets remain stored by design");
+		assertThat(appReadme).contains("Run `Bootstrap Destroy Dev State Backend` after the tracked teardown");
 		assertThat(appReadme).contains("set the AWS-derived GitHub variable values to empty strings");
 		assertThat(appReadme).contains("preserve the variable names for future reuse");
 		assertThat(appReadme).contains("standing POC bootstrap exception");
