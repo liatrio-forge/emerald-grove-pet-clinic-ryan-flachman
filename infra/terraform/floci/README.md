@@ -157,7 +157,7 @@ terraform -chdir=infra/terraform/app/dev validate
 terraform -chdir=infra/terraform/app/dev plan -no-color
 ```
 
-and enforces the immutable `bootstrap_image` digest contract before any
+and enforces the immutable `deploy_image` digest contract before any
 AWS-backed deployment proof is attempted. Use placeholder credentials
 throughout local verification: `AWS_ACCESS_KEY_ID=test`,
 `AWS_SECRET_ACCESS_KEY=test`, and `AWS_EC2_METADATA_DISABLED=true`.
@@ -171,7 +171,7 @@ Use the repository-owned verification entry point to verify the ALB health endpo
 ```
 
 That floci ECS-through-ALB runtime check starts `floci`, initializes the dev
-stack with `backend.hcl.example`, builds and pushes a digest-pinned bootstrap
+stack with `backend.hcl.example`, builds and pushes a digest-pinned deploy
 image into local ECR, runs:
 
 ```bash

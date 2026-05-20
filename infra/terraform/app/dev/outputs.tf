@@ -118,20 +118,20 @@ output "ecs_task_role_arn" {
 
 output "baseline_ecs_service_name" {
   description = "Stable ECS service name for later rollout automation."
-  value       = aws_ecs_service.application.name
+  value       = local.ecs_service_name
 }
 
 output "baseline_ecs_service_arn" {
   description = "Stable ECS service identifier for later rollout automation."
-  value       = aws_ecs_service.application.id
+  value       = try(aws_ecs_service.application[0].id, null)
 }
 
 output "baseline_task_definition_family" {
   description = "Stable ECS task-definition family for later rollout automation."
-  value       = aws_ecs_task_definition.application.family
+  value       = local.ecs_task_definition_family
 }
 
 output "baseline_task_definition_arn" {
   description = "Stable baseline ECS task-definition identifier for later rollout automation."
-  value       = aws_ecs_task_definition.application.arn
+  value       = try(aws_ecs_task_definition.application[0].arn, null)
 }

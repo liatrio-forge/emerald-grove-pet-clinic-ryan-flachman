@@ -6,6 +6,9 @@ on:
       confirmation:
         description: Type apply dev to confirm the dev Terraform apply.
         required: true
+      deploy_image:
+        description: Provide the immutable deploy image reference pinned by digest.
+        required: true
 
 permissions:
   contents: read
@@ -30,6 +33,13 @@ jobs:
         run: |
           echo "Apply requires confirmation: apply dev" >&2
           exit 1
+
+      - name: Require deploy image digest
+        run: |
+          if [[ ! "${{ github.event.inputs.deploy_image }}" =~ .+@sha256:[0-9a-f]{64}$ ]]; then
+            echo "Apply requires a deploy image pinned by digest." >&2
+            exit 1
+          fi
 
   plan-dev:
     needs: validate-request
@@ -78,7 +88,7 @@ jobs:
 
       - name: Terraform plan
         run: |
-          terraform -chdir=infra/terraform/app/dev plan -out=tfplan -input=false -no-color > terraform-plan.txt
+          terraform -chdir=infra/terraform/app/dev plan -out=tfplan -input=false -var "deploy_image=${{ github.event.inputs.deploy_image }}" -no-color > terraform-plan.txt
           mv terraform-plan.txt infra/terraform/app/dev/terraform-plan.txt
 
       - name: Upload reviewed plan artifact

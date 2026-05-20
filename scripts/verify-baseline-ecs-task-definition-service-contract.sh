@@ -28,14 +28,14 @@ require_file() {
   fi
 }
 
-require_bootstrap_image_contract() {
-  if ! grep -q 'variable "bootstrap_image"' "${ROOT_DIR}/${APP_VARIABLES_FILE}"; then
-    echo "bootstrap_image variable contract is required" >&2
+require_deploy_image_contract() {
+  if ! grep -q 'variable "deploy_image"' "${ROOT_DIR}/${APP_VARIABLES_FILE}"; then
+    echo "deploy_image variable contract is required" >&2
     exit 1
   fi
 
   if ! grep -q '@sha256:' "${ROOT_DIR}/${APP_VARIABLES_FILE}"; then
-    echo "bootstrap_image must stay pinned to an immutable digest" >&2
+    echo "deploy_image must stay pinned to an immutable digest when provided" >&2
     exit 1
   fi
 }
@@ -130,7 +130,7 @@ main() {
   require_file "infra/terraform/floci/${BACKEND_CONFIG}"
   require_file "scripts/verify-baseline-ecs-task-definition-service-contract.sh"
 
-  require_bootstrap_image_contract
+  require_deploy_image_contract
 
   cd "${ROOT_DIR}"
 
@@ -143,7 +143,8 @@ main() {
   terraform -chdir=infra/terraform/app/dev init -backend-config=backend.hcl.example -reconfigure
   terraform -chdir=infra/terraform/app/dev validate
   AWS_ACCESS_KEY_ID=test AWS_SECRET_ACCESS_KEY=test AWS_EC2_METADATA_DISABLED=true \
-    terraform -chdir=infra/terraform/app/dev plan -no-color
+    terraform -chdir=infra/terraform/app/dev plan -no-color \
+      -var 'deploy_image=123456789012.dkr.ecr.us-east-1.amazonaws.com/dev-petclinic@sha256:1111111111111111111111111111111111111111111111111111111111111111'
 
   print_live_evidence_commands
 }

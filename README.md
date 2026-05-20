@@ -153,6 +153,8 @@ Workflow contract highlights:
 - It starts only through `workflow_dispatch`.
 - It is limited to the `dev` environment and requires the operator to type
   `apply dev` before a run can continue.
+- It requires one deploy image reference pinned by digest so the post-publish
+  ECS deployment step uses one exact immutable artifact.
 - It uses GitHub OIDC to assume AWS access instead of long-lived AWS keys in
   repository secrets.
 - It creates a reviewed saved plan for `infra/terraform/app/dev` and applies
@@ -176,6 +178,9 @@ Workflow contract highlights:
 - It is the repository-owned foundation bootstrap path that uses protected
   admin-backed AWS credential secrets instead of GitHub OIDC so it can create
   `state/dev`, then `identity/dev`, then `app/dev`.
+- It bootstraps the foundation and app base without requiring a pre-existing
+  application image.
+- In other words, it runs without requiring a pre-existing application image.
 - It summarizes the GitHub variable values needed for the steady-state OIDC
   workflows after the three-stack bootstrap completes.
 - The `dev-bootstrap` secrets remain stored by design as a standing POC
@@ -259,6 +264,8 @@ Workflow contract highlights:
   repository.
 - It surfaces the final published image reference and pushed digest in
   workflow-visible output for later deployment review.
+- It does not roll out ECS on its own; copy the published digest into the
+  `deploy_image` input on `Terraform Apply Dev`.
 
 ## Application Features
 

@@ -41,6 +41,7 @@ class TerraformApplyWorkflowDocumentationContractTest {
 		assertThat(rootReadme).contains("Terraform Apply Dev");
 		assertThat(rootReadme).contains("workflow_dispatch");
 		assertThat(rootReadme).contains("apply dev");
+		assertThat(rootReadme).contains("deploy image reference pinned by digest");
 		assertThat(appDevReadme).contains("main branch");
 		assertThat(appDevReadme).contains("reviewer approval");
 		assertThat(appDevReadme).contains("exact saved Terraform plan");
@@ -57,8 +58,8 @@ class TerraformApplyWorkflowDocumentationContractTest {
 
 		assertThat(rootReadme).contains("GitHub OIDC");
 		assertThat(appDevReadme).contains("backend.hcl.example");
-		assertThat(appDevReadme).contains("image build");
-		assertThat(appDevReadme).contains("ECS rollout");
+		assertThat(appDevReadme).contains("deploy_image");
+		assertThat(appDevReadme).contains("post-publish ECS deployment step");
 		assertThat(appDevReadme).contains("destroy workflow");
 		assertThat(appDevReadme).contains("verification commands");
 		assertThat(appDevReadme).contains("gh run view");

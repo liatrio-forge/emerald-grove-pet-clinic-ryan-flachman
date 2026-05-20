@@ -14,7 +14,7 @@ APP_VERSIONS_BACKUP_FILE=""
 LOCALSTACK_ENDPOINT="http://127.0.0.1:4566"
 STATE_BUCKET="emerald-grove-pet-clinic-dev-terraform-state"
 LOCK_TABLE="emerald-grove-pet-clinic-dev-terraform-locks"
-BOOTSTRAP_IMAGE_TAG="floci-baseline"
+DEPLOY_IMAGE_TAG="floci-baseline"
 
 # Verification contract:
 # terraform -chdir=infra/terraform/app/dev init -backend-config=backend.hcl.example -reconfigure
@@ -40,14 +40,14 @@ require_file() {
   fi
 }
 
-require_bootstrap_image_contract() {
-  if ! grep -q 'variable "bootstrap_image"' "${ROOT_DIR}/${APP_VARIABLES_FILE}"; then
-    echo "bootstrap_image variable contract is required" >&2
+require_deploy_image_contract() {
+  if ! grep -q 'variable "deploy_image"' "${ROOT_DIR}/${APP_VARIABLES_FILE}"; then
+    echo "deploy_image variable contract is required" >&2
     exit 1
   fi
 
   if ! grep -q '@sha256:' "${ROOT_DIR}/${APP_VARIABLES_FILE}"; then
-    echo "bootstrap_image must stay pinned to an immutable digest" >&2
+    echo "deploy_image must stay pinned to an immutable digest when provided" >&2
     exit 1
   fi
 }
@@ -291,21 +291,21 @@ wait_for_healthy_target() {
   exit 1
 }
 
-build_and_push_bootstrap_image() {
+build_and_push_deploy_image() {
   local repository_uri="$1"
 
   local repository_host="${repository_uri%%/*}"
-  local local_image="petclinic:${BOOTSTRAP_IMAGE_TAG}"
+  local local_image="petclinic:${DEPLOY_IMAGE_TAG}"
 
   docker build -t "${local_image}" "${ROOT_DIR}" >/dev/null
   local_aws ecr get-login-password | docker login --username AWS --password-stdin "${repository_host}" >/dev/null
-  docker tag "${local_image}" "${repository_uri}:${BOOTSTRAP_IMAGE_TAG}"
-  docker push "${repository_uri}:${BOOTSTRAP_IMAGE_TAG}" >/dev/null
+  docker tag "${local_image}" "${repository_uri}:${DEPLOY_IMAGE_TAG}"
+  docker push "${repository_uri}:${DEPLOY_IMAGE_TAG}" >/dev/null
 
   local digest
   digest="$(local_aws ecr describe-images \
     --repository-name "${repository_uri#*/}" \
-    --image-ids imageTag="${BOOTSTRAP_IMAGE_TAG}" \
+    --image-ids imageTag="${DEPLOY_IMAGE_TAG}" \
     --query 'imageDetails[0].imageDigest' \
     --output text)"
 
@@ -359,7 +359,7 @@ main() {
   require_file "Dockerfile"
   require_file "scripts/verify-floci-ecs-through-alb.sh"
 
-  require_bootstrap_image_contract
+  require_deploy_image_contract
 
   cd "${ROOT_DIR}"
 
@@ -377,7 +377,7 @@ main() {
   apply_local_ecr_contract
 
   local repository_uri
-  local bootstrap_image
+  local deploy_image
   local cluster_name
   local service_name
   local target_group_arn
@@ -385,9 +385,9 @@ main() {
   local log_group_name
 
   repository_uri="$(wait_for_output repository_uri)"
-  bootstrap_image="$(build_and_push_bootstrap_image "${repository_uri}")"
+  deploy_image="$(build_and_push_deploy_image "${repository_uri}")"
 
-  local_terraform -chdir=infra/terraform/app/dev apply -auto-approve -var "bootstrap_image=${bootstrap_image}"
+  local_terraform -chdir=infra/terraform/app/dev apply -auto-approve -var "deploy_image=${deploy_image}"
 
   cluster_name="$(wait_for_output ecs_cluster_name)"
   service_name="$(wait_for_output baseline_ecs_service_name)"
@@ -399,7 +399,7 @@ main() {
   wait_for_healthy_target "${target_group_arn}"
   verify_runtime_evidence "${cluster_name}" "${service_name}" "${target_group_arn}" "${alb_dns_name}" "${log_group_name}"
 
-  local_terraform -chdir=infra/terraform/app/dev destroy -auto-approve -var "bootstrap_image=${bootstrap_image}"
+  local_terraform -chdir=infra/terraform/app/dev destroy -auto-approve -var "deploy_image=${deploy_image}"
 }
 
 main "$@"

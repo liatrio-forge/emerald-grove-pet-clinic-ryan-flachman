@@ -38,10 +38,10 @@ class TerraformEcsServiceOutputsContractTest {
 		assertThat(outputs).contains("output \"baseline_ecs_service_arn\"");
 		assertThat(outputs).contains("output \"baseline_task_definition_family\"");
 		assertThat(outputs).contains("output \"baseline_task_definition_arn\"");
-		assertThat(outputs).contains("value       = aws_ecs_service.application.name");
-		assertThat(outputs).contains("value       = aws_ecs_service.application.id");
-		assertThat(outputs).contains("value       = aws_ecs_task_definition.application.family");
-		assertThat(outputs).contains("value       = aws_ecs_task_definition.application.arn");
+		assertThat(outputs).contains("value       = local.ecs_service_name");
+		assertThat(outputs).contains("value       = try(aws_ecs_service.application[0].id, null)");
+		assertThat(outputs).contains("value       = local.ecs_task_definition_family");
+		assertThat(outputs).contains("value       = try(aws_ecs_task_definition.application[0].arn, null)");
 		assertThat(outputs).doesNotContain("output \"baseline_task_definition_revision\"");
 	}
 

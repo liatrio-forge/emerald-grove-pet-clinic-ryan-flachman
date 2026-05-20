@@ -48,11 +48,14 @@ class TerraformApplyWorkflowDispatchContractTest {
 		String workflow = Files.readString(WORKFLOW);
 
 		assertThat(workflow).contains("confirmation:");
+		assertThat(workflow).contains("deploy_image:");
 		assertThat(workflow).contains("Type apply dev to confirm the dev Terraform apply.");
+		assertThat(workflow).contains("Provide the immutable deploy image reference pinned by digest.");
 		assertThat(workflow).contains("github.ref == 'refs/heads/main'");
 		assertThat(workflow).contains("environment: dev");
 		assertThat(workflow).contains("Apply requires the main branch.");
 		assertThat(workflow).contains("Apply requires confirmation: apply dev");
+		assertThat(workflow).contains("Apply requires a deploy image pinned by digest.");
 	}
 
 }

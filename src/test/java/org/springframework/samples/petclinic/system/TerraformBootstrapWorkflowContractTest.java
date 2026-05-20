@@ -37,7 +37,7 @@ class TerraformBootstrapWorkflowContractTest {
 		assertThat(workflow).contains("name: Bootstrap Dev Infrastructure");
 		assertThat(workflow).contains("workflow_dispatch:");
 		assertThat(workflow).contains("confirmation:");
-		assertThat(workflow).contains("bootstrap_image:");
+		assertThat(workflow).doesNotContain("bootstrap_image:");
 		assertThat(workflow).doesNotContain("push:");
 		assertThat(workflow).doesNotContain("pull_request:");
 	}
@@ -49,7 +49,6 @@ class TerraformBootstrapWorkflowContractTest {
 		String workflow = Files.readString(WORKFLOW);
 
 		assertThat(workflow).contains("Type bootstrap dev to confirm the one-time dev bootstrap.");
-		assertThat(workflow).contains("Provide the immutable bootstrap image reference pinned by digest.");
 		assertThat(workflow).contains("github.ref == 'refs/heads/main'");
 		assertThat(workflow).contains("environment: dev-bootstrap");
 		assertThat(workflow).contains("BOOTSTRAP_AWS_ACCESS_KEY_ID");
@@ -73,8 +72,7 @@ class TerraformBootstrapWorkflowContractTest {
 		assertThat(workflow).contains("terraform -chdir=infra/terraform/identity/dev apply -auto-approve -input=false");
 		assertThat(workflow).contains(
 				"terraform -chdir=infra/terraform/app/dev init -input=false -backend-config=\"$TF_BACKEND_CONFIG_FILE\"");
-		assertThat(workflow).contains(
-				"terraform -chdir=infra/terraform/app/dev plan -out=tfplan -input=false -var \"bootstrap_image=${{ github.event.inputs.bootstrap_image }}\"");
+		assertThat(workflow).contains("terraform -chdir=infra/terraform/app/dev plan -out=tfplan -input=false");
 		assertThat(workflow).contains("terraform -chdir=infra/terraform/app/dev apply -input=false tfplan");
 		assertThat(workflow)
 			.contains("terraform -chdir=infra/terraform/identity/dev output -raw terraform_apply_role_arn");
@@ -82,6 +80,8 @@ class TerraformBootstrapWorkflowContractTest {
 		assertThat(workflow).contains("repository_uri");
 		assertThat(workflow).contains("TF_STATE_BUCKET");
 		assertThat(workflow).contains("TF_LOCK_TABLE");
+		assertThat(workflow).contains("Publish one immutable Git SHA image to the new repository.");
+		assertThat(workflow).contains("Run Terraform Apply Dev with that exact digest to create the ECS runtime.");
 	}
 
 }
