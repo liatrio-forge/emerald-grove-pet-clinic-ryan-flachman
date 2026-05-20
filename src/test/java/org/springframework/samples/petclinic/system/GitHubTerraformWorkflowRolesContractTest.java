@@ -79,6 +79,10 @@ class GitHubTerraformWorkflowRolesContractTest {
 		assertThat(main).contains("resource \"aws_iam_policy\" \"terraform_github_actions\"");
 		assertThat(main).contains("\"ecs:*\"");
 		assertThat(main).contains("\"elasticloadbalancing:*\"");
+		assertThat(main).contains("\"dynamodb:DescribeTable\"");
+		assertThat(main).contains("\"dynamodb:GetItem\"");
+		assertThat(main).contains("\"dynamodb:PutItem\"");
+		assertThat(main).contains("\"dynamodb:DeleteItem\"");
 		assertThat(main).contains("\"iam:CreateRole\"");
 		assertThat(main).contains("\"iam:PassRole\"");
 		assertThat(main).doesNotContain("\"Action\": \"*\"");
