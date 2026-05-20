@@ -39,6 +39,10 @@ resource "aws_iam_policy" "terraform_github_actions" {
         Effect = "Allow"
         Action = [
           "cloudwatch:*",
+          "dynamodb:DeleteItem",
+          "dynamodb:DescribeTable",
+          "dynamodb:GetItem",
+          "dynamodb:PutItem",
           "ec2:*",
           "ecr:*",
           "ecs:*",
