@@ -207,8 +207,9 @@ Workflow contract highlights:
 The repository now uses three Terraform ownership layers for the dev POC:
 
 - `state/dev` owns the backend S3 bucket and DynamoDB lock table.
-- `identity/dev` owns the GitHub OIDC provider and the Terraform apply,
-  Terraform destroy, app publish, and app deploy IAM roles.
+- `identity/dev` reuses the shared account-level GitHub OIDC provider and owns
+  the Terraform apply, Terraform destroy, app publish, and app deploy IAM
+  roles.
 - `app/dev` owns runtime infrastructure such as ECR, VPC, ALB, ECS, and log
   groups.
 

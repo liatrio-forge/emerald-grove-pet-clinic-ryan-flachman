@@ -1,3 +1,7 @@
+data "aws_iam_openid_connect_provider" "github_actions" {
+  url = local.github_oidc_provider_url
+}
+
 data "aws_iam_policy_document" "github_actions_oidc_trust" {
   for_each = local.github_actions_subjects
 
@@ -7,7 +11,7 @@ data "aws_iam_policy_document" "github_actions_oidc_trust" {
 
     principals {
       type        = "Federated"
-      identifiers = [aws_iam_openid_connect_provider.github_actions.arn]
+      identifiers = [data.aws_iam_openid_connect_provider.github_actions.arn]
     }
 
     condition {
@@ -22,17 +26,6 @@ data "aws_iam_policy_document" "github_actions_oidc_trust" {
       values   = [each.value]
     }
   }
-}
-
-resource "aws_iam_openid_connect_provider" "github_actions" {
-  url             = "https://token.actions.githubusercontent.com"
-  client_id_list  = ["sts.amazonaws.com"]
-  thumbprint_list = local.github_oidc_thumbprints
-
-  tags = merge(local.common_tags, {
-    Name = "github-actions-oidc"
-    Role = "github-oidc"
-  })
 }
 
 resource "aws_iam_policy" "terraform_github_actions" {
@@ -67,14 +60,11 @@ resource "aws_iam_policy" "terraform_github_actions" {
           "iam:ListRolePolicies",
           "iam:PassRole",
           "iam:PutRolePolicy",
-          "iam:TagOpenIDConnectProvider",
           "iam:TagPolicy",
           "iam:TagRole",
-          "iam:UntagOpenIDConnectProvider",
           "iam:UntagPolicy",
           "iam:UntagRole",
           "iam:UpdateAssumeRolePolicy",
-          "iam:UpdateOpenIDConnectProviderThumbprint",
           "logs:*",
           "route53:*",
           "s3:*",

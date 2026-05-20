@@ -6,10 +6,11 @@ infrastructure only. It consumes remote state that is already managed by the
 `identity/dev` stack.
 
 This directory must never create or modify the backend bucket, lock table,
-GitHub OIDC provider, or GitHub workflow IAM roles directly.
+shared GitHub OIDC provider, or GitHub workflow IAM roles directly.
 
 In other words, `app/dev` does not own the GitHub OIDC provider or the GitHub
-workflow IAM roles.
+workflow IAM roles. More specifically, it does not own the shared GitHub OIDC
+provider or the GitHub workflow IAM roles.
 
 ## Stable Backend Contract
 
@@ -269,7 +270,8 @@ runner shell access.
 ## Runtime Ownership Boundary
 
 - `state/dev` owns the backend bucket and lock table.
-- `identity/dev` owns the GitHub OIDC provider and workflow IAM roles.
+- `identity/dev` reuses the shared account-level GitHub OIDC provider and owns
+  the workflow IAM roles.
 - `app/dev` owns runtime infrastructure such as VPC, subnets, ALB, ECR, ECS,
   and log groups.
 - Normal `app/dev` destroy and recreate must leave backend and identity

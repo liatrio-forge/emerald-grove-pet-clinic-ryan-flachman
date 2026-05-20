@@ -37,7 +37,7 @@ class TerraformIdentityStackBoundaryContractTest {
 	private static final Path APP_MAIN = Path.of("infra/terraform/app/dev/main.tf");
 
 	@Test
-	void dedicatedIdentityStackOwnsGithubOidcProviderAndWorkflowRoles() throws IOException {
+	void dedicatedIdentityStackOwnsGithubWorkflowRolesAndConsumesTheSharedOidcProvider() throws IOException {
 		assertThat(IDENTITY_DEV_DIRECTORY).isDirectory();
 		assertThat(IDENTITY_MAIN).exists();
 		assertThat(IDENTITY_LOCALS).exists();
@@ -47,7 +47,8 @@ class TerraformIdentityStackBoundaryContractTest {
 		String locals = Files.readString(IDENTITY_LOCALS);
 		String outputs = Files.readString(IDENTITY_OUTPUTS);
 
-		assertThat(main).containsOnlyOnce("resource \"aws_iam_openid_connect_provider\" \"github_actions\"");
+		assertThat(main).containsOnlyOnce("data \"aws_iam_openid_connect_provider\" \"github_actions\"");
+		assertThat(main).doesNotContain("resource \"aws_iam_openid_connect_provider\" \"github_actions\"");
 		assertThat(main).contains("resource \"aws_iam_role\" \"terraform_apply_github_actions\"");
 		assertThat(main).contains("resource \"aws_iam_role\" \"terraform_destroy_github_actions\"");
 		assertThat(main).contains("resource \"aws_iam_role\" \"app_publish_github_actions\"");
@@ -66,6 +67,7 @@ class TerraformIdentityStackBoundaryContractTest {
 		String appMain = Files.readString(APP_MAIN);
 
 		assertThat(appMain).doesNotContain("resource \"aws_iam_openid_connect_provider\" \"github_actions\"");
+		assertThat(appMain).doesNotContain("data \"aws_iam_openid_connect_provider\" \"github_actions\"");
 		assertThat(appMain).doesNotContain("resource \"aws_iam_role\" \"terraform_apply_github_actions\"");
 		assertThat(appMain).doesNotContain("resource \"aws_iam_role\" \"terraform_destroy_github_actions\"");
 		assertThat(appMain).doesNotContain("resource \"aws_iam_role\" \"app_publish_github_actions\"");
