@@ -161,6 +161,28 @@ Workflow contract highlights:
   reviewer approval can stop the workflow before protected configuration is
   used.
 
+### Bootstrap Dev Infrastructure Workflow
+
+The repository-owned GitHub Actions workflow for the first live AWS bootstrap
+is `Bootstrap Dev Infrastructure` in
+`.github/workflows/bootstrap-dev-infra.yml`.
+
+Workflow contract highlights:
+
+- It starts only through `workflow_dispatch` and requires the operator to type
+  `bootstrap dev`.
+- It runs only from the `main` branch and uses a separate protected
+  `dev-bootstrap` environment.
+- It is a one-time bootstrap exception that uses temporary admin-backed AWS
+  credential secrets instead of GitHub OIDC so the first apply can create the
+  OIDC roles and ECR repository.
+- It bootstraps `infra/terraform/state/dev`, initializes `infra/terraform/app/dev`,
+  applies the app stack with a caller-supplied immutable `bootstrap_image`, and
+  summarizes the GitHub variable values needed for the steady-state OIDC
+  workflows.
+- After the outputs are promoted into GitHub variables, remove the bootstrap
+  secrets from the `dev-bootstrap` environment.
+
 ### Manual Dev ECR Publish Workflow
 
 The repository-owned GitHub Actions workflow for publishing a `dev` container

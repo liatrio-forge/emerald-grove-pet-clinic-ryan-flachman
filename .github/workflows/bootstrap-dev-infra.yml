@@ -1,0 +1,124 @@
+name: Bootstrap Dev Infrastructure
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Type bootstrap dev to confirm the one-time dev bootstrap.
+        required: true
+      bootstrap_image:
+        description: Provide the immutable bootstrap image reference pinned by digest.
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bootstrap-dev-infra
+  cancel-in-progress: false
+
+jobs:
+  bootstrap-dev:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: dev-bootstrap
+    env:
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      TF_BACKEND_CONFIG_FILE: infra/terraform/app/dev/backend.hcl
+    steps:
+      - name: Require main branch
+        if: github.ref != 'refs/heads/main'
+        run: |
+          echo "Bootstrap requires the main branch." >&2
+          exit 1
+
+      - name: Require typed confirmation
+        if: github.event.inputs.confirmation != 'bootstrap dev'
+        run: |
+          echo "Bootstrap requires confirmation: bootstrap dev" >&2
+          exit 1
+
+      - name: Require bootstrap configuration
+        run: |
+          if [[ -z "${{ vars.AWS_REGION }}" ]]; then
+            echo "AWS region is required." >&2
+            exit 1
+          fi
+          if [[ -z "${{ secrets.BOOTSTRAP_AWS_ACCESS_KEY_ID }}" ]]; then
+            echo "BOOTSTRAP_AWS_ACCESS_KEY_ID is required." >&2
+            exit 1
+          fi
+          if [[ -z "${{ secrets.BOOTSTRAP_AWS_SECRET_ACCESS_KEY }}" ]]; then
+            echo "BOOTSTRAP_AWS_SECRET_ACCESS_KEY is required." >&2
+            exit 1
+          fi
+          if [[ ! "${{ github.event.inputs.bootstrap_image }}" =~ .+@sha256:[0-9a-f]{64}$ ]]; then
+            echo "Bootstrap image must be pinned by digest." >&2
+            exit 1
+          fi
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials from bootstrap secrets
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          aws-access-key-id: ${{ secrets.BOOTSTRAP_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.BOOTSTRAP_AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.BOOTSTRAP_AWS_SESSION_TOKEN }}
+
+      - name: Terraform init state stack
+        run: terraform -chdir=infra/terraform/state/dev init -backend=false -input=false
+
+      - name: Terraform apply state stack
+        run: terraform -chdir=infra/terraform/state/dev apply -auto-approve -input=false
+
+      - name: Materialize backend configuration
+        run: |
+          state_bucket_name=$(terraform -chdir=infra/terraform/state/dev output -raw state_bucket_name)
+          lock_table_name=$(terraform -chdir=infra/terraform/state/dev output -raw lock_table_name)
+          cat <<EOF > "$TF_BACKEND_CONFIG_FILE"
+          bucket         = "${state_bucket_name}"
+          key            = "app/dev/terraform.tfstate"
+          region         = "${AWS_REGION}"
+          dynamodb_table = "${lock_table_name}"
+          encrypt        = true
+          EOF
+          echo "TF_STATE_BUCKET=${state_bucket_name}" >> "$GITHUB_ENV"
+          echo "TF_LOCK_TABLE=${lock_table_name}" >> "$GITHUB_ENV"
+
+      - name: Terraform init app stack
+        run: terraform -chdir=infra/terraform/app/dev init -input=false -backend-config="$TF_BACKEND_CONFIG_FILE"
+
+      - name: Terraform plan app stack
+        run: terraform -chdir=infra/terraform/app/dev plan -out=tfplan -input=false -var "bootstrap_image=${{ github.event.inputs.bootstrap_image }}"
+
+      - name: Terraform apply app stack
+        run: terraform -chdir=infra/terraform/app/dev apply -input=false tfplan
+
+      - name: Summarize bootstrap outputs
+        run: |
+          terraform_apply_role_arn=$(terraform -chdir=infra/terraform/app/dev output -raw terraform_apply_role_arn)
+          terraform_destroy_role_arn=$(terraform -chdir=infra/terraform/app/dev output -raw terraform_destroy_role_arn)
+          app_publish_role_arn=$(terraform -chdir=infra/terraform/app/dev output -raw app_publish_role_arn)
+          app_deploy_role_arn=$(terraform -chdir=infra/terraform/app/dev output -raw app_deploy_role_arn)
+          repository_uri=$(terraform -chdir=infra/terraform/app/dev output -raw repository_uri)
+          {
+            echo "## Bootstrap outputs"
+            echo ""
+            echo "Promote these values into GitHub Actions configuration before using the OIDC workflows."
+            echo ""
+            echo "| Variable | Value | Scope |"
+            echo "| --- | --- | --- |"
+            echo "| AWS_REGION | ${AWS_REGION} | repository |"
+            echo "| TF_STATE_BUCKET | ${TF_STATE_BUCKET} | environment: dev |"
+            echo "| TF_LOCK_TABLE | ${TF_LOCK_TABLE} | environment: dev |"
+            echo "| TERRAFORM_APPLY_ROLE_ARN | ${terraform_apply_role_arn} | environment: dev |"
+            echo "| TERRAFORM_DESTROY_ROLE_ARN | ${terraform_destroy_role_arn} | environment: dev-destroy |"
+            echo "| APP_PUBLISH_ROLE_ARN | ${app_publish_role_arn} | environment: dev |"
+            echo "| APP_DEPLOY_ROLE_ARN | ${app_deploy_role_arn} | environment: dev |"
+            echo "| REPOSITORY_URI | ${repository_uri} | environment: dev |"
+            echo ""
+            echo "After these variables are set, remove the bootstrap secrets from the dev-bootstrap environment."
+          } >> "$GITHUB_STEP_SUMMARY"
