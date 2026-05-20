@@ -49,7 +49,7 @@
 - [x] 1.3 Add the minimum Terraform OIDC provider resource, trust-policy locals, and reusable subject values needed to make the shared trust baseline reviewer-readable.
 - [x] 1.4 Capture `terraform validate` and sanitized `terraform plan -no-color` proof output showing the provider and exact-trust baseline without live AWS credentials.
 
-### [ ] 2.0 Define separate Terraform apply and destroy IAM role boundaries
+### [x] 2.0 Define separate Terraform apply and destroy IAM role boundaries
 
 #### 2.0 Proof Artifact(s)
 
@@ -60,14 +60,14 @@
 
 #### 2.0 Tasks
 
-- [ ] 2.1 Add a failing role-boundary contract test that asserts the app stack defines separate apply and destroy roles rather than one shared Terraform workflow role.
-- [ ] 2.2 Extend the failing test coverage to assert the apply role trusts the exact protected `dev` environment subject and the destroy role trusts the exact protected `dev-destroy` environment subject.
-- [ ] 2.3 Extend the failing test coverage to assert Terraform workflow permissions remain broad enough for the POC but do not grant unconstrained administrator-level access, and that IAM-sensitive actions are documented explicitly.
-- [ ] 2.4 Add the minimum Terraform roles, policy attachments or inline policy documents, and outputs needed to make the apply-versus-destroy boundary explicit in the existing dev stack.
-- [ ] 2.5 Update the dev stack README with a short role matrix explaining why destroy is intentionally stricter than apply and which environment each role expects.
-- [ ] 2.6 Capture sanitized `terraform plan -no-color` output and GitHub environment screenshots showing the two-role, two-environment boundary is reviewable end to end.
+- [x] 2.1 Add a failing role-boundary contract test that asserts the app stack defines separate apply and destroy roles rather than one shared Terraform workflow role.
+- [x] 2.2 Extend the failing test coverage to assert the apply role trusts the exact protected `dev` environment subject and the destroy role trusts the exact protected `dev-destroy` environment subject.
+- [x] 2.3 Extend the failing test coverage to assert Terraform workflow permissions remain broad enough for the POC but do not grant unconstrained administrator-level access, and that IAM-sensitive actions are documented explicitly.
+- [x] 2.4 Add the minimum Terraform roles, policy attachments or inline policy documents, and outputs needed to make the apply-versus-destroy boundary explicit in the existing dev stack.
+- [x] 2.5 Update the dev stack README with a short role matrix explaining why destroy is intentionally stricter than apply and which environment each role expects.
+- [x] 2.6 Capture sanitized `terraform plan -no-color` output and GitHub environment screenshots showing the two-role, two-environment boundary is reviewable end to end.
 
-### [ ] 3.0 Define the narrow app deploy role and GitHub configuration contract
+### [x] 3.0 Define the narrow app deploy role and GitHub configuration contract
 
 #### 3.0 Proof Artifact(s)
 
@@ -78,14 +78,14 @@
 
 #### 3.0 Tasks
 
-- [ ] 3.1 Add a failing deploy-role contract test that asserts the app stack defines one deploy role separate from the Terraform apply and destroy roles.
-- [ ] 3.2 Extend the failing deploy-role test coverage to assert the deploy role trusts the protected `dev` environment subject and stays narrower than the Terraform roles by targeting only the ECS rollout path and related read operations.
-- [ ] 3.3 Add or extend a failing workflow-configuration contract test that asserts the existing apply workflow and the documented downstream contract use `id-token: write`, protected environments, and distinct role variable names instead of long-lived AWS secrets.
-- [ ] 3.4 Add the minimum Terraform deploy role and output contract needed so downstream build, task-definition, and service-update workflows can consume one stable deploy role ARN.
-- [ ] 3.5 Document the required GitHub configuration inputs, including `AWS_REGION`, `TERRAFORM_APPLY_ROLE_ARN`, `TERRAFORM_DESTROY_ROLE_ARN`, `APP_DEPLOY_ROLE_ARN`, `TF_STATE_BUCKET`, and `TF_LOCK_TABLE`, with environment-versus-repository ownership called out explicitly.
-- [ ] 3.6 Capture sanitized plan output and GitHub configuration screenshots showing the deploy role remains distinct and the variable contract is reviewer-readable.
+- [x] 3.1 Add a failing deploy-role contract test that asserts the app stack defines one deploy role separate from the Terraform apply and destroy roles.
+- [x] 3.2 Extend the failing deploy-role test coverage to assert the deploy role trusts the protected `dev` environment subject and stays narrower than the Terraform roles by targeting only the ECS rollout path and related read operations.
+- [x] 3.3 Add or extend a failing workflow-configuration contract test that asserts the existing apply workflow and the documented downstream contract use `id-token: write`, protected environments, and distinct role variable names instead of long-lived AWS secrets.
+- [x] 3.4 Add the minimum Terraform deploy role and output contract needed so downstream build, task-definition, and service-update workflows can consume one stable deploy role ARN.
+- [x] 3.5 Document the required GitHub configuration inputs, including `AWS_REGION`, `TERRAFORM_APPLY_ROLE_ARN`, `TERRAFORM_DESTROY_ROLE_ARN`, `APP_DEPLOY_ROLE_ARN`, `TF_STATE_BUCKET`, and `TF_LOCK_TABLE`, with environment-versus-repository ownership called out explicitly.
+- [x] 3.6 Capture sanitized plan output and GitHub configuration screenshots showing the deploy role remains distinct and the variable contract is reviewer-readable.
 
-### [ ] 4.0 Add reviewer-facing documentation and reproducible verification for the IAM contract
+### [x] 4.0 Add reviewer-facing documentation and reproducible verification for the IAM contract
 
 #### 4.0 Proof Artifact(s)
 
@@ -96,7 +96,7 @@
 
 #### 4.0 Tasks
 
-- [ ] 4.1 Add a failing documentation or verification-workflow contract test that asserts the repository defines one reviewer-facing IAM verification path with sanitized credentials and clear missing-file failures.
-- [ ] 4.2 Create `scripts/verify-github-oidc-iam-contract.sh` so it mirrors the repository’s verification-script pattern, reuses `backend.hcl.example`, runs `terraform validate`, and captures a sanitized `terraform plan -no-color` for the IAM contract.
-- [ ] 4.3 Update `infra/terraform/floci/README.md` and the dev stack README with the exact local verification sequence, the placeholder credential expectations, and the no-long-lived-key guidance for GitHub OIDC workflows.
-- [ ] 4.4 Capture the `./scripts/verify-github-oidc-iam-contract.sh` proof path and documentation diff so reviewers can reproduce the IAM contract validation flow and confirm the artifacts remain observable, reproducible, scope-linked, and sanitized.
+- [x] 4.1 Add a failing documentation or verification-workflow contract test that asserts the repository defines one reviewer-facing IAM verification path with sanitized credentials and clear missing-file failures.
+- [x] 4.2 Create `scripts/verify-github-oidc-iam-contract.sh` so it mirrors the repository’s verification-script pattern, reuses `backend.hcl.example`, runs `terraform validate`, and captures a sanitized `terraform plan -no-color` for the IAM contract.
+- [x] 4.3 Update `infra/terraform/floci/README.md` and the dev stack README with the exact local verification sequence, the placeholder credential expectations, and the no-long-lived-key guidance for GitHub OIDC workflows.
+- [x] 4.4 Capture the `./scripts/verify-github-oidc-iam-contract.sh` proof path and documentation diff so reviewers can reproduce the IAM contract validation flow and confirm the artifacts remain observable, reproducible, scope-linked, and sanitized.

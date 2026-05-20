@@ -48,6 +48,9 @@ locals {
   ecs_task_execution_role_name  = "${var.environment}-ecs-task-execution"
   ecs_task_role_name            = "${var.environment}-ecs-task"
   ecr_repository_name           = "${var.environment}-petclinic"
+  terraform_apply_role_name     = "terraform-apply-${var.environment}"
+  terraform_destroy_role_name   = "terraform-destroy-${var.environment}"
+  app_deploy_role_name          = "app-deploy-${var.environment}"
 
   common_tags = {
     Application = var.project_name
