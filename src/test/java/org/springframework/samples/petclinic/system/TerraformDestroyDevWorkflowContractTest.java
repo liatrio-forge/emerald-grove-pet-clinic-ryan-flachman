@@ -49,6 +49,7 @@ class TerraformDestroyDevWorkflowContractTest {
 
 		String workflow = Files.readString(WORKFLOW);
 
+		assertThat(workflow).contains("uses: hashicorp/setup-terraform@v3");
 		assertThat(workflow).contains("permissions:");
 		assertThat(workflow).contains("id-token: write");
 		assertThat(workflow).contains("environment: dev-destroy");
