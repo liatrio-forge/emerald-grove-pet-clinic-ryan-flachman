@@ -51,6 +51,20 @@ class GitHubDeployRoleAndConfigurationContractTest {
 	}
 
 	@Test
+	void devAppStackAlsoDefinesOnePublishRoleSeparateFromDeployAndTerraformRoles() throws IOException {
+		assertThat(MAIN).exists();
+		assertThat(OUTPUTS).exists();
+
+		String main = Files.readString(MAIN);
+		String outputs = Files.readString(OUTPUTS);
+
+		assertThat(main).contains("resource \"aws_iam_role\" \"app_publish_github_actions\"");
+		assertThat(main).contains(
+				"assume_role_policy = data.aws_iam_policy_document.github_actions_oidc_trust[\"app_publish\"].json");
+		assertThat(outputs).contains("app_publish_role_arn");
+	}
+
+	@Test
 	void deployRoleTrustsProtectedDevEnvironmentAndStaysNarrowerThanTerraformRoles() throws IOException {
 		assertThat(MAIN).exists();
 
@@ -82,6 +96,7 @@ class GitHubDeployRoleAndConfigurationContractTest {
 		assertThat(readme).contains("AWS_REGION");
 		assertThat(readme).contains("TERRAFORM_APPLY_ROLE_ARN");
 		assertThat(readme).contains("TERRAFORM_DESTROY_ROLE_ARN");
+		assertThat(readme).contains("APP_PUBLISH_ROLE_ARN");
 		assertThat(readme).contains("APP_DEPLOY_ROLE_ARN");
 		assertThat(readme).contains("TF_STATE_BUCKET");
 		assertThat(readme).contains("TF_LOCK_TABLE");

@@ -1,0 +1,92 @@
+name: Manual Dev ECR Publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Type publish dev image to confirm the dev ECR publication.
+        required: true
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: manual-dev-ecr-publish
+  cancel-in-progress: false
+
+jobs:
+  validate-request:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require main branch
+        if: github.ref != 'refs/heads/main'
+        run: |
+          echo "Publish requires the main branch." >&2
+          exit 1
+
+      - name: Require typed confirmation
+        if: github.event.inputs.confirmation != 'publish dev image'
+        run: |
+          echo "Publish requires confirmation: publish dev image" >&2
+          exit 1
+
+  publish-dev-image:
+    needs: validate-request
+    if: github.ref == 'refs/heads/main' && github.event.inputs.confirmation == 'publish dev image'
+    runs-on: ubuntu-latest
+    environment: dev
+    env:
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      REPOSITORY_URI: ${{ vars.REPOSITORY_URI }}
+      IMAGE_TAG: ${{ github.sha }}
+    steps:
+      - name: Require workflow configuration
+        run: |
+          if [[ -z "${{ vars.APP_PUBLISH_ROLE_ARN }}" ]]; then
+            echo "App publish role ARN is required." >&2
+            exit 1
+          fi
+          if [[ -z "${{ vars.AWS_REGION }}" ]]; then
+            echo "AWS region is required." >&2
+            exit 1
+          fi
+          if [[ -z "${{ vars.REPOSITORY_URI }}" ]]; then
+            echo "Repository URI is required." >&2
+            exit 1
+          fi
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Package application
+        run: ./mvnw package -DskipTests
+
+      - name: Configure AWS credentials with OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ env.AWS_REGION }}
+          role-to-assume: ${{ vars.APP_PUBLISH_ROLE_ARN }}
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build image
+        run: docker build --file Dockerfile --tag "$REPOSITORY_URI:$IMAGE_TAG" .
+
+      - name: Push image
+        run: docker push "$REPOSITORY_URI:$IMAGE_TAG"
+
+      - name: Summarize published image
+        id: publish-metadata
+        run: |
+          published_image="$REPOSITORY_URI:$IMAGE_TAG"
+          image_digest=$(aws ecr describe-images --repository-name "${REPOSITORY_URI##*/}" --image-ids imageTag="$IMAGE_TAG" --query 'imageDetails[0].imageDigest' --output text)
+          echo "published_image=$REPOSITORY_URI:$IMAGE_TAG" >> "$GITHUB_OUTPUT"
+          echo "image_digest=$image_digest" >> "$GITHUB_OUTPUT"
+          echo "Published image: $published_image"
+          echo "Pushed digest: $image_digest"
+          {
+            echo "Published image: $published_image"
+            echo "Pushed digest: $image_digest"
+          } >> "$GITHUB_STEP_SUMMARY"
