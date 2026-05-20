@@ -345,6 +345,7 @@ resource "aws_vpc_security_group_egress_rule" "ecs_task_ipv6_egress" {
 }
 
 resource "aws_ecs_task_definition" "application" {
+  count                    = local.ecs_runtime_enabled ? 1 : 0
   family                   = local.ecs_task_definition_family
   cpu                      = "1024"
   memory                   = "2048"
@@ -356,7 +357,7 @@ resource "aws_ecs_task_definition" "application" {
   container_definitions = jsonencode([
     {
       name      = "application"
-      image     = var.bootstrap_image
+      image     = var.deploy_image
       essential = true
       portMappings = [
         {
@@ -383,9 +384,10 @@ resource "aws_ecs_task_definition" "application" {
 }
 
 resource "aws_ecs_service" "application" {
+  count                              = local.ecs_runtime_enabled ? 1 : 0
   name                               = local.ecs_service_name
   cluster                            = aws_ecs_cluster.shared.id
-  task_definition                    = aws_ecs_task_definition.application.arn
+  task_definition                    = aws_ecs_task_definition.application[0].arn
   desired_count                      = 1
   launch_type                        = "FARGATE"
   health_check_grace_period_seconds  = 120

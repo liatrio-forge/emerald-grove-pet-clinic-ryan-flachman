@@ -38,8 +38,9 @@ class TerraformEcsServiceContractTest {
 
 		assertThat(main).contains("resource \"aws_ecs_service\" \"application\"");
 		assertThat(main).containsOnlyOnce("resource \"aws_ecs_service\"");
+		assertThat(main).contains("count                              = local.ecs_runtime_enabled ? 1 : 0");
 		assertThat(main).contains("cluster                            = aws_ecs_cluster.shared.id");
-		assertThat(main).contains("task_definition                    = aws_ecs_task_definition.application.arn");
+		assertThat(main).contains("task_definition                    = aws_ecs_task_definition.application[0].arn");
 		assertThat(main).contains("desired_count                      = 1");
 		assertThat(main).contains("target_group_arn = aws_lb_target_group.application.arn");
 		assertThat(main).contains("container_name   = \"application\"");

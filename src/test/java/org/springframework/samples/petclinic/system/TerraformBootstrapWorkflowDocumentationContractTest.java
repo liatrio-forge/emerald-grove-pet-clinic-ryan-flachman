@@ -40,6 +40,7 @@ class TerraformBootstrapWorkflowDocumentationContractTest {
 
 		assertThat(rootReadme).contains("Bootstrap Dev Infrastructure");
 		assertThat(rootReadme).contains("bootstrap dev");
+		assertThat(rootReadme).contains("without requiring a pre-existing application image");
 		assertThat(appDevReadme).contains("dev-bootstrap");
 		assertThat(appDevReadme).contains("BOOTSTRAP_AWS_ACCESS_KEY_ID");
 		assertThat(appDevReadme).contains("BOOTSTRAP_AWS_SECRET_ACCESS_KEY");
@@ -61,6 +62,7 @@ class TerraformBootstrapWorkflowDocumentationContractTest {
 		assertThat(appDevReadme).contains("REPOSITORY_URI");
 		assertThat(appDevReadme).contains("TF_STATE_BUCKET");
 		assertThat(appDevReadme).contains("TF_LOCK_TABLE");
+		assertThat(appDevReadme).contains("publish into the new repository before the first ECS deployment");
 	}
 
 }

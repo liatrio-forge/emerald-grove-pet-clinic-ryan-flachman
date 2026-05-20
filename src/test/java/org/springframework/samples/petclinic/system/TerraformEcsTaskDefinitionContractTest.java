@@ -66,20 +66,22 @@ class TerraformEcsTaskDefinitionContractTest {
 	}
 
 	@Test
-	void devAppStackRequiresOneImmutableBootstrapImageReference() throws IOException {
+	void devAppStackCreatesTheTaskDefinitionOnlyWhenOneImmutableDeployImageIsProvided() throws IOException {
 		assertThat(MAIN).exists();
 		assertThat(VARIABLES).exists();
 
 		String main = Files.readString(MAIN);
 		String variables = Files.readString(VARIABLES);
 
-		assertThat(main).contains("image     = var.bootstrap_image");
-		assertThat(variables).contains("variable \"bootstrap_image\"");
+		assertThat(main).contains("count                    = local.ecs_runtime_enabled ? 1 : 0");
+		assertThat(main).contains("image     = var.deploy_image");
+		assertThat(variables).contains("variable \"deploy_image\"");
 		assertThat(variables)
-			.contains("description = \"Immutable bootstrap image reference for the baseline ECS service.\"");
-		assertThat(variables).contains("condition     = can(regex(\".+@sha256:[0-9a-f]{64}$\", var.bootstrap_image))");
-		assertThat(variables)
-			.contains("error_message = \"Provide an immutable bootstrap image reference pinned by digest.\"");
+			.contains("description = \"Immutable deploy image reference for the baseline ECS service.\"");
+		assertThat(variables).contains(
+				"condition     = var.deploy_image == \"\" || can(regex(\".+@sha256:[0-9a-f]{64}$\", var.deploy_image))");
+		assertThat(variables).contains(
+				"error_message = \"Provide an immutable deploy image reference pinned by digest when enabling the ECS runtime.\"");
 		assertThat(variables).doesNotContain("latest");
 		assertThat(main).doesNotContain(":latest");
 	}

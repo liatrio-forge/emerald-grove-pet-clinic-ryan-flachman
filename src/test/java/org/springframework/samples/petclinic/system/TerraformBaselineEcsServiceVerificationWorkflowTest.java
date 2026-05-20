@@ -33,7 +33,7 @@ class TerraformBaselineEcsServiceVerificationWorkflowTest {
 	private static final Path APP_DEV_README = Path.of("infra/terraform/app/dev/README.md");
 
 	@Test
-	void verificationWorkflowUsesFlociAndChecksForAnImmutableBootstrapImageBeforeAwsDeployment() throws IOException {
+	void verificationWorkflowUsesFlociAndChecksForAnImmutableDeployImageBeforeAwsDeployment() throws IOException {
 		assertThat(SCRIPT).exists();
 		assertThat(FLOCI_README).exists();
 		assertThat(APP_DEV_README).exists();
@@ -52,7 +52,7 @@ class TerraformBaselineEcsServiceVerificationWorkflowTest {
 		assertThat(script).contains("AWS_SECRET_ACCESS_KEY=test");
 		assertThat(script).contains("AWS_EC2_METADATA_DISABLED=true");
 		assertThat(script).contains("missing required file");
-		assertThat(script).contains("bootstrap_image");
+		assertThat(script).contains("deploy_image");
 		assertThat(script).contains("@sha256:");
 		assertThat(script).doesNotContain("AKIA");
 		assertThat(flociReadme).contains("./scripts/verify-baseline-ecs-task-definition-service-contract.sh");
@@ -78,6 +78,7 @@ class TerraformBaselineEcsServiceVerificationWorkflowTest {
 		assertThat(script).contains("aws logs get-log-events");
 		assertThat(script).contains("assign_public_ip = false");
 		assertThat(appDevReadme).contains("build and push a real immutable Git SHA image");
+		assertThat(appDevReadme).contains("run Terraform Apply Dev with that exact digest");
 		assertThat(appDevReadme).contains("verify ECS steady state");
 		assertThat(appDevReadme).contains("verify target health");
 		assertThat(appDevReadme).contains("verify ALB reachability");

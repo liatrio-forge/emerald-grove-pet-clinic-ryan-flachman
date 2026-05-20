@@ -36,6 +36,7 @@ locals {
   ecs_task_execution_role_name  = "${var.environment}-ecs-task-execution"
   ecs_task_role_name            = "${var.environment}-ecs-task"
   ecr_repository_name           = "${var.environment}-petclinic"
+  ecs_runtime_enabled           = var.deploy_image != ""
   common_tags = {
     Application = var.project_name
     Environment = var.environment

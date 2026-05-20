@@ -67,18 +67,19 @@ first live bootstrap:
 | `BOOTSTRAP_AWS_SESSION_TOKEN` | Optional session token when the admin credentials are temporary STS credentials. |
 
 Use the repository-scoped variable `AWS_REGION` for the target region, and pass
-one workflow input named `bootstrap_image` that is already pinned by digest.
+no application image input during foundation bootstrap.
 
 ## Bootstrap Workflow Sequence
 
 1. Run `Bootstrap Dev Infrastructure` from `main`.
 2. Type `bootstrap dev`.
-3. Provide `bootstrap_image` as one immutable image reference pinned by digest.
-4. Let the workflow apply `infra/terraform/state/dev` with local backend mode.
-5. Let the workflow materialize backend config, initialize `infra/terraform/app/dev`,
+3. Let the workflow apply `infra/terraform/state/dev` with local backend mode.
+4. Let the workflow materialize backend config, initialize `infra/terraform/app/dev`,
    and apply the app stack.
-6. Copy the workflow summary outputs into the protected GitHub variables listed
+5. Copy the workflow summary outputs into the protected GitHub variables listed
    below.
+6. Publish into the new repository before the first ECS deployment.
+   In other words, publish into the new repository before the first ECS deployment.
 7. Keep the bootstrap secrets in `dev-bootstrap` as the documented POC
    exception for future foundation rebuilds and final teardown work.
 
@@ -90,6 +91,8 @@ one workflow input named `bootstrap_image` that is already pinned by digest.
   the `main branch`.
 - Operators must use `workflow_dispatch` and type `apply dev` before the
   workflow can proceed beyond the initial safety gate.
+- Operators must also provide `deploy_image` as one deploy image reference
+  pinned by digest.
 - The apply-capable job uses the protected `dev` environment so reviewer approval
   happens before protected configuration is available.
 - The workflow uses GitHub OIDC with an assumed AWS role instead of long-lived
@@ -98,6 +101,8 @@ one workflow input named `bootstrap_image` that is already pinned by digest.
   configuration that follows `backend.hcl.example`.
 - The workflow creates and applies an `exact saved Terraform plan` for
   `infra/terraform/app/dev`; it does not recompute a fresh implicit apply plan.
+- This is the post-publish ECS deployment step for the first runtime rollout
+  and later reviewed image updates.
 
 ## Manual Terraform Destroy Workflow Contract
 
@@ -121,8 +126,8 @@ one workflow input named `bootstrap_image` that is already pinned by digest.
 2. Type `destroy dev`.
 3. Let the workflow destroy only the `app/dev` stack.
 4. Keep `state/dev` and `identity/dev` in place.
-5. Run `Terraform Apply Dev` to recreate `app/dev` with the same stable GitHub
-   variable names.
+5. Run `Terraform Apply Dev` with the current `deploy_image` digest to recreate
+   `app/dev` with the same stable GitHub variable names.
 
 Normal `app/dev` destroy and recreate is distinct from final foundation
 teardown.
@@ -256,10 +261,10 @@ runner shell access.
 ## Manual Terraform Apply Scope Boundaries
 
 - In scope: manual `dev` stack apply, reviewer approval, typed confirmation,
-  GitHub OIDC authentication, reviewed saved-plan creation, and exact-plan
-  apply.
-- Out of scope: image build, ECS rollout, destroy workflow, foundation stack
-  teardown, and unrelated CI/CD orchestration.
+  GitHub OIDC authentication, one `deploy_image` digest, reviewed saved-plan
+  creation, and exact-plan apply.
+- Out of scope: image build, destroy workflow, foundation stack teardown, and
+  unrelated CI/CD orchestration.
 
 ## Runtime Ownership Boundary
 
@@ -288,6 +293,10 @@ runner shell access.
   exactly one immutable Git SHA image per successful run.
 - The workflow surfaces the fully qualified image reference plus the pushed
   digest in workflow-visible output for later rollout review.
+- After publish, copy the published digest into the `deploy_image` input on
+  `Terraform Apply Dev`.
+- In other words, copy the published digest into the deploy_image input.
+- The workflow does not roll out ECS on its own.
 
 ## Manual Dev ECR Publish Verification Commands
 
@@ -313,8 +322,8 @@ inspection form for this workflow.
   restriction, protected `dev` environment approval, GitHub OIDC
   authentication, one immutable Git SHA tag, and workflow-visible image/digest
   output.
-- Out of scope: automatic publish, ECS rollout, mutable convenience tags, and
-  any repo-owned verification script for this workflow.
+- Out of scope: automatic publish, mutable convenience tags, direct ECS
+  deployment, and any repo-owned verification script for this workflow.
 
 ## Network Reuse Contract
 
@@ -360,9 +369,9 @@ inspection form for this workflow.
 - The task definition reuses the existing execution role, task role, and
   application log group instead of redefining runtime IAM or logging
   destinations.
-- The bootstrap image input must be an immutable image reference pinned by
-  digest. Mutable tags such as `latest` are intentionally excluded from the
-  Terraform contract.
+- The deploy image input must be an immutable image reference pinned by
+  digest when the ECS runtime is enabled. Mutable tags such as `latest` are
+  intentionally excluded from the Terraform contract.
 - The baseline task definition intentionally keeps the runtime configuration
   surface minimal: no Terraform-managed secret injection, no environment files,
   and no extra environment variables beyond what the container image already
@@ -391,7 +400,7 @@ inspection form for this workflow.
 ## Baseline ECS Verification Order
 
 - build and push a real immutable Git SHA image before the first ECS deployment.
-- Apply Terraform only after the bootstrap image reference is pinned by digest.
+- run Terraform Apply Dev with that exact digest before verifying the ECS runtime.
 - verify ECS steady state with `aws ecs describe-services --cluster <cluster-name> --services <service-name>`.
 - verify the running task identity with `aws ecs list-tasks --cluster <cluster-name> --service-name <service-name>`.
 - verify target health with `aws elbv2 describe-target-health --target-group-arn <target-group-arn>`.

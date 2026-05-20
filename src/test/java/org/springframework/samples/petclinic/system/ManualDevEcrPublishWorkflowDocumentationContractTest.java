@@ -58,12 +58,14 @@ class ManualDevEcrPublishWorkflowDocumentationContractTest {
 		assertThat(appDevReadme).contains("APP_PUBLISH_ROLE_ARN");
 		assertThat(appDevReadme).contains("REPOSITORY_URI");
 		assertThat(appDevReadme).contains("AWS_REGION");
+		assertThat(appDevReadme).contains("Terraform Apply Dev");
+		assertThat(appDevReadme).contains("copy the published digest into the deploy_image input");
 		assertThat(appDevReadme).contains("gh workflow run");
 		assertThat(appDevReadme).contains("gh run view --log");
 		assertThat(appDevReadme).contains("aws ecr describe-images");
 		assertThat(appDevReadme).contains("long-lived AWS access keys");
 		assertThat(appDevReadme).contains("automatic publish");
-		assertThat(appDevReadme).contains("ECS rollout");
+		assertThat(appDevReadme).contains("does not roll out ECS on its own");
 		assertThat(appDevReadme).contains("mutable");
 		assertThat(appDevReadme).contains("verification script");
 	}

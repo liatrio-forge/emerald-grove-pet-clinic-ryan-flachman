@@ -6,9 +6,6 @@ on:
       confirmation:
         description: Type bootstrap dev to confirm the one-time dev bootstrap.
         required: true
-      bootstrap_image:
-        description: Provide the immutable bootstrap image reference pinned by digest.
-        required: true
 
 permissions:
   contents: read
@@ -51,10 +48,6 @@ jobs:
           fi
           if [[ -z "${{ secrets.BOOTSTRAP_AWS_SECRET_ACCESS_KEY }}" ]]; then
             echo "BOOTSTRAP_AWS_SECRET_ACCESS_KEY is required." >&2
-            exit 1
-          fi
-          if [[ ! "${{ github.event.inputs.bootstrap_image }}" =~ .+@sha256:[0-9a-f]{64}$ ]]; then
-            echo "Bootstrap image must be pinned by digest." >&2
             exit 1
           fi
 
@@ -106,7 +99,7 @@ jobs:
         run: terraform -chdir=infra/terraform/app/dev init -input=false -backend-config="$TF_BACKEND_CONFIG_FILE"
 
       - name: Terraform plan app stack
-        run: terraform -chdir=infra/terraform/app/dev plan -out=tfplan -input=false -var "bootstrap_image=${{ github.event.inputs.bootstrap_image }}"
+        run: terraform -chdir=infra/terraform/app/dev plan -out=tfplan -input=false
 
       - name: Terraform apply app stack
         run: terraform -chdir=infra/terraform/app/dev apply -input=false tfplan
@@ -133,6 +126,10 @@ jobs:
             echo "| APP_PUBLISH_ROLE_ARN | ${app_publish_role_arn} | environment: dev |"
             echo "| APP_DEPLOY_ROLE_ARN | ${app_deploy_role_arn} | environment: dev |"
             echo "| REPOSITORY_URI | ${repository_uri} | environment: dev |"
+            echo ""
+            echo "Next steps:"
+            echo "1. Publish one immutable Git SHA image to the new repository."
+            echo "2. Run Terraform Apply Dev with that exact digest to create the ECS runtime."
             echo ""
             echo "Keep the dev-bootstrap secrets protected for future foundation rebuild and final teardown workflows."
           } >> "$GITHUB_STEP_SUMMARY"
