@@ -15,6 +15,7 @@ test('Branding uses Emerald Grove logo, colors, and typography', async ({ page }
   const body = page.locator('body');
   await expect(body).toHaveCSS('font-family', /DM Sans/);
   await expect(body).toHaveCSS('color', 'rgb(248, 249, 250)');
+  await expect(body).toHaveCSS('background-color', 'rgb(26, 31, 35)');
 
   await ownerPage.openFindOwners();
 
